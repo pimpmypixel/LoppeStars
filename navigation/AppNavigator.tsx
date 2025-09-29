@@ -2,10 +2,11 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { t } from '../utils/localization';
 
 import HomeScreen from '../screens/HomeScreen';
 import FormScreen from '../screens/FormScreen';
-import MoreScreen from '../screens/MoreScreen';
+import MoreNavigator from './MoreNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -19,8 +20,8 @@ export default function AppNavigator() {
 
             if (route.name === 'Home') {
               iconName = focused ? 'home' : 'home-outline';
-            } else if (route.name === 'Add Item') {
-              iconName = focused ? 'add-circle' : 'add-circle-outline';
+            } else if (route.name === 'Rate Stall') {
+              iconName = focused ? 'star' : 'star-outline';
             } else if (route.name === 'More') {
               iconName = focused ? 'ellipsis-horizontal-circle' : 'ellipsis-horizontal-circle-outline';
             } else {
@@ -49,23 +50,23 @@ export default function AppNavigator() {
           name="Home" 
           component={HomeScreen}
           options={{
-            title: 'Loppestars',
+            title: t('navigation.home'),
             headerShown: false,
           }}
         />
         <Tab.Screen 
-          name="Add Item" 
+          name="Rate Stall" 
           component={FormScreen}
           options={{
-            title: 'Add Item',
+            title: t('navigation.rateStall'),
             headerShown: false,
           }}
         />
         <Tab.Screen 
           name="More" 
-          component={MoreScreen}
+          component={MoreNavigator}
           options={{
-            title: 'More',
+            title: t('navigation.more'),
             headerShown: false,
           }}
         />

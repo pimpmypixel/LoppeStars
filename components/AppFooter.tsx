@@ -1,11 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { t } from '../utils/localization';
+import Logo from './Logo';
 
 export default function AppFooter() {
   return (
     <View style={styles.footer}>
-      <Text style={styles.footerText}>© 2025 Loppestars</Text>
-      <Text style={styles.footerSubtext}>Your marketplace for everything</Text>
+      <Logo size="small" />
+      <Text style={styles.footerText}>{t('footer.copyright')}</Text>
+      <Text style={styles.footerSubtext}>{t('footer.tagline')}</Text>
     </View>
   );
 }
@@ -23,6 +26,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#666',
     fontWeight: '600',
+    marginTop: 8,
   },
   footerSubtext: {
     fontSize: 10,

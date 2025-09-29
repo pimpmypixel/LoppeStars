@@ -1,0 +1,90 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "cancel": "Cancel",
+    "ok": "OK",
+    "yes": "Yes",
+    "no": "No",
+    "retry": "Retry",
+    "done": "Done"
+  },
+  "auth": {
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signInWithGoogle": "Sign in with Google",
+    "pleaseSignIn": "Please sign in to continue",
+    "signInError": "Failed to sign in",
+    "signOutError": "Failed to sign out"
+  },
+  "navigation": {
+    "home": "Home",
+    "rateStall": "Rate Stall",
+    "more": "More"
+  },
+  "home": {
+    "welcome": "Welcome to Loppestars!",
+    "subtitle": "Your Danish marketplace for second-hand treasures"
+  },
+  "form": {
+    "rateStall": "Rate a Stall",
+    "photo": "Photo",
+    "addPhoto": "Add Photo",
+    "removePhoto": "Remove Photo",
+    "stallName": "Stall Name",
+    "stallNameRequired": "Stall name is required",
+    "stallNamePlaceholder": "Enter the name of the stall",
+    "mobilePayPhone": "MobilePay Phone",
+    "mobilePayPhoneRequired": "MobilePay phone number is required",
+    "mobilePayPhonePlaceholder": "+45 12 34 56 78",
+    "rating": "Rating",
+    "ratingLabel": "How would you rate this stall?",
+    "submit": "Submit Rating",
+    "submitting": "Submitting...",
+    "submitSuccess": "Rating submitted successfully!",
+    "submitError": "Failed to submit rating",
+    "validationError": "Validation Error",
+    "loginRequired": "You must be logged in to submit",
+    "photoUploadError": "Failed to upload photo"
+  },
+  "camera": {
+    "takePhoto": "Take Photo",
+    "fromLibrary": "From Library",
+    "retake": "Retake",
+    "usePhoto": "Use Photo",
+    "cancel": "Cancel",
+    "noCamera": "No camera available",
+    "permissionDenied": "Camera permission denied"
+  },
+  "more": {
+    "more": "More",
+    "privacy": "Privacy",
+    "organiser": "Organiser",
+    "advertising": "Advertising",
+    "about": "About",
+    "contact": "Contact",
+    "signOut": "Sign Out"
+  },
+  "permissions": {
+    "camera": {
+      "title": "Camera Permission",
+      "message": "This app needs access to your camera to take photos of items you want to sell.",
+      "denied": "Camera permission is required to take photos"
+    },
+    "location": {
+      "title": "Location Permission", 
+      "message": "This app needs access to your location to help buyers find items near them.",
+      "denied": "Location permission helps buyers find your items"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 Loppestars",
+    "tagline": "What's it worth?"
+  },
+  "user": {
+    "email": "Email",
+    "sessionId": "Session ID"
+  }
+}

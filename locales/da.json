@@ -1,0 +1,90 @@
+{
+  "common": {
+    "welcome": "Velkommen",
+    "loading": "Indlæser...",
+    "error": "Fejl",
+    "success": "Succes",
+    "cancel": "Annuller",
+    "ok": "OK",
+    "yes": "Ja", 
+    "no": "Nej",
+    "retry": "Prøv igen",
+    "done": "Færdig"
+  },
+  "auth": {
+    "signIn": "Log ind",
+    "signOut": "Log ud",
+    "signInWithGoogle": "Log ind med Google",
+    "pleaseSignIn": "Log venligst ind for at fortsætte",
+    "signInError": "Login mislykkedes",
+    "signOutError": "Logout mislykkedes"
+  },
+  "navigation": {
+    "home": "Hjem",
+    "rateStall": "Bedøm bod",
+    "more": "Mere"
+  },
+  "home": {
+    "welcome": "Velkommen til Loppestars!",
+    "subtitle": "Din danske markedsplads for brugte skatte"
+  },
+  "form": {
+    "rateStall": "Bedøm en bod",
+    "photo": "Foto",
+    "addPhoto": "Tilføj foto",
+    "removePhoto": "Fjern foto",
+    "stallName": "Bod navn",
+    "stallNameRequired": "Bod navn er påkrævet",
+    "stallNamePlaceholder": "Indtast navnet på boden",
+    "mobilePayPhone": "MobilePay telefon",
+    "mobilePayPhoneRequired": "MobilePay telefonnummer er påkrævet",
+    "mobilePayPhonePlaceholder": "+45 12 34 56 78",
+    "rating": "Bedømmelse",
+    "ratingLabel": "Hvordan vil du bedømme denne bod?",
+    "submit": "Send bedømmelse",
+    "submitting": "Sender...",
+    "submitSuccess": "Bedømmelse sendt med succes!",
+    "submitError": "Kunne ikke sende bedømmelse",
+    "validationError": "Valideringsfejl",
+    "loginRequired": "Du skal være logget ind for at sende",
+    "photoUploadError": "Kunne ikke uploade foto"
+  },
+  "camera": {
+    "takePhoto": "Tag foto",
+    "fromLibrary": "Fra bibliotek",
+    "retake": "Tag igen",
+    "usePhoto": "Brug foto",
+    "cancel": "Annuller",
+    "noCamera": "Intet kamera tilgængeligt",
+    "permissionDenied": "Kamera tilladelse nægtet"
+  },
+  "more": {
+    "more": "Mere",
+    "privacy": "Privatliv",
+    "organiser": "Arrangør",
+    "advertising": "Reklame",
+    "about": "Om",
+    "contact": "Kontakt",
+    "signOut": "Log ud"
+  },
+  "permissions": {
+    "camera": {
+      "title": "Kamera tilladelse",
+      "message": "Denne app har brug for adgang til dit kamera for at tage billeder af varer du vil sælge.",
+      "denied": "Kamera tilladelse er påkrævet for at tage billeder"
+    },
+    "location": {
+      "title": "Placering tilladelse",
+      "message": "Denne app har brug for adgang til din placering for at hjælpe købere med at finde varer i nærheden af dem.",
+      "denied": "Placering tilladelse hjælper købere med at finde dine varer"
+    }
+  },
+  "footer": {
+    "copyright": "© 2025 Loppestars", 
+    "tagline": "Hvad er det værd?"
+  },
+  "user": {
+    "email": "Email",
+    "sessionId": "Session ID"
+  }
+}

@@ -1,12 +1,13 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Text, Alert } from 'react-native';
 import {
     GoogleSignin,
     GoogleSigninButton,
     statusCodes,
 } from '@react-native-google-signin/google-signin';
-
 import { supabase } from '../utils/supabase';
+import { t } from '../utils/localization';
+import Logo from './Logo';
 
 
 export default function () {
@@ -23,15 +24,12 @@ export default function () {
         }
     };
 
-    // Somewhere in your code
     const signIn = async () => {
         try {
-            // Test connection first
             await testSupabaseConnection();
             
             await GoogleSignin.hasPlayServices();
             const userInfo = await GoogleSignin.signIn();
-            // console.log('userInfo', JSON.stringify(userInfo.data, null, 2));
             
             if (userInfo.data?.idToken) {
                 console.log('Attempting Supabase auth with idToken...');
@@ -40,45 +38,26 @@ export default function () {
                         provider: 'google',
                         token: userInfo.data.idToken,
                     });
-                    // console.log('Supabase auth data:', JSON.stringify(data, null, 2));
                     if (error) {
                         console.log('Supabase auth error details:', {
                             name: error.name,
                             message: error.message,
                             status: error.status,
-                            // @ts-ignore
-                            cause: error.cause,
                         });
+                        Alert.alert(t('common.error'), t('auth.signInError'));
                     }
                 } catch (authError) {
                     console.log('Supabase auth exception:', authError);
+                    Alert.alert(t('common.error'), t('auth.signInError'));
                 }
             } else {
                 console.log('No idToken received from Google sign-in');
+                Alert.alert(t('common.error'), t('auth.signInError'));
             }
-
-            // if (isSuccessResponse(response)) {
-            //     setState({ userInfo: response.data });
-            // } else {
-            //     // sign in was cancelled by user
-            // }
 
         } catch (error: any) {
             console.log('error', JSON.stringify(error, null, 2));
-            // if (isErrorWithCode(error)) {
-            //     switch (error.code) {
-            //         case statusCodes.IN_PROGRESS:
-            //             // operation (eg. sign in) already in progress
-            //             break;
-            //         case statusCodes.PLAY_SERVICES_NOT_AVAILABLE:
-            //             // Android only, play services not available or outdated
-            //             break;
-            //         default:
-            //         // some other error happened
-            //     }
-            // } else {
-            //     // an error that's not related to google sign in occurred
-            // }
+            Alert.alert(t('common.error'), t('auth.signInError'));
         }
     };
 
@@ -102,11 +81,19 @@ export default function () {
 
     return (
         <View style={styles.container}>
-            <GoogleSigninButton
-                size={GoogleSigninButton.Size.Wide}
-                color={GoogleSigninButton.Color.Dark}
-                onPress={signIn}
-            />
+            <View style={styles.logoContainer}>
+                <Logo size="large" />
+                <Text style={styles.welcomeText}>{t('common.welcome')}</Text>
+                <Text style={styles.subtitle}>{t('auth.pleaseSignIn')}</Text>
+            </View>
+            
+            <View style={styles.buttonContainer}>
+                <GoogleSigninButton
+                    size={GoogleSigninButton.Size.Wide}
+                    color={GoogleSigninButton.Color.Dark}
+                    onPress={signIn}
+                />
+            </View>
         </View>
     );
 }
@@ -117,5 +104,27 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#f5f5f5',
+        padding: 20,
+    },
+    logoContainer: {
+        alignItems: 'center',
+        marginBottom: 60,
+    },
+    welcomeText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#333',
+        marginTop: 20,
+        textAlign: 'center',
+    },
+    subtitle: {
+        fontSize: 16,
+        color: '#666',
+        marginTop: 10,
+        textAlign: 'center',
+    },
+    buttonContainer: {
+        width: '100%',
+        alignItems: 'center',
     },
 });

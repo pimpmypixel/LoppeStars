@@ -1,31 +1,48 @@
 # Copilot Instructions for Loppestars
 
 ## Project Overview
-This is a React Native/Expo mobile application with Google OAuth authentication and Supabase backend integration. The app is currently in early development with basic auth functionality.
+This is a React Native/Expo mobile application with Google and Facebook OAuth authentication and Supabase backend integration.
+The app makes it fun and easy to rate the stalls at your local flea market in a friendly way.
 
 ## Architecture & Stack
 - **Frontend**: React Native 0.81.4 with Expo SDK 54
 - **Backend**: Supabase (local development on port 54321)
 - **Auth**: Google Sign-in via `@react-native-google-signin/google-signin`
 - **Database**: PostgreSQL via Supabase (local instance)
-- **UI**: Standard React Native components (React Native Elements removed due to compatibility issues)
-- **State**: AsyncStorage for auth persistence
+- **UI**: Standard React Native components with custom header/footer system
+- **State**: AsyncStorage for auth persistence and app state
+- **Localization**: i18n-js with Danish and English support
+- **Permissions**: Expo Camera and Location with persistent permission storage
+- **Navigation**: React Navigation bottom tabs (Home | Add Item | More)
 
 ## Key Files & Structure
 ```
-App.tsx                    # Main app entry point with AuthWrapper
+App.tsx                    # Main app entry point with AuthWrapper and localization init
 components/
-  Auth.tsx                 # Google OAuth implementation  
-  AuthWrapper.tsx          # Session management wrapper
-navigation/
-  AppNavigator.tsx         # Bottom tab navigation setup
+  Auth.tsx                 # Google OAuth implementation with logo and localized UI
+  AuthWrapper.tsx          # Session management wrapper with permissions request
+  AppHeader.tsx            # Reusable header component for all authenticated screens
+  AppFooter.tsx            # Reusable footer component with logo and localized text
+  Logo.tsx                 # Logo component with multiple sizes (small/medium/large)
+  CameraModal.tsx          # Full-screen camera modal with localized UI
+  LanguageSelector.tsx     # Language switcher component (English/Danish)
 screens/
-  HomeScreen.tsx           # Home tab with logout functionality
-  CameraScreen.tsx         # Camera tab with photo capture
-  FormScreen.tsx           # Form tab for item submission
-utils/supabase.ts          # Supabase client configuration
+  HomeScreen.tsx           # Home tab with welcome message, logo, and localized content
+  FormScreen.tsx           # Form tab with localized labels, validation, and camera integration
+  MoreScreen.tsx           # More tab with menu items, language selector, and logout
+navigation/
+  AppNavigator.tsx         # Bottom tab navigation with localized tab names
+utils/
+  supabase.ts              # Supabase client configuration
+  localization.ts          # i18n configuration and language management
+  permissions.ts           # Camera and location permissions management
+locales/
+  en.json                  # English translations for all app strings
+  da.json                  # Danish translations for all app strings
 supabase/config.toml       # Local Supabase configuration
 keys/                      # OAuth credentials (not committed)
+assets/
+  logo.png                 # App logo (284x279 PNG)
 ```
 
 ## Development Patterns
@@ -41,18 +58,35 @@ keys/                      # OAuth credentials (not committed)
 - Uses Android-compatible URLs (10.0.2.2 for emulator)
 - Auto-refresh tokens on app state changes (foreground/background)
 - AsyncStorage for session persistence on mobile platforms
+- Automatic permissions request (camera + location) on successful login
+- Logo display on auth screen with localized welcome messages
 
 ### Camera Integration
-- Expo Camera with take picture and image picker functionality
-- Proper permission handling and user prompts
-- Image preview with save/retake options
-- Front/back camera toggle
+- Expo Camera integrated as full-screen modal (not standalone screen)
+- Triggered from form screen via "Add Photo" button
+- Proper permission handling with localized prompts and settings redirect
+- Image preview with save/retake options, front/back camera toggle
+- Gallery access via ImagePicker with consistent UI
 
 ### Form Handling
-- Multi-field form with validation
-- Supabase user context integration
-- Loading states and error handling
-- Keyboard-aware scrollable interface
+- Multi-field form with localized labels and validation messages
+- Supabase user context integration, loading states and error handling
+- Keyboard-aware scrollable interface with photo integration
+- All validation and user feedback messages localized
+
+### Localization & UI
+- Complete i18n implementation with Danish and English support
+- Device locale detection with Danish default for Danish users
+- Language selector in More screen for manual switching
+- Logo integration: auth screen (large), footer (small), home screen (large)
+- Consistent header/footer system across all authenticated screens
+- All user-facing strings localized (forms, navigation, messages, etc.)
+
+### Permissions Management
+- Camera and location permissions requested automatically on login
+- Permission status stored in AsyncStorage for persistence
+- Localized permission dialogs with settings redirect on denial
+- Graceful handling of denied permissions with user feedback
 
 ### Supabase Integration
 - Local development setup with full Supabase stack
@@ -66,6 +100,9 @@ keys/                      # OAuth credentials (not committed)
 - Direct export from component functions (no named exports)
 - StyleSheet for component styling
 - Platform-specific configurations in supabase client
+- Localization via `t()` function throughout all components
+- Logo component with size props: 'small' | 'medium' | 'large'
+- Consistent header/footer pattern with localized content
 
 ## Development Workflow
 
@@ -100,6 +137,9 @@ npm run web           # Run in web browser
 - Camera functionality with proper permissions
 - Form submission with validation and user context
 - Session management and logout functionality
+- Full localization system (Danish/English) with language switcher
+- Logo integration on auth, home, and footer components
+- Automatic permission requests for camera and location on login
 - Android builds successfully compile and run
 - Ready for business logic development and data models
 

@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, Modal } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import { t } from '../utils/localization';
 
 interface CameraModalProps {
   visible: boolean;
@@ -23,12 +24,12 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
     return (
       <Modal visible={visible} animationType="slide">
         <View style={styles.container}>
-          <Text style={styles.message}>We need your permission to show the camera</Text>
+          <Text style={styles.message}>{t('permissions.camera.message')}</Text>
           <TouchableOpacity style={styles.button} onPress={requestPermission}>
             <Text style={styles.buttonText}>Grant Permission</Text>
           </TouchableOpacity>
           <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-            <Text style={styles.cancelButtonText}>Cancel</Text>
+            <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -47,7 +48,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
           setCapturedImage(photo.uri);
         }
       } catch (error) {
-        Alert.alert('Error', 'Failed to take picture');
+        Alert.alert(t('common.error'), 'Failed to take picture');
         console.log('Camera error:', error);
       }
     }
@@ -91,13 +92,13 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
             <Image source={{ uri: capturedImage }} style={styles.previewImage} />
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.button} onPress={resetImage}>
-                <Text style={styles.buttonText}>Retake</Text>
+                <Text style={styles.buttonText}>{t('camera.retake')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSave}>
-                <Text style={styles.buttonText}>Use Photo</Text>
+                <Text style={styles.buttonText}>{t('camera.usePhoto')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.button} onPress={handleClose}>
-                <Text style={styles.buttonText}>Cancel</Text>
+                <Text style={styles.buttonText}>{t('camera.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </>
@@ -107,14 +108,14 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
               <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
                 <Text style={styles.closeButtonText}>✕</Text>
               </TouchableOpacity>
-              <Text style={styles.headerTitle}>Take Photo</Text>
+              <Text style={styles.headerTitle}>{t('camera.takePhoto')}</Text>
               <View style={styles.placeholder} />
             </View>
             
             <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
             <View style={styles.cameraButtonContainer}>
               <TouchableOpacity style={styles.button} onPress={pickImageFromLibrary}>
-                <Text style={styles.buttonText}>Library</Text>
+                <Text style={styles.buttonText}>{t('camera.fromLibrary')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.button, styles.captureButton]} onPress={takePicture}>
                 <Text style={styles.buttonText}>📷</Text>

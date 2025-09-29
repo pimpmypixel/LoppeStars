@@ -12,18 +12,19 @@ import {
   Image
 } from 'react-native';
 import { supabase } from '../utils/supabase';
+import { t } from '../utils/localization';
+import { uploadImageToSupabase } from '../utils/imageUpload';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
 import CameraModal from '../components/CameraModal';
+import RatingSlider from '../components/RatingSlider';
 
 export default function FormScreen() {
   const [formData, setFormData] = useState({
-    title: '',
-    description: '',
-    category: '',
-    price: '',
-    location: '',
+    stallName: '',
+    mobilePayPhone: '',
   });
+  const [rating, setRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -36,16 +37,18 @@ export default function FormScreen() {
   };
 
   const validateForm = () => {
-    if (!formData.title.trim()) {
-      Alert.alert('Validation Error', 'Title is required');
+    if (!formData.stallName.trim()) {
+      Alert.alert(t('form.validationError'), t('form.stallNameRequired'));
       return false;
     }
-    if (!formData.description.trim()) {
-      Alert.alert('Validation Error', 'Description is required');
+    if (!formData.mobilePayPhone.trim()) {
+      Alert.alert(t('form.validationError'), t('form.mobilePayPhoneRequired'));
       return false;
     }
-    if (!formData.price.trim()) {
-      Alert.alert('Validation Error', 'Price is required');
+    // Basic phone number validation
+    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
+    if (!phoneRegex.test(formData.mobilePayPhone.replace(/\s/g, ''))) {
+      Alert.alert(t('form.validationError'), 'Please enter a valid phone number');
       return false;
     }
     return true;
@@ -60,35 +63,54 @@ export default function FormScreen() {
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
-        Alert.alert('Error', 'You must be logged in to submit');
+        Alert.alert(t('common.error'), t('form.loginRequired'));
         return;
       }
 
-      // Here you would typically save to Supabase database
-      // For now, we'll just simulate a submission
-      console.log('Submitting form data:', { 
-        ...formData, 
-        userId: user.id,
-        imageUri: selectedImage 
-      });
+      let photoUrl = null;
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Upload photo if selected
+      if (selectedImage) {
+        const uploadResult = await uploadImageToSupabase(selectedImage, user.id);
+        if (uploadResult.success) {
+          photoUrl = uploadResult.url;
+        } else {
+          Alert.alert(t('common.error'), t('form.photoUploadError'));
+          return;
+        }
+      }
+
+      // Save stall rating to database
+      const { data, error } = await supabase
+        .from('stall_ratings')
+        .insert([
+          {
+            user_id: user.id,
+            stall_name: formData.stallName,
+            photo_url: photoUrl,
+            mobilepay_phone: formData.mobilePayPhone,
+            rating: rating
+          }
+        ]);
+
+      if (error) {
+        console.error('Database error:', error);
+        Alert.alert(t('common.error'), t('form.submitError'));
+        return;
+      }
       
-      Alert.alert('Success', 'Form submitted successfully!');
+      Alert.alert(t('common.success'), t('form.submitSuccess'));
       
       // Reset form
       setFormData({
-        title: '',
-        description: '',
-        category: '',
-        price: '',
-        location: '',
+        stallName: '',
+        mobilePayPhone: '',
       });
+      setRating(5);
       setSelectedImage(null);
     } catch (error) {
       console.error('Form submission error:', error);
-      Alert.alert('Error', 'Failed to submit form');
+      Alert.alert(t('common.error'), t('form.submitError'));
     } finally {
       setIsSubmitting(false);
     }
@@ -104,7 +126,7 @@ export default function FormScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader title="Add New Item" />
+      <AppHeader title={t('form.rateStall')} />
       
       <KeyboardAvoidingView 
         style={styles.keyboardContainer} 
@@ -113,7 +135,7 @@ export default function FormScreen() {
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Photo</Text>
+            <Text style={styles.label}>{t('form.photo')}</Text>
             <TouchableOpacity
               style={styles.photoButton}
               onPress={() => setShowCamera(true)}
@@ -123,7 +145,7 @@ export default function FormScreen() {
               ) : (
                 <>
                   <Text style={styles.photoButtonIcon}>📷</Text>
-                  <Text style={styles.photoButtonText}>Add Photo</Text>
+                  <Text style={styles.photoButtonText}>{t('form.addPhoto')}</Text>
                 </>
               )}
             </TouchableOpacity>
@@ -132,66 +154,41 @@ export default function FormScreen() {
                 style={styles.removePhotoButton}
                 onPress={() => setSelectedImage(null)}
               >
-                <Text style={styles.removePhotoText}>Remove Photo</Text>
+                <Text style={styles.removePhotoText}>{t('form.removePhoto')}</Text>
               </TouchableOpacity>
             )}
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Title *</Text>
+            <Text style={styles.label}>{t('form.stallName')} *</Text>
             <TextInput
               style={styles.input}
-              value={formData.title}
-              onChangeText={(text) => handleInputChange('title', text)}
-              placeholder="Enter item title"
+              value={formData.stallName}
+              onChangeText={(text) => handleInputChange('stallName', text)}
+              placeholder={t('form.stallNamePlaceholder')}
               maxLength={100}
             />
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Description *</Text>
+            <Text style={styles.label}>{t('form.mobilePayPhone')} *</Text>
             <TextInput
-              style={[styles.input, styles.textArea]}
-              value={formData.description}
-              onChangeText={(text) => handleInputChange('description', text)}
-              placeholder="Describe your item"
-              multiline
-              numberOfLines={4}
-              maxLength={500}
+              style={styles.input}
+              value={formData.mobilePayPhone}
+              onChangeText={(text) => handleInputChange('mobilePayPhone', text)}
+              placeholder={t('form.mobilePayPhonePlaceholder')}
+              keyboardType="phone-pad"
+              maxLength={20}
             />
           </View>
 
           <View style={styles.inputContainer}>
-            <Text style={styles.label}>Category</Text>
-            <TextInput
-              style={styles.input}
-              value={formData.category}
-              onChangeText={(text) => handleInputChange('category', text)}
-              placeholder="e.g., Electronics, Clothing, Books"
-              maxLength={50}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Price *</Text>
-            <TextInput
-              style={styles.input}
-              value={formData.price}
-              onChangeText={(text) => handleInputChange('price', text)}
-              placeholder="0.00"
-              keyboardType="numeric"
-              maxLength={10}
-            />
-          </View>
-
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>Location</Text>
-            <TextInput
-              style={styles.input}
-              value={formData.location}
-              onChangeText={(text) => handleInputChange('location', text)}
-              placeholder="City, State"
-              maxLength={100}
+            <Text style={styles.label}>{t('form.ratingLabel')}</Text>
+            <RatingSlider
+              value={rating}
+              onValueChange={setRating}
+              min={1}
+              max={10}
             />
           </View>
 
@@ -201,7 +198,7 @@ export default function FormScreen() {
             disabled={isSubmitting}
           >
             <Text style={styles.submitButtonText}>
-              {isSubmitting ? 'Submitting...' : 'Submit'}
+              {isSubmitting ? t('form.submitting') : t('form.submit')}
             </Text>
           </TouchableOpacity>
         </ScrollView>

@@ -1,7 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import { t } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
+import Logo from '../components/Logo';
 
 export default function HomeScreen() {
   return (
@@ -9,11 +11,9 @@ export default function HomeScreen() {
       <AppHeader title="Loppestars" />
       
       <View style={styles.content}>
-        <Text style={styles.title}>Welcome to Loppestars!</Text>
-        <Text style={styles.subtitle}>Your marketplace for everything</Text>
-        <Text style={styles.description}>
-          Discover unique items from local sellers, or list your own items to reach buyers in your area.
-        </Text>
+        <Logo size="large" />
+        <Text style={styles.title}>{t('home.welcome')}</Text>
+        <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
       </View>
       
       <AppFooter />
@@ -36,6 +36,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 16,
+    marginTop: 20,
     textAlign: 'center',
     color: '#333',
   },

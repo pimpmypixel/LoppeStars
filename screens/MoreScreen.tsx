@@ -1,40 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../utils/supabase';
+import { t } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
+import LanguageSelector from '../components/LanguageSelector';
 
 export default function MoreScreen() {
+    const navigation = useNavigation();
+    const [refreshKey, setRefreshKey] = useState(0);
+    const [userInfo, setUserInfo] = useState<{ email?: string; sessionId?: string }>({});
+
+    useEffect(() => {
+        const getUserInfo = async () => {
+            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { session } } = await supabase.auth.getSession();
+            setUserInfo({
+                email: user?.email,
+                sessionId: session?.access_token?.slice(-8) // Show last 8 characters
+            });
+        };
+        getUserInfo();
+    }, []);
+
     const handleLogout = async () => {
         try {
             await supabase.auth.signOut();
         } catch (error) {
-            Alert.alert('Error', 'Failed to sign out');
+            Alert.alert(t('common.error'), t('auth.signOutError'));
             console.error('Sign out error:', error);
         }
     };
 
-    const handleMenuPress = (item: string) => {
-        Alert.alert(item, `${item} page would open here`);
+    const handleMenuPress = (screen: string) => {
+        navigation.navigate(screen as never);
     };
 
     const handleContact = () => {
         Linking.openURL('mailto:contact@loppestars.com');
     };
 
+    const handleLanguageChange = () => {
+        // Force re-render to update all localized strings
+        setRefreshKey(prev => prev + 1);
+    };
+
     const menuItems = [
-        { title: 'Privacy', onPress: () => handleMenuPress('Privacy') },
-        { title: 'Organiser', onPress: () => handleMenuPress('Organiser') },
-        { title: 'Advertising', onPress: () => handleMenuPress('Advertising') },
-        { title: 'About', onPress: () => handleMenuPress('About') },
-        { title: 'Contact', onPress: handleContact },
+        { title: t('more.privacy'), onPress: () => handleMenuPress('Privacy') },
+        { title: t('more.organiser'), onPress: () => handleMenuPress('Organiser') },
+        { title: t('more.advertising'), onPress: () => handleMenuPress('Advertising') },
+        { title: t('more.about'), onPress: () => handleMenuPress('About') },
+        { title: t('more.contact'), onPress: () => handleMenuPress('Contact') },
     ];
 
     return (
-        <View style={styles.container}>
-            <AppHeader title="More" />
+        <View style={styles.container} key={refreshKey}>
+            <AppHeader title={t('more.more')} />
 
             <ScrollView style={styles.scrollView}>
+                <LanguageSelector onLanguageChange={handleLanguageChange} />
+                
                 <View style={styles.menuContainer}>
                     {menuItems.map((item, index) => (
                         <TouchableOpacity
@@ -50,8 +76,22 @@ export default function MoreScreen() {
                     <View style={styles.separator} />
 
                     <TouchableOpacity style={styles.signOutButton} onPress={handleLogout}>
-                        <Text style={styles.signOutText}>Sign Out</Text>
+                        <Text style={styles.signOutText}>{t('auth.signOut')}</Text>
                     </TouchableOpacity>
+                    
+                    {/* User session info */}
+                    <View style={styles.userInfoContainer}>
+                        {userInfo.email && (
+                            <Text style={styles.userInfoText}>
+                                {t('user.email')}: {userInfo.email}
+                            </Text>
+                        )}
+                        {userInfo.sessionId && (
+                            <Text style={styles.userInfoText}>
+                                {t('user.sessionId')}: ...{userInfo.sessionId}
+                            </Text>
+                        )}
+                    </View>
                 </View>
             </ScrollView>
 
@@ -105,5 +145,15 @@ const styles = StyleSheet.create({
         fontSize: 17,
         color: '#ff3b30',
         fontWeight: '600',
+    },
+    userInfoContainer: {
+        paddingHorizontal: 20,
+        paddingBottom: 10,
+        alignItems: 'center',
+    },
+    userInfoText: {
+        fontSize: 10,
+        color: '#999',
+        marginTop: 2,
     },
 });
