@@ -11,6 +11,7 @@ import {
   Platform,
   Image
 } from 'react-native';
+import * as Location from 'expo-location';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import { uploadImageToSupabase } from '../utils/imageUpload';
@@ -54,6 +55,28 @@ export default function FormScreen() {
     return true;
   };
 
+  const getCurrentLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Location permission denied');
+        return null;
+      }
+
+      const location = await Location.getCurrentPositionAsync({
+        accuracy: Location.Accuracy.Balanced,
+      });
+
+      return {
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      };
+    } catch (error) {
+      console.error('Error getting location:', error);
+      return null;
+    }
+  };
+
   const handleSubmit = async () => {
     if (!validateForm()) return;
 
@@ -66,6 +89,9 @@ export default function FormScreen() {
         Alert.alert(t('common.error'), t('form.loginRequired'));
         return;
       }
+
+      // Get current location
+      const location = await getCurrentLocation();
 
       let photoUrl = null;
       
@@ -89,7 +115,9 @@ export default function FormScreen() {
             stall_name: formData.stallName,
             photo_url: photoUrl,
             mobilepay_phone: formData.mobilePayPhone,
-            rating: rating
+            rating: rating,
+            location_latitude: location?.latitude,
+            location_longitude: location?.longitude,
           }
         ]);
 

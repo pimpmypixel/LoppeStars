@@ -18,7 +18,8 @@
     "signInWithGoogle": "Sign in with Google",
     "pleaseSignIn": "Please sign in to continue",
     "signInError": "Failed to sign in",
-    "signOutError": "Failed to sign out"
+    "signOutError": "Failed to sign out",
+    "privacyPolicy": "Privacy Policy"
   },
   "navigation": {
     "home": "Home",
@@ -88,5 +89,10 @@
   "user": {
     "email": "Email",
     "sessionId": "Session ID"
+  },
+  "myRatings": {
+    "title": "My Ratings",
+    "noRatings": "You haven't rated any stalls yet",
+    "startRating": "Go to camera to rate your first stall!"
   }
 }

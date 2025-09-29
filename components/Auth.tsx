@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, Text, Alert } from 'react-native';
+import { View, StyleSheet, Text, Alert, TouchableOpacity, Linking } from 'react-native';
 import {
     GoogleSignin,
     GoogleSigninButton,
@@ -9,75 +9,74 @@ import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import Logo from './Logo';
 
+export default function Auth() {
 
-export default function () {
+    // Configure Google Sign-in once when component loads
+    React.useEffect(() => {
+        GoogleSignin.configure({
+            webClientId: '512928992479-i0sf04bb1qkn1eic3pbh0oj1hpq9iq3q.apps.googleusercontent.com',
+            scopes: [
+                'email',
+                'profile',
+            ],
+        });
+    }, []);
 
-    // Test Supabase connectivity
-    const testSupabaseConnection = async () => {
+    const testGoogleSigninOnly = async () => {
         try {
-            console.log('Testing Supabase connection...');
-            const { data, error } = await supabase.auth.getSession();
-            // console.log('Supabase connection test - data:', data);
-            console.log('Supabase connection test - error:', error);
-        } catch (err) {
-            console.log('Supabase connection test failed:', err);
+            console.log('🔧 Testing Google Sign-in ONLY...');
+            await GoogleSignin.hasPlayServices();
+            console.log('✅ Google Play Services available');
+
+            const userInfo = await GoogleSignin.signIn();
+            console.log('✅ Google Sign-in successful!');
+            console.log('🔧 User info:', JSON.stringify(userInfo, null, 2));
+
+            Alert.alert('Google Sign-in Success', `Welcome ${userInfo.data?.user?.name}!`);
+
+            // Sign out immediately for testing
+            await GoogleSignin.signOut();
+            console.log('✅ Signed out successfully');
+
+        } catch (error: any) {
+            console.error('❌ Google Sign-in test error:', error);
+            Alert.alert('Google Sign-in Error', error.message || 'Unknown error');
         }
     };
 
     const signIn = async () => {
         try {
-            await testSupabaseConnection();
-            
+            console.log('🔧 Starting Google sign-in process...');
+
             await GoogleSignin.hasPlayServices();
+            console.log('✅ Google Play Services available');
+
             const userInfo = await GoogleSignin.signIn();
-            
+            console.log('✅ Google Sign-in successful');
+
             if (userInfo.data?.idToken) {
-                console.log('Attempting Supabase auth with idToken...');
-                try {
-                    const { data, error } = await supabase.auth.signInWithIdToken({
-                        provider: 'google',
-                        token: userInfo.data.idToken,
-                    });
-                    if (error) {
-                        console.log('Supabase auth error details:', {
-                            name: error.name,
-                            message: error.message,
-                            status: error.status,
-                        });
-                        Alert.alert(t('common.error'), t('auth.signInError'));
-                    }
-                } catch (authError) {
-                    console.log('Supabase auth exception:', authError);
-                    Alert.alert(t('common.error'), t('auth.signInError'));
+                console.log('🔧 Attempting Supabase auth...');
+                const { data, error } = await supabase.auth.signInWithIdToken({
+                    provider: 'google',
+                    token: userInfo.data.idToken,
+                });
+
+                if (error) {
+                    console.error('❌ Supabase auth error:', error);
+                    Alert.alert(t('common.error'), `${t('auth.signInError')}: ${error.message}`);
+                } else {
+                    console.log('✅ Supabase auth successful!');
                 }
             } else {
-                console.log('No idToken received from Google sign-in');
+                console.error('❌ No idToken received from Google sign-in');
                 Alert.alert(t('common.error'), t('auth.signInError'));
             }
 
         } catch (error: any) {
-            console.log('error', JSON.stringify(error, null, 2));
-            Alert.alert(t('common.error'), t('auth.signInError'));
+            console.error('❌ Sign-in error:', error);
+            Alert.alert(t('common.error'), `${t('auth.signInError')}: ${error.message || 'Unknown error'}`);
         }
     };
-
-    GoogleSignin.configure({
-        webClientId: '512928992479-i0sf04bb1qkn1eic3pbh0oj1hpq9iq3q.apps.googleusercontent.com', // client ID of type WEB for your server. Required to get the `idToken` on the user object, and for offline access.
-        scopes: [
-            /* what APIs you want to access on behalf of the user, default is email and profile
-            this is just an example, most likely you don't need this option at all! */
-            'https://www.googleapis.com/auth/drive.readonly',
-        ],
-        // offlineAccess: false, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-        // hostedDomain: '', // specifies a hosted domain restriction
-        // forceCodeForRefreshToken: false, // [Android] related to `serverAuthCode`, read the docs link below *.
-        // accountName: '', // [Android] specifies an account name on the device that should be used
-        // iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-        // googleServicePlistPath: '', // [iOS] if you renamed your GoogleService-Info file, new name here, e.g. "GoogleService-Info-Staging"
-        // openIdRealm: '', // [iOS] The OpenID2 realm of the home web server. This allows Google to include the user's OpenID Identifier in the OpenID Connect ID token.
-        // profileImageSize: 120, // [iOS] The desired height (and width) of the profile image. Defaults to 120px
-    });
-
 
     return (
         <View style={styles.container}>
@@ -86,13 +85,32 @@ export default function () {
                 <Text style={styles.welcomeText}>{t('common.welcome')}</Text>
                 <Text style={styles.subtitle}>{t('auth.pleaseSignIn')}</Text>
             </View>
-            
+
             <View style={styles.buttonContainer}>
                 <GoogleSigninButton
                     size={GoogleSigninButton.Size.Wide}
                     color={GoogleSigninButton.Color.Dark}
                     onPress={signIn}
                 />
+
+                {/* Simple test button */}
+                <TouchableOpacity
+                    style={styles.testButton}
+                    onPress={testGoogleSigninOnly}
+                >
+                    <Text style={styles.testButtonText}>
+                        Test Google Sign-in
+                    </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={styles.privacyLink}
+                    onPress={() => Linking.openURL('https://loppestars.com/privacy')}
+                >
+                    <Text style={styles.privacyText}>
+                        {t('auth.privacyPolicy')}
+                    </Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -126,5 +144,28 @@ const styles = StyleSheet.create({
     buttonContainer: {
         width: '100%',
         alignItems: 'center',
+    },
+    testButton: {
+        marginTop: 15,
+        padding: 12,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 8,
+        width: '80%',
+        alignItems: 'center',
+    },
+    testButtonText: {
+        fontSize: 14,
+        color: '#333',
+        textAlign: 'center',
+    },
+    privacyLink: {
+        marginTop: 20,
+        padding: 10,
+    },
+    privacyText: {
+        fontSize: 14,
+        color: '#007AFF',
+        textAlign: 'center',
+        textDecorationLine: 'underline',
     },
 });

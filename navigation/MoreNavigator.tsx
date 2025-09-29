@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import MoreScreen from '../screens/MoreScreen';
+import MyRatingsScreen from '../screens/MyRatingsScreen';
 import AboutScreen from '../screens/AboutScreen';
 import PrivacyScreen from '../screens/PrivacyScreen';
 import OrganiserScreen from '../screens/OrganiserScreen';
@@ -17,6 +18,7 @@ export default function MoreNavigator() {
       }}
     >
       <Stack.Screen name="MoreMain" component={MoreScreen} />
+      <Stack.Screen name="MyRatings" component={MyRatingsScreen} />
       <Stack.Screen name="About" component={AboutScreen} />
       <Stack.Screen name="Privacy" component={PrivacyScreen} />
       <Stack.Screen name="Organiser" component={OrganiserScreen} />

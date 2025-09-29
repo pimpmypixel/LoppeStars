@@ -69,35 +69,33 @@ export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: 'center',
     paddingVertical: 20,
   },
   valueContainer: {
-    marginBottom: 20,
     alignItems: 'center',
+    marginBottom: 15,
   },
   valueText: {
-    fontSize: 28,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 4,
+    color: '#007AFF',
   },
   ratingText: {
     fontSize: 16,
     fontWeight: '600',
+    marginTop: 5,
   },
   sliderContainer: {
-    width: '100%',
-    marginBottom: 10,
+    paddingHorizontal: 10,
   },
   slider: {
-    width: '100%',
-    height: 40,
+    height: 50,
+    marginVertical: 10,
   },
   scaleContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: '100%',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   scaleText: {
     fontSize: 14,

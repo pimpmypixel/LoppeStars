@@ -47,6 +47,7 @@ export default function MoreScreen() {
     };
 
     const menuItems = [
+        { title: t('myRatings.title'), onPress: () => handleMenuPress('MyRatings') },
         { title: t('more.privacy'), onPress: () => handleMenuPress('Privacy') },
         { title: t('more.organiser'), onPress: () => handleMenuPress('Organiser') },
         { title: t('more.advertising'), onPress: () => handleMenuPress('Advertising') },

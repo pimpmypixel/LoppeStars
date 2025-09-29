@@ -18,7 +18,8 @@
     "signInWithGoogle": "Log ind med Google",
     "pleaseSignIn": "Log venligst ind for at fortsætte",
     "signInError": "Login mislykkedes",
-    "signOutError": "Logout mislykkedes"
+    "signOutError": "Logout mislykkedes",
+    "privacyPolicy": "Privatlivspolitik"
   },
   "navigation": {
     "home": "Hjem",
@@ -88,5 +89,10 @@
   "user": {
     "email": "Email",
     "sessionId": "Session ID"
+  },
+  "myRatings": {
+    "title": "Mine bedømmelser",
+    "noRatings": "Du har endnu ikke bedømt nogen boder",
+    "startRating": "Gå til kameraet for at bedømme din første bod!"
   }
 }
