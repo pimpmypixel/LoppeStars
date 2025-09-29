@@ -2,14 +2,14 @@ import { AppState, Platform } from 'react-native'
 import 'react-native-url-polyfill/auto'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createClient, processLock } from '@supabase/supabase-js'
+import { SUPABASE_URL_ANDROID, SUPABASE_URL_IOS, SUPABASE_ANON_KEY } from 'react-native-dotenv'
 
-// Use 10.0.2.2 for Android emulator, 127.0.0.1 for web and iOS simulator
+// Use environment variables for different platforms
 const supabaseUrl = Platform.OS === 'android' 
-  ? "http://10.0.2.2:54321" 
-  : "http://127.0.0.1:54321"
-const supabaseAnonKey = "sb_publishable_ACJWlzQHlZjBrEguHvfOxg_3BJgxAaH"
+  ? SUPABASE_URL_ANDROID 
+  : SUPABASE_URL_IOS
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(supabaseUrl, SUPABASE_ANON_KEY, {
   auth: {
     ...(Platform.OS !== "web" ? { storage: AsyncStorage } : {}),
     autoRefreshToken: true,

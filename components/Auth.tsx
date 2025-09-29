@@ -8,13 +8,14 @@ import {
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import Logo from './Logo';
+import { GOOGLE_WEB_CLIENT_ID } from 'react-native-dotenv';
 
 export default function Auth() {
 
     // Configure Google Sign-in once when component loads
     React.useEffect(() => {
         GoogleSignin.configure({
-            webClientId: '512928992479-i0sf04bb1qkn1eic3pbh0oj1hpq9iq3q.apps.googleusercontent.com',
+            webClientId: GOOGLE_WEB_CLIENT_ID,
             scopes: [
                 'email',
                 'profile',
