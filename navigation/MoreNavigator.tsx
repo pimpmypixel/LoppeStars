@@ -1,12 +1,12 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import MoreScreen from '../screens/MoreScreen';
-import MyRatingsScreen from '../screens/MyRatingsScreen';
-import AboutScreen from '../screens/AboutScreen';
-import PrivacyScreen from '../screens/PrivacyScreen';
-import OrganiserScreen from '../screens/OrganiserScreen';
-import AdvertisingScreen from '../screens/AdvertisingScreen';
-import ContactScreen from '../screens/ContactScreen';
+import MyRatingsScreen from '../screens/more/MyRatingsScreen';
+import AboutScreen from '../screens/more/AboutScreen';
+import PrivacyScreen from '../screens/more/PrivacyScreen';
+import OrganiserScreen from '../screens/more/OrganiserScreen';
+import AdvertisingScreen from '../screens/more/AdvertisingScreen';
+import ContactScreen from '../screens/more/ContactScreen';
 
 const Stack = createStackNavigator();
 

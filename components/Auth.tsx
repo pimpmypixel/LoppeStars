@@ -95,14 +95,14 @@ export default function Auth() {
                 />
 
                 {/* Simple test button */}
-                <TouchableOpacity
+                {/* <TouchableOpacity
                     style={styles.testButton}
                     onPress={testGoogleSigninOnly}
                 >
                     <Text style={styles.testButtonText}>
                         Test Google Sign-in
                     </Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
                 <TouchableOpacity
                     style={styles.privacyLink}

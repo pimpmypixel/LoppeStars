@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { t } from '../utils/localization';
-import AppHeader from '../components/AppHeader';
-import AppFooter from '../components/AppFooter';
+import { t } from '../../utils/localization';
+import AppHeader from '../../components/AppHeader';
+import AppFooter from '../../components/AppFooter';
 
 export default function AboutScreen() {
   const navigation = useNavigation();
@@ -20,26 +20,26 @@ export default function AboutScreen() {
       
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
-          <Text style={styles.title}>About Loppestars</Text>
+          <Text style={styles.title}>Om Loppestars</Text>
           <Text style={styles.paragraph}>
-            Loppestars is a fun and easy way to rate stalls at your local flea market in a friendly way. 
-            Help other visitors discover the best stalls and support local vendors by sharing your experiences.
+            Loppestars er en sjov og nem måde at bedømme boder på dit lokale loppemarked på en venlig måde. 
+            Hjælp andre besøgende med at opdage de bedste boder og støt lokale sælgere ved at dele dine oplevelser.
           </Text>
           <Text style={styles.paragraph}>
-            Our mission is to make flea market visits more enjoyable by connecting buyers with the best stalls 
-            and helping vendors improve their offerings based on customer feedback.
+            Vores mission er at gøre loppemarkedsbesøg mere fortryllende ved at forbinde købere med de bedste boder 
+            og hjælpe sælgere med at forbedre deres tilbud baseret på kunde feedback.
           </Text>
           <Text style={styles.paragraph}>
-            Whether you're looking for vintage treasures, handmade crafts, or unique finds, Loppestars helps 
-            you navigate the market with confidence.
+            Uanset om du leder efter vintage skatte, håndlavede håndværk eller unikke fund, hjælper Loppestars 
+            dig med at navigere på markedet med selvtillid.
           </Text>
           
-          <Text style={styles.subtitle}>How it Works</Text>
+          <Text style={styles.subtitle}>Sådan fungerer det</Text>
           <Text style={styles.paragraph}>
-            1. Visit a stall at your local flea market{'\n'}
-            2. Take a photo and rate your experience{'\n'}
-            3. Share the stall's MobilePay info for easy purchases{'\n'}
-            4. Help others discover great finds!
+            1. Besøg en bod på dit lokale loppemarked{'\n'}
+            2. Tag et foto og bedøm din oplevelse{'\n'}
+            3. Del bodens MobilePay info for nemme køb{'\n'}
+            4. Hjælp andre med at opdage fantastiske fund!
           </Text>
         </View>
       </ScrollView>

@@ -1,42 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
-import { Session } from '@supabase/supabase-js';
-import { supabase } from '../utils/supabase';
-import { requestAllPermissions } from '../utils/permissions';
+import { useAuth } from '../contexts/AuthContext';
 import { t } from '../utils/localization';
 import Auth from '../components/Auth';
 import AppNavigator from '../navigation/AppNavigator';
 
 export default function AuthWrapper() {
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [permissionsRequested, setPermissionsRequested] = useState(false);
-
-  useEffect(() => {
-    // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      setSession(session);
-      setLoading(false);
-      
-      // Request permissions when user signs in
-      if (session && !permissionsRequested) {
-        setPermissionsRequested(true);
-        try {
-          await requestAllPermissions();
-        } catch (error) {
-          console.error('Error requesting permissions:', error);
-        }
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [permissionsRequested]);
+  const { session, loading } = useAuth();
 
   if (loading) {
     return (

@@ -15,17 +15,16 @@ export const uploadImageToSupabase = async (
     // Generate a unique filename
     const filename = `${userId}/${Date.now()}.jpg`;
     
-    // Convert the image URI to a blob/file
+    // Read the file as a Uint8Array for React Native
     const response = await fetch(imageUri);
-    const blob = await response.blob();
-    
-    // Create a File object from the blob
-    const file = new File([blob], filename, { type: 'image/jpeg' });
+    const arrayBuffer = await response.arrayBuffer();
+    const fileData = new Uint8Array(arrayBuffer);
     
     // Upload to Supabase Storage
     const { data, error } = await supabase.storage
       .from(bucketName)
-      .upload(filename, file, {
+      .upload(filename, fileData, {
+        contentType: 'image/jpeg',
         cacheControl: '3600',
         upsert: false
       });

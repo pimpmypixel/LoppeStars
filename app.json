@@ -32,7 +32,7 @@
       [
         "@react-native-google-signin/google-signin",
         {
-          "iosUrlScheme": "com.pimpmypixel.loppestars"
+          "iosUrlScheme": "com.googleusercontent.apps.512928992479-i0sf04bb1qkn1eic3pbh0oj1hpq9iq3q"
         }
       ],
       [

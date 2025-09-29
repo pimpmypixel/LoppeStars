@@ -27,11 +27,11 @@ export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }
   };
 
   const getRatingText = (rating: number) => {
-    if (rating <= 2) return 'Poor';
-    if (rating <= 4) return 'Fair';
-    if (rating <= 6) return 'Good';
-    if (rating <= 8) return 'Great';
-    return 'Excellent';
+    if (rating <= 2) return 'Dårlig';
+    if (rating <= 4) return 'Middelmådig';
+    if (rating <= 6) return 'God';
+    if (rating <= 8) return 'Virkelig god';
+    return 'Fremragende';
   };
 
   return (
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   slider: {
-    height: 50,
+    height: 60,
     marginVertical: 10,
   },
   scaleContainer: {

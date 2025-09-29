@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
@@ -9,24 +10,12 @@ import LanguageSelector from '../components/LanguageSelector';
 
 export default function MoreScreen() {
     const navigation = useNavigation();
+    const { user, session, signOut } = useAuth();
     const [refreshKey, setRefreshKey] = useState(0);
-    const [userInfo, setUserInfo] = useState<{ email?: string; sessionId?: string }>({});
-
-    useEffect(() => {
-        const getUserInfo = async () => {
-            const { data: { user } } = await supabase.auth.getUser();
-            const { data: { session } } = await supabase.auth.getSession();
-            setUserInfo({
-                email: user?.email,
-                sessionId: session?.access_token?.slice(-8) // Show last 8 characters
-            });
-        };
-        getUserInfo();
-    }, []);
 
     const handleLogout = async () => {
         try {
-            await supabase.auth.signOut();
+            await signOut();
         } catch (error) {
             Alert.alert(t('common.error'), t('auth.signOutError'));
             console.error('Sign out error:', error);
@@ -82,14 +71,14 @@ export default function MoreScreen() {
                     
                     {/* User session info */}
                     <View style={styles.userInfoContainer}>
-                        {userInfo.email && (
+                        {user?.email && (
                             <Text style={styles.userInfoText}>
-                                {t('user.email')}: {userInfo.email}
+                                {t('user.email')}: {user.email}
                             </Text>
                         )}
-                        {userInfo.sessionId && (
+                        {session?.access_token && (
                             <Text style={styles.userInfoText}>
-                                {t('user.sessionId')}: ...{userInfo.sessionId}
+                                {t('user.sessionId')}: ...{session.access_token.slice(-8)}
                             </Text>
                         )}
                     </View>

@@ -40,7 +40,7 @@
     "stallNamePlaceholder": "Indtast navnet på boden",
     "mobilePayPhone": "MobilePay telefon",
     "mobilePayPhoneRequired": "MobilePay telefonnummer er påkrævet",
-    "mobilePayPhonePlaceholder": "+45 12 34 56 78",
+    "mobilePayPhonePlaceholder": "30405060",
     "rating": "Bedømmelse",
     "ratingLabel": "Hvordan vil du bedømme denne bod?",
     "submit": "Send bedømmelse",

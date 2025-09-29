@@ -1,21 +1,21 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { t } from '../utils/localization';
-import AppHeader from '../components/AppHeader';
-import AppFooter from '../components/AppFooter';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking } from 'react-native';
+import { t } from '../../utils/localization';
+import AppHeader from '../../components/AppHeader';
+import AppFooter from '../../components/AppFooter';
 
-export default function AdvertisingScreen() {
+export default function OrganiserScreen() {
   const navigation = useNavigation();
   
   const handleEmailPress = () => {
-    Linking.openURL('mailto:advertising@loppestars.com');
+    Linking.openURL('mailto:organiser@loppestars.com');
   };
 
   return (
     <View style={styles.container}>
-      <AppHeader title={t('more.advertising')} />
+      <AppHeader title={t('more.organiser')} />
       
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Ionicons name="arrow-back" size={24} color="#007AFF" />
@@ -24,43 +24,37 @@ export default function AdvertisingScreen() {
       
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
-          <Text style={styles.title}>Advertising with Loppestars</Text>
+          <Text style={styles.title}>For Loppemarkedsarrangører</Text>
           
           <Text style={styles.paragraph}>
-            Reach thousands of flea market enthusiasts and vintage lovers through our platform. 
-            Loppestars offers targeted advertising opportunities for businesses that align with 
-            our community values.
+            Arrangerer du et loppemarked? Loppestars kan hjælpe med at gøre dit event mere succesfuldt 
+            og engagerende for både sælgere og besøgende.
           </Text>
           
-          <Text style={styles.subtitle}>Advertising Opportunities</Text>
-          <Text style={styles.bulletPoint}>• Sponsored stall promotions</Text>
-          <Text style={styles.bulletPoint}>• Banner advertisements in the app</Text>
-          <Text style={styles.bulletPoint}>• Featured market listings</Text>
-          <Text style={styles.bulletPoint}>• Newsletter sponsorships</Text>
-          <Text style={styles.bulletPoint}>• Event partnership opportunities</Text>
+          <Text style={styles.subtitle}>Fordele for dit marked</Text>
+          <Text style={styles.bulletPoint}>• Øget besøgsengagement og tilfredshed</Text>
+          <Text style={styles.bulletPoint}>• Bedre feedbacksystem for sælgere</Text>
+          <Text style={styles.bulletPoint}>• Promover kvalitetsboder</Text>
+          <Text style={styles.bulletPoint}>• Tiltrække gentagende besøgende</Text>
+          <Text style={styles.bulletPoint}>• Digital betalingsintegration med MobilePay</Text>
           
-          <Text style={styles.subtitle}>Our Audience</Text>
+          <Text style={styles.subtitle}>Sådan kommer du i gang</Text>
           <Text style={styles.paragraph}>
-            Our users are passionate about sustainable shopping, vintage finds, handmade crafts, 
-            and supporting local businesses. They actively seek unique items and experiences 
-            at flea markets across Denmark.
+            Vi tilbyder specielle funktioner for markedsarrangører, herunder:
           </Text>
+          <Text style={styles.bulletPoint}>• Tilpasset markedsbranding</Text>
+          <Text style={styles.bulletPoint}>• Sælgerstyingsværktøjer</Text>
+          <Text style={styles.bulletPoint}>• Analyser og rapportering</Text>
+          <Text style={styles.bulletPoint}>• Event promoveringsfunktioner</Text>
           
-          <Text style={styles.subtitle}>Why Advertise with Us?</Text>
-          <Text style={styles.bulletPoint}>• Highly engaged audience</Text>
-          <Text style={styles.bulletPoint}>• Location-based targeting</Text>
-          <Text style={styles.bulletPoint}>• Sustainable shopping focus</Text>
-          <Text style={styles.bulletPoint}>• Strong community presence</Text>
-          <Text style={styles.bulletPoint}>• Transparent pricing</Text>
-          
-          <Text style={styles.subtitle}>Get Started</Text>
+          <Text style={styles.subtitle}>Priser</Text>
           <Text style={styles.paragraph}>
-            Contact our advertising team to discuss how we can help your business reach 
-            the right customers at the right time.
+            Vores arrangørværktøjer er tilgængelige til konkurrencedygtige priser. Kontakt os for et tilpasset 
+            tilbud baseret på dit markeds størrelse og behov.
           </Text>
           
           <TouchableOpacity style={styles.contactButton} onPress={handleEmailPress}>
-            <Text style={styles.contactButtonText}>Get Advertising Info</Text>
+            <Text style={styles.contactButtonText}>Kontakt os for mere info</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>

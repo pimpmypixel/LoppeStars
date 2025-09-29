@@ -14,13 +14,18 @@ import {
 import * as Location from 'expo-location';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
-import { uploadImageToSupabase } from '../utils/imageUpload';
+import { useAuth } from '../contexts/AuthContext';
+import { usePhotoUpload } from '../hooks/usePhotoUpload';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
+import AuthGuard from '../components/AuthGuard';
 import CameraModal from '../components/CameraModal';
 import RatingSlider from '../components/RatingSlider';
+import PhotoUploadProgress from '../components/PhotoUploadProgress';
 
 export default function FormScreen() {
+  const { user } = useAuth();
+  const { uploadProgress, uploadPhoto, resetUpload } = usePhotoUpload();
   const [formData, setFormData] = useState({
     stallName: '',
     mobilePayPhone: '',
@@ -29,6 +34,7 @@ export default function FormScreen() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -57,14 +63,26 @@ export default function FormScreen() {
 
   const getCurrentLocation = async () => {
     try {
+      console.log('📍 Requesting location permission...');
       const { status } = await Location.requestForegroundPermissionsAsync();
+      
       if (status !== 'granted') {
-        console.log('Location permission denied');
+        console.log('❌ Location permission denied');
+        Alert.alert(
+          'Location Permission',
+          'Location permission is needed to save your rating location. The rating will be saved without location data.'
+        );
         return null;
       }
 
+      console.log('🗺️ Getting current position...');
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
+      });
+
+      console.log('✅ Location obtained:', {
+        lat: location.coords.latitude,
+        lng: location.coords.longitude
       });
 
       return {
@@ -72,13 +90,32 @@ export default function FormScreen() {
         longitude: location.coords.longitude,
       };
     } catch (error) {
-      console.error('Error getting location:', error);
+      console.error('❌ Error getting location:', error);
+      Alert.alert(
+        'Location Error',
+        'Could not get your location. The rating will be saved without location data.'
+      );
       return null;
     }
   };
 
   const handleSubmit = async () => {
-    if (!validateForm()) return;
+    console.log('🚀 Starting form submission...');
+
+    if (!user) {
+      console.log('❌ No user session found');
+      Alert.alert(t('common.error'), 'Please sign in to submit a rating');
+      return;
+    }
+
+    console.log('👤 User session verified:', user.id);
+
+    if (!validateForm()) {
+      console.log('❌ Form validation failed');
+      return;
+    }
+
+    console.log('✅ Form validation passed');
 
     setIsSubmitting(true);
     try {
@@ -91,43 +128,48 @@ export default function FormScreen() {
       }
 
       // Get current location
+      console.log('📍 Getting location...');
       const location = await getCurrentLocation();
-
-      let photoUrl = null;
       
-      // Upload photo if selected
-      if (selectedImage) {
-        const uploadResult = await uploadImageToSupabase(selectedImage, user.id);
-        if (uploadResult.success) {
-          photoUrl = uploadResult.url;
-        } else {
-          Alert.alert(t('common.error'), t('form.photoUploadError'));
-          return;
-        }
+      // Use already uploaded photo URL if available
+      let finalPhotoUrl = photoUrl;
+      
+      // If there's a selected image but no uploaded URL, this shouldn't happen
+      // because we now upload immediately when image is taken/selected
+      if (selectedImage && !photoUrl) {
+        console.log('⚠️ Photo selected but not uploaded, this should not happen');
+        Alert.alert(t('common.error'), 'Photo not uploaded properly. Please try taking/selecting the photo again.');
+        return;
       }
 
       // Save stall rating to database
+      console.log('💾 Saving to database...');
+      const ratingData = {
+        user_id: user.id,
+        stall_name: formData.stallName,
+        photo_url: finalPhotoUrl,
+        mobilepay_phone: formData.mobilePayPhone,
+        rating: rating,
+        location_latitude: location?.latitude,
+        location_longitude: location?.longitude,
+      };
+
+      console.log('📊 Rating data:', ratingData);
+
       const { data, error } = await supabase
         .from('stall_ratings')
-        .insert([
-          {
-            user_id: user.id,
-            stall_name: formData.stallName,
-            photo_url: photoUrl,
-            mobilepay_phone: formData.mobilePayPhone,
-            rating: rating,
-            location_latitude: location?.latitude,
-            location_longitude: location?.longitude,
-          }
-        ]);
+        .insert(ratingData)
+        .select()
+        .single();
 
       if (error) {
-        console.error('Database error:', error);
+        console.error('❌ Database error:', error);
         Alert.alert(t('common.error'), t('form.submitError'));
         return;
       }
       
-      Alert.alert(t('common.success'), t('form.submitSuccess'));
+      console.log('✅ Rating saved successfully:', data);
+      Alert.alert(t('form.success'), t('form.submitSuccess'));
       
       // Reset form
       setFormData({
@@ -136,11 +178,17 @@ export default function FormScreen() {
       });
       setRating(5);
       setSelectedImage(null);
+      setPhotoUrl(null);
+      resetUpload();
+
+      console.log('🔄 Form reset completed');
+
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error('❌ Submit error:', error);
       Alert.alert(t('common.error'), t('form.submitError'));
     } finally {
       setIsSubmitting(false);
+      console.log('✨ Form submission completed');
     }
   };
 
@@ -148,12 +196,31 @@ export default function FormScreen() {
     setShowCamera(false);
   };
 
-  const handleImageTaken = (uri: string) => {
+  const handleImageTaken = async (uri: string) => {
+    if (!user) {
+      Alert.alert(t('common.error'), t('form.loginRequired'));
+      return;
+    }
+
     setSelectedImage(uri);
+    
+    // Upload immediately in the background
+    console.log('🚀 Starting immediate photo upload...');
+    const uploadResult = await uploadPhoto(uri, user.id);
+    
+    if (uploadResult.success) {
+      setPhotoUrl(uploadResult.url || null);
+      console.log('✅ Photo uploaded immediately:', uploadResult.url);
+    } else {
+      console.log('❌ Immediate photo upload failed:', uploadResult.error);
+      Alert.alert(t('common.error'), t('form.photoUploadError'));
+      setSelectedImage(null);
+    }
   };
 
   return (
-    <View style={styles.container}>
+    <AuthGuard>
+      <View style={styles.container}>
       <AppHeader title={t('form.rateStall')} />
       
       <KeyboardAvoidingView 
@@ -162,30 +229,6 @@ export default function FormScreen() {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('form.photo')}</Text>
-            <TouchableOpacity
-              style={styles.photoButton}
-              onPress={() => setShowCamera(true)}
-            >
-              {selectedImage ? (
-                <Image source={{ uri: selectedImage }} style={styles.photoPreview} />
-              ) : (
-                <>
-                  <Text style={styles.photoButtonIcon}>📷</Text>
-                  <Text style={styles.photoButtonText}>{t('form.addPhoto')}</Text>
-                </>
-              )}
-            </TouchableOpacity>
-            {selectedImage && (
-              <TouchableOpacity
-                style={styles.removePhotoButton}
-                onPress={() => setSelectedImage(null)}
-              >
-                <Text style={styles.removePhotoText}>{t('form.removePhoto')}</Text>
-              </TouchableOpacity>
-            )}
-          </View>
 
           <View style={styles.inputContainer}>
             <Text style={styles.label}>{t('form.stallName')} *</Text>
@@ -210,6 +253,31 @@ export default function FormScreen() {
             />
           </View>
 
+          <View style={styles.inputContainer}>
+            <Text style={styles.label}>{t('form.photo')}</Text>
+            <TouchableOpacity
+              style={styles.photoButton}
+              onPress={() => setShowCamera(true)}
+            >
+              {selectedImage ? (
+                <Image source={{ uri: selectedImage }} style={styles.photoPreview} />
+              ) : (
+                <>
+                  <Text style={styles.photoButtonIcon}>📷</Text>
+                  <Text style={styles.photoButtonText}>{t('form.addPhoto')}</Text>
+                </>
+              )}
+            </TouchableOpacity>
+            {selectedImage && (
+              <TouchableOpacity
+                style={styles.removePhotoButton}
+                onPress={() => setSelectedImage(null)}
+              >
+                <Text style={styles.removePhotoText}>{t('form.removePhoto')}</Text>
+              </TouchableOpacity>
+            )}
+          </View>
+          
           <View style={styles.inputContainer}>
             <Text style={styles.label}>{t('form.ratingLabel')}</Text>
             <RatingSlider
@@ -239,7 +307,16 @@ export default function FormScreen() {
         onClose={handleCameraClose}
         onImageTaken={handleImageTaken}
       />
+      
+      <PhotoUploadProgress
+        visible={uploadProgress.isUploading}
+        progress={uploadProgress.progress}
+        isProcessing={uploadProgress.isProcessing}
+        isUploading={uploadProgress.isUploading}
+        error={uploadProgress.error}
+      />
     </View>
+    </AuthGuard>
   );
 }
 

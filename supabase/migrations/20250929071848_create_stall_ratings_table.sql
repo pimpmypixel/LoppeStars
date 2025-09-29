@@ -6,6 +6,8 @@ CREATE TABLE public.stall_ratings (
   photo_url TEXT,
   mobilepay_phone VARCHAR(20) NOT NULL,
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 10),
+  location_latitude DECIMAL(10, 8),
+  location_longitude DECIMAL(11, 8),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );

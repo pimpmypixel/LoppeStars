@@ -2,9 +2,9 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { t } from '../utils/localization';
-import AppHeader from '../components/AppHeader';
-import AppFooter from '../components/AppFooter';
+import { t } from '../../utils/localization';
+import AppHeader from '../../components/AppHeader';
+import AppFooter from '../../components/AppFooter';
 
 export default function PrivacyScreen() {
   const navigation = useNavigation();
@@ -20,37 +20,37 @@ export default function PrivacyScreen() {
       
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
-          <Text style={styles.title}>Privacy Policy</Text>
+          <Text style={styles.title}>Privatlivspolitik</Text>
           
-          <Text style={styles.subtitle}>Information We Collect</Text>
+          <Text style={styles.subtitle}>Oplysninger vi indsamler</Text>
           <Text style={styles.paragraph}>
-            We collect information you provide directly to us, such as when you create an account, 
-            rate a stall, or contact us. This includes your email address, photos you upload, 
-            and ratings you submit.
+            Vi indsamler oplysninger, som du giver direkte til os, f.eks. når du opretter en konto, 
+            bedømmer en bod eller kontakter os. Dette inkluderer din e-mailadresse, billeder du uploader, 
+            og bedømmelser du indsender.
           </Text>
           
-          <Text style={styles.subtitle}>How We Use Your Information</Text>
+          <Text style={styles.subtitle}>Hvordan vi bruger dine oplysninger</Text>
           <Text style={styles.paragraph}>
-            We use the information we collect to provide, maintain, and improve our services, 
-            process transactions, send you technical notices, and respond to your comments and questions.
+            Vi bruger de oplysninger, vi indsamler til at levere, vedligeholde og forbedre vores tjenester, 
+            behandle transaktioner, sende dig tekniske meddelelser og svare på dine kommentarer og spørgsmål.
           </Text>
           
-          <Text style={styles.subtitle}>Information Sharing</Text>
+          <Text style={styles.subtitle}>Deling af oplysninger</Text>
           <Text style={styles.paragraph}>
-            We do not sell, trade, or otherwise transfer your personal information to third parties 
-            without your consent, except as described in this policy. Your ratings and photos may 
-            be visible to other users of the app.
+            Vi sælger, handler eller overfører på anden måde ikke dine personlige oplysninger til tredjeparter 
+            uden dit samtykke, undtagen som beskrevet i denne politik. Dine bedømmelser og billeder kan 
+            være synlige for andre brugere af appen.
           </Text>
           
-          <Text style={styles.subtitle}>Data Security</Text>
+          <Text style={styles.subtitle}>Datasikkerhed</Text>
           <Text style={styles.paragraph}>
-            We implement appropriate security measures to protect your personal information against 
-            unauthorized access, alteration, disclosure, or destruction.
+            Vi implementerer passende sikkerhedsforanstaltninger for at beskytte dine personlige oplysninger mod 
+            uautoriseret adgang, ændring, offentliggørelse eller ødelæggelse.
           </Text>
           
-          <Text style={styles.subtitle}>Contact Us</Text>
+          <Text style={styles.subtitle}>Kontakt os</Text>
           <Text style={styles.paragraph}>
-            If you have any questions about this Privacy Policy, please contact us at 
+            Hvis du har spørgsmål til denne privatlivspolitik, kan du kontakte os på 
             privacy@loppestars.com
           </Text>
         </View>
