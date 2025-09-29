@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, Modal } from 'r
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { t } from '../utils/localization';
+import { detectAndBlurFaces } from '../utils/faceDetection';
 
 interface CameraModalProps {
   visible: boolean;
@@ -14,6 +15,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   const cameraRef = useRef<CameraView>(null);
 
   if (!permission) {
@@ -43,27 +45,50 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
   const takePicture = async () => {
     if (cameraRef.current) {
       try {
+        setIsProcessing(true);
         const photo = await cameraRef.current.takePictureAsync();
         if (photo) {
-          setCapturedImage(photo.uri);
+          // Process image for GDPR compliance (blur faces if detected)
+          const processedImage = await detectAndBlurFaces(photo.uri);
+          setCapturedImage(processedImage.uri || photo.uri);
+          
+          if (processedImage.error) {
+            console.warn('Face detection warning:', processedImage.error);
+          }
         }
       } catch (error) {
         Alert.alert(t('common.error'), 'Failed to take picture');
         console.log('Camera error:', error);
+      } finally {
+        setIsProcessing(false);
       }
     }
   };
 
   const pickImageFromLibrary = async () => {
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
+    setIsProcessing(true);
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
 
-    if (!result.canceled) {
-      setCapturedImage(result.assets[0].uri);
+      if (!result.canceled) {
+        // Process selected image for GDPR compliance
+        const processedImage = await detectAndBlurFaces(result.assets[0].uri);
+        setCapturedImage(processedImage.uri || result.assets[0].uri);
+        
+        if (processedImage.error) {
+          console.warn('Face detection warning:', processedImage.error);
+        }
+      }
+    } catch (error) {
+      Alert.alert(t('common.error'), 'Failed to select image');
+      console.log('Image picker error:', error);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -87,6 +112,12 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen">
       <View style={styles.container}>
+        {isProcessing && (
+          <View style={styles.processingOverlay}>
+            <Text style={styles.processingText}>{t('camera.processing')}</Text>
+          </View>
+        )}
+        
         {capturedImage ? (
           <>
             <Image source={{ uri: capturedImage }} style={styles.previewImage} />
@@ -228,5 +259,21 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     resizeMode: 'cover',
+  },
+  processingOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  processingText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
   },
 });

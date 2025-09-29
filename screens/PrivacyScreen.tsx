@@ -1,13 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 import { t } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
 
 export default function PrivacyScreen() {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <AppHeader title={t('more.privacy')} />
+      
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+        <Ionicons name="arrow-back" size={24} color="#007AFF" />
+        <Text style={styles.backButtonText}>{t('common.back')}</Text>
+      </TouchableOpacity>
       
       <ScrollView style={styles.scrollView}>
         <View style={styles.content}>
@@ -56,6 +65,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f5f5f5',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+    backgroundColor: 'white',
+    marginHorizontal: 20,
+    marginTop: 10,
+    borderRadius: 8,
+  },
+  backButtonText: {
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#007AFF',
   },
   scrollView: {
     flex: 1,

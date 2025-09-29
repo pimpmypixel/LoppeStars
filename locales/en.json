@@ -9,7 +9,8 @@
     "yes": "Yes",
     "no": "No",
     "retry": "Retry",
-    "done": "Done"
+    "done": "Done",
+    "back": "Back"
   },
   "auth": {
     "signIn": "Sign In",
@@ -56,7 +57,8 @@
     "usePhoto": "Use Photo",
     "cancel": "Cancel",
     "noCamera": "No camera available",
-    "permissionDenied": "Camera permission denied"
+    "permissionDenied": "Camera permission denied",
+    "processing": "Processing image..."
   },
   "more": {
     "more": "More",

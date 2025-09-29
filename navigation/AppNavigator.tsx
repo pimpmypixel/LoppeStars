@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { t } from '../utils/localization';
 
 import HomeScreen from '../screens/HomeScreen';
-import FormScreen from '../screens/FormScreen';
+import RatingScreen from '../screens/RatingScreen';
 import MoreNavigator from './MoreNavigator';
 
 const Tab = createBottomTabNavigator();
@@ -20,7 +20,7 @@ export default function AppNavigator() {
 
             if (route.name === 'Home') {
               iconName = focused ? 'home' : 'home-outline';
-            } else if (route.name === 'Rate Stall') {
+            } else if (route.name === 'Add Item') {
               iconName = focused ? 'star' : 'star-outline';
             } else if (route.name === 'More') {
               iconName = focused ? 'ellipsis-horizontal-circle' : 'ellipsis-horizontal-circle-outline';
@@ -55,8 +55,8 @@ export default function AppNavigator() {
           }}
         />
         <Tab.Screen 
-          name="Rate Stall" 
-          component={FormScreen}
+          name="Add Item" 
+          component={RatingScreen}
           options={{
             title: t('navigation.rateStall'),
             headerShown: false,

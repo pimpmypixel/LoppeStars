@@ -10,9 +10,9 @@ const i18n = new I18n({
   da,
 });
 
-i18n.locale = Localization.getLocales()[0]?.languageCode ?? 'en';
+i18n.locale = Localization.getLocales()[0]?.languageCode ?? 'da';
 i18n.enableFallback = true;
-i18n.defaultLocale = 'en';
+i18n.defaultLocale = 'da';
 
 const STORAGE_KEY = 'user_language';
 
@@ -22,14 +22,14 @@ export const initializeLanguage = async () => {
     if (savedLanguage) {
       i18n.locale = savedLanguage;
     } else {
-      // Default to Danish for Danish users, English for others
+      // Default to Danish, fallback to English for non-Danish devices if needed
       const deviceLocale = Localization.getLocales()[0]?.languageCode;
-      i18n.locale = deviceLocale === 'da' ? 'da' : 'en';
+      i18n.locale = deviceLocale === 'en' ? 'en' : 'da';
       await AsyncStorage.setItem(STORAGE_KEY, i18n.locale);
     }
   } catch (error) {
     console.error('Error initializing language:', error);
-    i18n.locale = 'en';
+    i18n.locale = 'da';
   }
 };
 
