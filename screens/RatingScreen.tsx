@@ -39,6 +39,8 @@ export default function FormScreen() {
   const [showCamera, setShowCamera] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
+  const [originalPhotoUrl, setOriginalPhotoUrl] = useState<string | null>(null);
+  const [processedPhotoUrl, setProcessedPhotoUrl] = useState<string | null>(null);
 
   const handleInputChange = (field: string, value: string) => {
     let processedValue = value;
@@ -72,12 +74,12 @@ export default function FormScreen() {
   };
 
   const getCurrentLocation = async () => {
-  let wasSuccessful = false;
+    let wasSuccessful = false;
 
-  try {
+    try {
       console.log('[rating] Checking location permission');
       const hasPermission = await checkLocationPermission();
-      
+
       if (!hasPermission) {
         console.log('[rating] Location permission not granted');
         Alert.alert(
@@ -132,13 +134,13 @@ export default function FormScreen() {
     setIsSubmitting(true);
     setSubmissionStep(t('formStatus.validating'));
 
-  let wasSuccessful = false;
+    let wasSuccessful = false;
 
     try {
       // Get current user
       setSubmissionStep(t('formStatus.fetchingUser'));
       const { data: { user } } = await supabase.auth.getUser();
-      
+
       if (!user) {
         Alert.alert(t('common.error'), t('form.loginRequired'));
         return;
@@ -148,16 +150,16 @@ export default function FormScreen() {
       setSubmissionStep(t('formStatus.requestingLocation'));
       console.log('[rating] Getting location');
       const location = await getCurrentLocation();
-      
-      // Use already uploaded photo URL if available
-      let finalPhotoUrl = photoUrl;
-      
+
+      // Use the processed photo URL for database storage (face-blurred version for privacy)
+      let finalPhotoUrl = processedPhotoUrl || photoUrl;
+
       // If there's a selected image but no uploaded URL, this shouldn't happen
       // because we now upload immediately when image is taken/selected
       if (selectedImage && !photoUrl) {
         console.log('[rating] Photo selected but not uploaded');
-        Alert.alert(t('common.error'), t('formAlerts.missingPhotoUpload'));
-        return;
+        // Alert.alert(t('common.error'), t('formAlerts.missingPhotoUpload'));
+        // return;
       }
 
       // Save stall rating to database
@@ -186,18 +188,18 @@ export default function FormScreen() {
         Alert.alert(t('common.error'), t('form.submitError'));
         return;
       }
-      
-    console.log('[rating] Rating saved successfully', data);
-    setSubmissionStep(t('formStatus.thanks'));
-    wasSuccessful = true;
-      
+
+      console.log('[rating] Rating saved successfully', data);
+      setSubmissionStep(t('formStatus.thanks'));
+      wasSuccessful = true;
+
       // Show success message briefly
       setTimeout(() => {
         Alert.alert(
           t('formAlerts.submitSuccessTitle'),
           t('formAlerts.submitSuccessMessage')
         );
-        
+
         // Reset form
         setFormData({
           stallName: '',
@@ -206,6 +208,8 @@ export default function FormScreen() {
         setRating(5);
         setSelectedImage(null);
         setPhotoUrl(null);
+        setOriginalPhotoUrl(null);
+        setProcessedPhotoUrl(null);
         resetUpload();
         setSubmissionStep('');
 
@@ -235,162 +239,176 @@ export default function FormScreen() {
     }
 
     setSelectedImage(uri);
-    
+
     // Upload immediately in the background
     console.log('[rating] Starting immediate photo upload');
     const uploadResult = await uploadPhoto(uri, user.id);
-    
+
     if (uploadResult.success) {
-      setPhotoUrl(uploadResult.url || null);
-      setSelectedImage(uploadResult.url || uri);
-      console.log('[rating] Photo uploaded immediately', uploadResult.url);
+      // Store both URLs
+      setOriginalPhotoUrl(uploadResult.originalUrl || null);
+      setProcessedPhotoUrl(uploadResult.processedUrl || null);
+      
+      // Use the processed photo for display (face-blurred version)
+      const displayUrl = uploadResult.processedUrl || uploadResult.originalUrl;
+      setPhotoUrl(displayUrl || null);
+      setSelectedImage(displayUrl || uri);
+      console.log('[rating] Photo uploaded successfully', {
+        original: uploadResult.originalUrl,
+        processed: uploadResult.processedUrl,
+        displaying: displayUrl
+      });
     } else {
       console.log('[rating] Immediate photo upload failed', uploadResult.error);
       Alert.alert(t('common.error'), t('form.photoUploadError'));
       setSelectedImage(null);
       setPhotoUrl(null);
+      setOriginalPhotoUrl(null);
+      setProcessedPhotoUrl(null);
     }
   };
 
   return (
     <AuthGuard>
       <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
-      <AppHeader title={t('form.rateStall')} />
+        <AppHeader title={t('form.rateStall')} />
 
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        {...({} as any)}
-      >
-        <ScrollView className="flex-1" {...({} as any)}>
-          <View className="p-5 gap-5" {...({} as any)}>
+        <KeyboardAvoidingView
+          className="flex-1"
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          {...({} as any)}
+        >
+          <ScrollView className="flex-1" {...({} as any)}>
+            <View className="p-5 gap-5" {...({} as any)}>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('form.stallName')} *</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Input
-                  value={formData.stallName}
-                  onChangeText={(text: string) => handleInputChange('stallName', text)}
-                  placeholder={t('form.stallNamePlaceholder')}
-                  maxLength={100}
-                  {...({} as any)}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('form.mobilePayPhone')} *</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Input
-                  value={formData.mobilePayPhone}
-                  onChangeText={(text: string) => handleInputChange('mobilePayPhone', text)}
-                  placeholder={t('form.mobilePayPhonePlaceholder')}
-                  keyboardType="phone-pad"
-                  maxLength={8}
-                  className="text-center"
-                  {...({} as any)}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('form.photo')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Button
-                  variant="outline"
-                  className="border-dashed border-2 h-32 items-center justify-center"
-                  onPress={() => setShowCamera(true)}
-                  {...({} as any)}
-                >
-                  {photoUrl || selectedImage ? (
-                    <Image
-                      source={{ uri: photoUrl || selectedImage || undefined }}
-                      className="h-32 w-full rounded"
-                      resizeMode="cover"
-                      {...({} as any)}
-                    />
-                  ) : (
-                    <View className="items-center gap-2" {...({} as any)}>
-                      <Camera size={28} color="#2563eb" />
-                      <Text variant="muted">{t('form.addPhoto')}</Text>
-                    </View>
-                  )}
-                </Button>
-                {selectedImage && (
-                  <Button
-                    variant="ghost"
-                    className="mt-2 text-destructive"
-                    onPress={() => {
-                      setSelectedImage(null);
-                      setPhotoUrl(null);
-                      resetUpload();
-                    }}
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('form.stallName')} *</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Input
+                    value={formData.stallName}
+                    onChangeText={(text: string) => handleInputChange('stallName', text)}
+                    placeholder={t('form.stallNamePlaceholder')}
+                    maxLength={100}
                     {...({} as any)}
-                  >
-                    <Text className="text-destructive">{t('form.removePhoto')}</Text>
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>{t('form.ratingLabel')}</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <RatingSlider
-                  value={rating}
-                  onValueChange={setRating}
-                  min={1}
-                  max={10}
-                />
-              </CardContent>
-            </Card>
-
-            <Button
-              className="mt-5"
-              onPress={handleSubmit}
-              disabled={isSubmitting}
-              {...({} as any)}
-            >
-              <Text className="text-primary-foreground font-bold">
-                {isSubmitting ? t('form.submitting') : t('form.submit')}
-              </Text>
-            </Button>
-
-            {submissionStep ? (
-              <Card className="mt-4">
-                <CardContent className="flex-row items-center justify-center p-4">
-                  <ActivityIndicator size="small" color="#007AFF" />
-                  <Text className="ml-3 text-primary font-medium">{submissionStep}</Text>
+                  />
                 </CardContent>
               </Card>
-            ) : null}
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
 
-      <AppFooter />
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('form.mobilePayPhone')} *</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Input
+                    value={formData.mobilePayPhone}
+                    onChangeText={(text: string) => handleInputChange('mobilePayPhone', text)}
+                    placeholder={t('form.mobilePayPhonePlaceholder')}
+                    keyboardType="phone-pad"
+                    maxLength={8}
+                    className="text-center"
+                    {...({} as any)}
+                  />
+                </CardContent>
+              </Card>
 
-      <CameraModal
-        visible={showCamera}
-        onClose={handleCameraClose}
-        onImageTaken={handleImageTaken}
-      />
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('form.photo')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <Button
+                    variant="outline"
+                    className="border-dashed border-2 h-32 items-center justify-center"
+                    onPress={() => setShowCamera(true)}
+                    {...({} as any)}
+                  >
+                    {photoUrl || selectedImage ? (
+                      <Image
+                        source={{ uri: photoUrl || selectedImage || undefined }}
+                        className="h-32 w-full rounded"
+                        resizeMode="cover"
+                        {...({} as any)}
+                      />
+                    ) : (
+                      <View className="items-center gap-2" {...({} as any)}>
+                        <Camera size={28} color="#2563eb" />
+                        <Text variant="muted">{t('form.addPhoto')}</Text>
+                      </View>
+                    )}
+                  </Button>
+                  {selectedImage && (
+                    <Button
+                      variant="ghost"
+                      className="mt-2 text-destructive"
+                      onPress={() => {
+                        setSelectedImage(null);
+                        setPhotoUrl(null);
+                        setOriginalPhotoUrl(null);
+                        setProcessedPhotoUrl(null);
+                        resetUpload();
+                      }}
+                      {...({} as any)}
+                    >
+                      <Text className="text-destructive">{t('form.removePhoto')}</Text>
+                    </Button>
+                  )}
+                </CardContent>
+              </Card>
 
-      <PhotoUploadProgress
-        visible={uploadProgress.isUploading}
-        progress={uploadProgress.progress}
-        isProcessing={uploadProgress.isProcessing}
-        isUploading={uploadProgress.isUploading}
-        error={uploadProgress.error}
-      />
+              <Card>
+                <CardHeader>
+                  <CardTitle>{t('form.ratingLabel')}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <RatingSlider
+                    value={rating}
+                    onValueChange={setRating}
+                    min={1}
+                    max={10}
+                  />
+                </CardContent>
+              </Card>
+
+              <Button
+                className="mt-5"
+                onPress={handleSubmit}
+                disabled={isSubmitting}
+                {...({} as any)}
+              >
+                <Text className="text-primary-foreground font-bold">
+                  {isSubmitting ? t('form.submitting') : t('form.submit')}
+                </Text>
+              </Button>
+
+              {submissionStep ? (
+                <Card className="mt-4">
+                  <CardContent className="flex-row items-center justify-center p-4">
+                    <ActivityIndicator size="small" color="#007AFF" />
+                    <Text className="ml-3 text-primary font-medium">{submissionStep}</Text>
+                  </CardContent>
+                </Card>
+              ) : null}
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+
+        <AppFooter />
+
+        <CameraModal
+          visible={showCamera}
+          onClose={handleCameraClose}
+          onImageTaken={handleImageTaken}
+        />
+
+        <PhotoUploadProgress
+          visible={uploadProgress.isUploading}
+          progress={uploadProgress.progress}
+          isProcessing={uploadProgress.isProcessing}
+          isUploading={uploadProgress.isUploading}
+          error={uploadProgress.error}
+        />
       </View>
     </AuthGuard>
   );

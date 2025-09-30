@@ -14,7 +14,7 @@ export default function AuthWrapper() {
   useEffect(() => {
     // Handle deep links for OAuth callback
     const handleDeepLink = (url: string) => {
-      console.log('🔗 Deep link received:', url);
+      // console.log('🔗 Deep link received:', url);
       
       if (url.includes('auth/callback')) {
         console.log('🔗 OAuth callback detected');

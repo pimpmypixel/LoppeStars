@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
+import { testFaceBlur } from '../utils/testFaceBlur';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
 import LanguageSelector from '../components/LanguageSelector';
@@ -35,8 +36,26 @@ export default function MoreScreen() {
         setRefreshKey(prev => prev + 1);
     };
 
+    const handleTestFaceBlur = async () => {
+        Alert.alert(
+            'Face Blur Test',
+            'This will test the face detection and blurring functionality. Take a photo with faces visible for the best test results.',
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { 
+                    text: 'Start Test', 
+                    onPress: async () => {
+                        console.log('🧪 Starting face blur test from More screen...');
+                        await testFaceBlur();
+                    }
+                }
+            ]
+        );
+    };
+
     const menuItems = [
         { title: t('myRatings.title'), onPress: () => handleMenuPress('MyRatings') },
+        { title: '🧪 Test Face Blur', onPress: handleTestFaceBlur },
         { title: t('more.privacy'), onPress: () => handleMenuPress('Privacy') },
         { title: t('more.organiser'), onPress: () => handleMenuPress('Organiser') },
         { title: t('more.advertising'), onPress: () => handleMenuPress('Advertising') },

@@ -50,9 +50,12 @@ CREATE POLICY "Users can delete their own stall ratings" ON public.stall_ratings
   FOR DELETE
   USING (auth.uid() = user_id);
 
--- Create storage bucket for stall photos
-INSERT INTO storage.buckets (id, name) 
-VALUES ('stall-photos', 'stall-photos');
+-- Create storage buckets for stall photos (if they don't exist)
+INSERT INTO storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
+VALUES 
+  ('stall-photos', 'stall-photos', true, 52428800, '{"image/jpeg","image/png","image/webp"}'),
+  ('stall-photos-processed', 'stall-photos-processed', true, 52428800, '{"image/jpeg","image/png","image/webp"}')
+ON CONFLICT (id) DO NOTHING;
 
 -- Create storage policy for stall photos
 CREATE POLICY "Users can upload stall photos" ON storage.objects
@@ -77,5 +80,31 @@ CREATE POLICY "Users can delete their own stall photos" ON storage.objects
   FOR DELETE
   USING (
     bucket_id = 'stall-photos' AND
+    auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+-- Create storage policies for processed photos bucket
+CREATE POLICY "Users can upload processed stall photos" ON storage.objects
+  FOR INSERT
+  WITH CHECK (
+    bucket_id = 'stall-photos-processed' AND
+    auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+CREATE POLICY "Users can view all processed stall photos" ON storage.objects
+  FOR SELECT
+  USING (bucket_id = 'stall-photos-processed');
+
+CREATE POLICY "Users can update their own processed stall photos" ON storage.objects
+  FOR UPDATE
+  USING (
+    bucket_id = 'stall-photos-processed' AND
+    auth.uid()::text = (storage.foldername(name))[1]
+  );
+
+CREATE POLICY "Users can delete their own processed stall photos" ON storage.objects
+  FOR DELETE
+  USING (
+    bucket_id = 'stall-photos-processed' AND
     auth.uid()::text = (storage.foldername(name))[1]
   );
