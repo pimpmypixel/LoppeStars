@@ -9,6 +9,7 @@ import AppFooter from '../../components/AppFooter';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Frown, Laugh, Meh, Smile, Sparkles, Star } from 'lucide-react-native';
 
 interface Rating {
   id: string;
@@ -47,7 +48,22 @@ export default function MyRatingsScreen() {
         return;
       }
 
-      setRatings(data || []);
+      const normalised = (data || []).map((item) => {
+        if (item.photo_url && !item.photo_url.startsWith('http')) {
+          const { data: publicUrl } = supabase.storage
+            .from('stall-photos')
+            .getPublicUrl(item.photo_url);
+
+          return {
+            ...item,
+            photo_url: publicUrl?.publicUrl ?? item.photo_url,
+          };
+        }
+
+        return item;
+      });
+
+      setRatings(normalised as Rating[]);
     } catch (error) {
       console.error('Error in loadRatings:', error);
     } finally {
@@ -82,12 +98,12 @@ export default function MyRatingsScreen() {
     return '#34c759'; // Green
   };
 
-  const getRatingEmoji = (rating: number) => {
-    if (rating <= 2) return '😞';
-    if (rating <= 4) return '😐';
-    if (rating <= 6) return '🙂';
-    if (rating <= 8) return '😊';
-    return '🤩';
+  const getRatingIcon = (rating: number) => {
+    if (rating <= 2) return Frown;
+    if (rating <= 4) return Meh;
+    if (rating <= 6) return Smile;
+    if (rating <= 8) return Laugh;
+    return Sparkles;
   };
 
   return (
@@ -128,12 +144,31 @@ export default function MyRatingsScreen() {
                   <View className="flex-row justify-between items-center" {...({} as any)}>
                     <CardTitle className="flex-1">{rating.stall_name}</CardTitle>
                     <View className="bg-muted px-3 py-1 rounded-full" {...({} as any)}>
-                      <Text
-                        className="text-sm font-semibold"
-                        style={{ color: getRatingColor(rating.rating) }}
-                      >
-                        {getRatingEmoji(rating.rating)} {rating.rating}/10
-                      </Text>
+                      {(() => {
+                        const Icon = getRatingIcon(rating.rating);
+                        const color = getRatingColor(rating.rating);
+                        return (
+                          <View className="flex-row items-center gap-2" {...({} as any)}>
+                            <Icon size={18} color={color} />
+                            <View className="flex-row items-center gap-1" {...({} as any)}>
+                              {Array.from({ length: rating.rating }, (_, index) => (
+                                <Star
+                                  key={index}
+                                  size={14}
+                                  color={color}
+                                  fill={color}
+                                />
+                              ))}
+                            </View>
+                            <Text
+                              className="text-sm font-semibold"
+                              style={{ color }}
+                            >
+                              {rating.rating}/10
+                            </Text>
+                          </View>
+                        );
+                      })()}
                     </View>
                   </View>
                 </CardHeader>
@@ -151,7 +186,7 @@ export default function MyRatingsScreen() {
                   <View className="gap-2" {...({} as any)}>
                     <View className="flex-row items-center gap-2" {...({} as any)}>
                       <Ionicons name="card-outline" size={16} color="#666" />
-                      <Text variant="muted">MobilePay: {rating.mobilepay_phone}</Text>
+                        <Text variant="muted">{t('form.mobilePayPhone')}: {rating.mobilepay_phone}</Text>
                     </View>
                     <View className="flex-row items-center gap-2" {...({} as any)}>
                       <Ionicons name="time-outline" size={16} color="#666" />

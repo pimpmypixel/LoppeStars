@@ -9,6 +9,7 @@ import {
   GOOGLE_WEB_CLIENT_ID, 
   FACEBOOK_APP_ID
 } from 'react-native-dotenv';
+import { Facebook, Mail } from 'lucide-react-native';
 
 // Complete the auth session for web browser
 WebBrowser.maybeCompleteAuthSession();
@@ -272,7 +273,7 @@ export default function SupabaseAuth() {
             <ActivityIndicator size="small" color="white" />
           ) : (
             <>
-              <Text style={styles.googleButtonText}>📧</Text>
+              <Mail size={22} color="white" style={styles.icon} />
               <Text style={styles.socialButtonText}>
                 {t('auth.signInWithGoogle') || 'Sign in with Google'}
               </Text>
@@ -290,7 +291,7 @@ export default function SupabaseAuth() {
             <ActivityIndicator size="small" color="white" />
           ) : (
             <>
-              <Text style={styles.facebookButtonText}>📘</Text>
+              <Facebook size={22} color="white" style={styles.icon} />
               <Text style={styles.socialButtonText}>
                 {t('auth.signInWithFacebook') || 'Sign in with Facebook'}
               </Text>
@@ -380,6 +381,9 @@ const styles = StyleSheet.create({
   },
   facebookButtonText: {
     fontSize: 20,
+  },
+  icon: {
+    marginRight: 10,
   },
   privacyLink: {
     marginTop: 20,

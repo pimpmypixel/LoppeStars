@@ -10,6 +10,7 @@ import Logo from './Logo';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Text } from './ui/text';
+import { Facebook, Mail, Shield } from 'lucide-react-native';
 
 // Complete the auth session for web browser
 WebBrowser.maybeCompleteAuthSession();
@@ -160,9 +161,12 @@ export default function SupabaseOfficialAuth() {
             {loadingProvider === 'google' ? (
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (
-              <Text className="text-primary-foreground text-base font-semibold">
-                📧 {t('auth.signInWithGoogle')}
-              </Text>
+              <View className="flex-row items-center gap-2" {...({} as any)}>
+                <Mail size={20} color="#ffffff" />
+                <Text className="text-primary-foreground text-base font-semibold">
+                  {t('auth.signInWithGoogle')}
+                </Text>
+              </View>
             )}
           </Button>
 
@@ -175,9 +179,12 @@ export default function SupabaseOfficialAuth() {
             {loadingProvider === 'facebook' ? (
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (
-              <Text className="text-primary-foreground text-base font-semibold">
-                📘 {t('auth.signInWithFacebook')}
-              </Text>
+              <View className="flex-row items-center gap-2" {...({} as any)}>
+                <Facebook size={20} color="#ffffff" />
+                <Text className="text-primary-foreground text-base font-semibold">
+                  {t('auth.signInWithFacebook')}
+                </Text>
+              </View>
             )}
           </Button>
 
@@ -187,7 +194,10 @@ export default function SupabaseOfficialAuth() {
             onPress={() => Linking.openURL('https://loppestars.com/privacy')}
             {...({} as any)}
           >
-            <Text className="underline">{t('auth.privacyPolicy')}</Text>
+            <View className="flex-row items-center gap-2" {...({} as any)}>
+              <Shield size={18} color="#2563eb" />
+              <Text className="underline">{t('auth.privacyPolicy')}</Text>
+            </View>
           </Button>
 
           <Card className="border-dashed border-muted bg-muted/40">

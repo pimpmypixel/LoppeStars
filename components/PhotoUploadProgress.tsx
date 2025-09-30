@@ -23,11 +23,11 @@ export default function PhotoUploadProgress({
 
   const getStatusText = () => {
     if (error) return t('form.photoUploadError');
-    if (isProcessing) return 'Detecting and blurring faces...';
-    if (isUploading && progress < 50) return 'Preparing upload...';
-    if (isUploading && progress < 80) return 'Uploading photo...';
-    if (isUploading && progress >= 80) return 'Finishing upload...';
-    return 'Processing...';
+    if (isProcessing) return t('formPhotoStatus.detecting');
+    if (isUploading && progress < 50) return t('formPhotoStatus.preparing');
+    if (isUploading && progress < 80) return t('formPhotoStatus.uploading');
+    if (isUploading && progress >= 80) return t('formPhotoStatus.finishing');
+    return t('formPhotoStatus.processing');
   };
 
   const getProgressColor = () => {

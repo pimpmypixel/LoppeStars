@@ -23,8 +23,8 @@ import PhotoUploadProgress from '../components/PhotoUploadProgress';
 import { Button } from '../components/ui/button';
 import { Text } from '../components/ui/text';
 import { Input } from '../components/ui/input';
-import { Label } from '../components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Camera } from 'lucide-react-native';
 
 export default function FormScreen() {
   const { user } = useAuth();
@@ -41,9 +41,15 @@ export default function FormScreen() {
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
 
   const handleInputChange = (field: string, value: string) => {
+    let processedValue = value;
+
+    if (field === 'mobilePayPhone') {
+      processedValue = value.replace(/\D/g, '').slice(0, 8);
+    }
+
     setFormData(prev => ({
       ...prev,
-      [field]: value
+      [field]: processedValue
     }));
   };
 
@@ -57,34 +63,36 @@ export default function FormScreen() {
       return false;
     }
     // Basic phone number validation
-    const phoneRegex = /^\+?[1-9]\d{1,14}$/;
-    if (!phoneRegex.test(formData.mobilePayPhone.replace(/\s/g, ''))) {
-      Alert.alert(t('form.validationError'), 'Please enter a valid phone number');
+    const phoneRegex = /^\d{8}$/;
+    if (!phoneRegex.test(formData.mobilePayPhone)) {
+      Alert.alert(t('form.validationError'), t('formAlerts.phoneInvalid'));
       return false;
     }
     return true;
   };
 
   const getCurrentLocation = async () => {
-    try {
-      console.log('📍 Rating: checking location permission...');
+  let wasSuccessful = false;
+
+  try {
+      console.log('[rating] Checking location permission');
       const hasPermission = await checkLocationPermission();
       
       if (!hasPermission) {
-        console.log('❌ Location permission not granted');
+        console.log('[rating] Location permission not granted');
         Alert.alert(
-          'Location Permission',
-          'Location permission is needed to save your rating location. The rating will be saved without location data.'
+          t('formAlerts.locationPermissionTitle'),
+          t('formAlerts.locationPermissionMessage')
         );
         return null;
       }
 
-      console.log('🗺️ Getting current position...');
+      console.log('[rating] Getting current position');
       const location = await Location.getCurrentPositionAsync({
         accuracy: Location.Accuracy.Balanced,
       });
 
-      console.log('✅ Location obtained:', {
+      console.log('[rating] Location obtained', {
         lat: location.coords.latitude,
         lng: location.coords.longitude
       });
@@ -94,39 +102,41 @@ export default function FormScreen() {
         longitude: location.coords.longitude,
       };
     } catch (error) {
-      console.error('❌ Error getting location:', error);
+      console.error('[rating] Error getting location', error);
       Alert.alert(
-        'Location Error',
-        'Could not get your location. The rating will be saved without location data.'
+        t('formAlerts.locationErrorTitle'),
+        t('formAlerts.locationErrorMessage')
       );
       return null;
     }
   };
 
   const handleSubmit = async () => {
-    console.log('🚀 Starting form submission...');
+    console.log('[rating] Starting form submission');
 
     if (!user) {
-      console.log('❌ No user session found');
-      Alert.alert(t('common.error'), 'Please sign in to submit a rating');
+      console.log('[rating] No user session found');
+      Alert.alert(t('common.error'), t('form.loginRequired'));
       return;
     }
 
-    console.log('👤 User session verified:', user.id);
+    console.log('[rating] User session verified', user.id);
 
     if (!validateForm()) {
-      console.log('❌ Form validation failed');
+      console.log('[rating] Form validation failed');
       return;
     }
 
-    console.log('✅ Form validation passed');
+    console.log('[rating] Form validation passed');
 
     setIsSubmitting(true);
-    setSubmissionStep('Validating user session...');
+    setSubmissionStep(t('formStatus.validating'));
+
+  let wasSuccessful = false;
 
     try {
       // Get current user
-      setSubmissionStep('Getting user information...');
+      setSubmissionStep(t('formStatus.fetchingUser'));
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -135,8 +145,8 @@ export default function FormScreen() {
       }
 
       // Get current location
-      setSubmissionStep('Getting your location...');
-      console.log('📍 Getting location...');
+      setSubmissionStep(t('formStatus.requestingLocation'));
+      console.log('[rating] Getting location');
       const location = await getCurrentLocation();
       
       // Use already uploaded photo URL if available
@@ -145,14 +155,14 @@ export default function FormScreen() {
       // If there's a selected image but no uploaded URL, this shouldn't happen
       // because we now upload immediately when image is taken/selected
       if (selectedImage && !photoUrl) {
-        console.log('⚠️ Photo selected but not uploaded, this should not happen');
-        Alert.alert(t('common.error'), 'Photo not uploaded properly. Please try taking/selecting the photo again.');
+        console.log('[rating] Photo selected but not uploaded');
+        Alert.alert(t('common.error'), t('formAlerts.missingPhotoUpload'));
         return;
       }
 
       // Save stall rating to database
-      setSubmissionStep('Saving your rating...');
-      console.log('💾 Saving to database...');
+      setSubmissionStep(t('formStatus.saving'));
+      console.log('[rating] Saving rating to database');
       const ratingData = {
         user_id: user.id,
         stall_name: formData.stallName,
@@ -163,7 +173,7 @@ export default function FormScreen() {
         location_longitude: location?.longitude,
       };
 
-      console.log('📊 Rating data:', ratingData);
+      console.log('[rating] Rating payload', ratingData);
 
       const { data, error } = await supabase
         .from('stall_ratings')
@@ -172,22 +182,20 @@ export default function FormScreen() {
         .single();
 
       if (error) {
-        console.error('❌ Database error:', error);
+        console.error('[rating] Database error', error);
         Alert.alert(t('common.error'), t('form.submitError'));
         return;
       }
       
-      console.log('✅ Rating saved successfully:', data);
-      setSubmissionStep('Thank you for your rating! 🎉');
+    console.log('[rating] Rating saved successfully', data);
+    setSubmissionStep(t('formStatus.thanks'));
+    wasSuccessful = true;
       
       // Show success message briefly
       setTimeout(() => {
         Alert.alert(
-          'Thank You! 🎉', 
-          'Your rating has been submitted successfully. Thank you for helping other shoppers find great stalls!',
-          [
-            { text: 'OK', onPress: () => {} }
-          ]
+          t('formAlerts.submitSuccessTitle'),
+          t('formAlerts.submitSuccessMessage')
         );
         
         // Reset form
@@ -201,18 +209,18 @@ export default function FormScreen() {
         resetUpload();
         setSubmissionStep('');
 
-        console.log('🔄 Form reset completed');
+        console.log('[rating] Form reset completed');
       }, 1000);
 
     } catch (error) {
-      console.error('❌ Submit error:', error);
+      console.error('[rating] Submit error', error);
       Alert.alert(t('common.error'), t('form.submitError'));
     } finally {
       setIsSubmitting(false);
-      if (!submissionStep.includes('successfully')) {
+      if (!wasSuccessful) {
         setSubmissionStep('');
       }
-      console.log('✨ Form submission completed');
+      console.log('[rating] Form submission completed');
     }
   };
 
@@ -229,16 +237,18 @@ export default function FormScreen() {
     setSelectedImage(uri);
     
     // Upload immediately in the background
-    console.log('🚀 Starting immediate photo upload...');
+    console.log('[rating] Starting immediate photo upload');
     const uploadResult = await uploadPhoto(uri, user.id);
     
     if (uploadResult.success) {
       setPhotoUrl(uploadResult.url || null);
-      console.log('✅ Photo uploaded immediately:', uploadResult.url);
+      setSelectedImage(uploadResult.url || uri);
+      console.log('[rating] Photo uploaded immediately', uploadResult.url);
     } else {
-      console.log('❌ Immediate photo upload failed:', uploadResult.error);
+      console.log('[rating] Immediate photo upload failed', uploadResult.error);
       Alert.alert(t('common.error'), t('form.photoUploadError'));
       setSelectedImage(null);
+      setPhotoUrl(null);
     }
   };
 
@@ -280,7 +290,8 @@ export default function FormScreen() {
                   onChangeText={(text: string) => handleInputChange('mobilePayPhone', text)}
                   placeholder={t('form.mobilePayPhonePlaceholder')}
                   keyboardType="phone-pad"
-                  maxLength={20}
+                  maxLength={8}
+                  className="text-center"
                   {...({} as any)}
                 />
               </CardContent>
@@ -297,11 +308,16 @@ export default function FormScreen() {
                   onPress={() => setShowCamera(true)}
                   {...({} as any)}
                 >
-                  {selectedImage ? (
-                    <Image source={{ uri: selectedImage }} className="w-full h-32 rounded" {...({} as any)} />
+                  {photoUrl || selectedImage ? (
+                    <Image
+                      source={{ uri: photoUrl || selectedImage || undefined }}
+                      className="h-32 w-full rounded"
+                      resizeMode="cover"
+                      {...({} as any)}
+                    />
                   ) : (
-                    <View className="items-center" {...({} as any)}>
-                      <Text className="text-3xl mb-2">📷</Text>
+                    <View className="items-center gap-2" {...({} as any)}>
+                      <Camera size={28} color="#2563eb" />
                       <Text variant="muted">{t('form.addPhoto')}</Text>
                     </View>
                   )}
@@ -310,7 +326,11 @@ export default function FormScreen() {
                   <Button
                     variant="ghost"
                     className="mt-2 text-destructive"
-                    onPress={() => setSelectedImage(null)}
+                    onPress={() => {
+                      setSelectedImage(null);
+                      setPhotoUrl(null);
+                      resetUpload();
+                    }}
                     {...({} as any)}
                   >
                     <Text className="text-destructive">{t('form.removePhoto')}</Text>
@@ -371,7 +391,7 @@ export default function FormScreen() {
         isUploading={uploadProgress.isUploading}
         error={uploadProgress.error}
       />
-    </View>
+      </View>
     </AuthGuard>
   );
 }

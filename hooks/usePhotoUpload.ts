@@ -34,7 +34,7 @@ export const usePhotoUpload = () => {
         progress: 10,
       });
 
-      console.log('📷 Starting photo upload process...');
+  console.log('[photo-upload] Starting photo upload process');
 
       // Step 1: Face detection and blur (30% progress)
       setUploadProgress(prev => ({
@@ -42,7 +42,7 @@ export const usePhotoUpload = () => {
         progress: 30,
       }));
 
-      console.log('🔍 Detecting and blurring faces...');
+  console.log('[photo-upload] Detecting and blurring faces');
       const faceProcessResult = await detectAndBlurFaces(imageUri);
       
       if (!faceProcessResult.success) {
@@ -50,7 +50,7 @@ export const usePhotoUpload = () => {
       }
 
       const processedImageUri = faceProcessResult.uri || imageUri;
-      console.log('✅ Face processing completed');
+  console.log('[photo-upload] Face processing completed');
 
       // Step 2: Start upload process (50% progress)
       setUploadProgress(prev => ({
@@ -59,7 +59,7 @@ export const usePhotoUpload = () => {
         progress: 50,
       }));
 
-      console.log('☁️ Uploading to Supabase...');
+  console.log('[photo-upload] Uploading to Supabase storage');
 
       // Step 3: Upload to Supabase (80% progress)
       setUploadProgress(prev => ({
@@ -79,7 +79,7 @@ export const usePhotoUpload = () => {
         progress: 100,
       }));
 
-      console.log('✅ Photo upload completed successfully');
+  console.log('[photo-upload] Photo upload completed successfully');
       
       // Reset after short delay to show completion
       setTimeout(() => {

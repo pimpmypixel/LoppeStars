@@ -7,6 +7,7 @@ import { detectAndBlurFaces } from '../utils/faceDetection';
 import { Button } from './ui/button';
 import { Text } from './ui/text';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Camera, ImageIcon, RefreshCcw, X } from 'lucide-react-native';
 
 interface CameraModalProps {
   visible: boolean;
@@ -190,7 +191,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                 onPress={handleClose}
                 {...({} as any)}
               >
-                <Text className="text-white text-lg">✕</Text>
+                <X size={20} color="#ffffff" />
               </Button>
               <Text className="text-white text-lg font-semibold">
                 {t('camera.takePhoto')}
@@ -223,14 +224,17 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                 onPress={pickImageFromLibrary}
                 {...({} as any)}
               >
-                <Text className="text-white font-medium">{t('camera.fromLibrary')}</Text>
+                <View className="flex-row items-center gap-2" {...({} as any)}>
+                  <ImageIcon size={20} color="#ffffff" />
+                  <Text className="text-white font-medium">{t('camera.fromLibrary')}</Text>
+                </View>
               </Button>
               <Button
                 className="h-16 w-16 rounded-full border border-white/40 bg-white/20"
                 onPress={takePicture}
                 {...({} as any)}
               >
-                <Text className="text-2xl">📷</Text>
+                <Camera size={28} color="#ffffff" />
               </Button>
               <Button
                 variant="ghost"
@@ -238,9 +242,12 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                 onPress={toggleCameraFacing}
                 {...({} as any)}
               >
-                <Text className="text-white font-medium">
-                  {t('camera.flip')}
-                </Text>
+                <View className="flex-row items-center gap-2" {...({} as any)}>
+                  <RefreshCcw size={20} color="#ffffff" />
+                  <Text className="text-white font-medium">
+                    {t('camera.flip')}
+                  </Text>
+                </View>
               </Button>
             </View>
           </>

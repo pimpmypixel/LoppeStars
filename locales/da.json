@@ -12,6 +12,12 @@
     "done": "Færdig",
     "back": "Tilbage"
   },
+  "language": {
+    "selectorTitle": "Vælg sprog",
+    "selectorSubtitle": "Vælg dit foretrukne sprog",
+    "english": "Engelsk",
+    "danish": "Dansk"
+  },
   "auth": {
     "signIn": "Log ind",
     "signOut": "Log ud",
@@ -51,6 +57,37 @@
     "validationError": "Valideringsfejl",
     "loginRequired": "Du skal være logget ind for at sende",
     "photoUploadError": "Kunne ikke uploade foto"
+  },
+  "formStatus": {
+    "validating": "Validerer bruger...",
+    "fetchingUser": "Henter brugeroplysninger...",
+    "requestingLocation": "Finder din placering...",
+    "saving": "Gemmer din bedømmelse...",
+    "thanks": "Tak for din bedømmelse!"
+  },
+  "formRating": {
+    "terrible": "Behøver masser af kærlighed",
+    "poor": "Kan blive bedre",
+    "average": "God",
+    "great": "Virkelig god",
+    "amazing": "Fremragende"
+  },
+  "formPhotoStatus": {
+    "detecting": "Finder og slører ansigter...",
+    "preparing": "Forbereder upload...",
+    "uploading": "Uploader foto...",
+    "finishing": "Afslutter upload...",
+    "processing": "Behandler..."
+  },
+  "formAlerts": {
+    "phoneInvalid": "Indtast et 8-cifret MobilePay nummer",
+    "missingPhotoUpload": "Foto blev ikke uploadet korrekt. Prøv igen.",
+    "locationPermissionTitle": "Placeringstilladelse",
+    "locationPermissionMessage": "Placeringstilladelse er nødvendig for at gemme din bedømmelses placering. Bedømmelsen gemmes uden placering.",
+    "locationErrorTitle": "Placeringsfejl",
+    "locationErrorMessage": "Kunne ikke hente din placering. Bedømmelsen gemmes uden placering.",
+    "submitSuccessTitle": "Tak for din bedømmelse!",
+    "submitSuccessMessage": "Din bedømmelse er sendt. Tak fordi du hjælper andre skattejægere!"
   },
   "camera": {
     "takePhoto": "Tag foto",

@@ -10,6 +10,7 @@ import LanguageSelector from '../components/LanguageSelector';
 import { Button } from '../components/ui/button';
 import { Text } from '../components/ui/text';
 import { Card, CardContent } from '../components/ui/card';
+import { Lock } from 'lucide-react-native';
 
 export default function MoreScreen() {
     const navigation = useNavigation();
@@ -70,18 +71,18 @@ export default function MoreScreen() {
                                 </View>
                             ))}
 
-                            <View className="h-5 bg-muted" {...({} as any)} />
-
-                            <Button
-                                variant="ghost"
-                                className="h-14 px-4 rounded-none text-destructive"
-                                onPress={handleLogout}
-                                {...({} as any)}
-                            >
-                                <Text className="text-destructive font-medium">{t('auth.signOut')}</Text>
-                            </Button>
                         </CardContent>
                     </Card>
+
+                    <Button
+                        variant="destructive"
+                        className="flex-row items-center justify-center gap-2 h-12"
+                        onPress={handleLogout}
+                        {...({} as any)}
+                    >
+                        <Lock size={18} color="#ffffff" />
+                        <Text className="text-primary-foreground font-semibold">{t('auth.signOut')}</Text>
+                    </Button>
 
                     {/* User session info */}
                     {(user?.email || session?.access_token) && (

@@ -12,6 +12,12 @@
     "done": "Done",
     "back": "Back"
   },
+  "language": {
+    "selectorTitle": "Choose language",
+    "selectorSubtitle": "Select your preferred language",
+    "english": "English",
+    "danish": "Danish"
+  },
   "auth": {
     "signIn": "Sign In",
     "signOut": "Sign Out",
@@ -52,6 +58,37 @@
     "loginRequired": "You must be logged in to submit",
     "photoUploadError": "Failed to upload photo"
   },
+  "formStatus": {
+    "validating": "Validating user session...",
+    "fetchingUser": "Getting user information...",
+    "requestingLocation": "Getting your location...",
+    "saving": "Saving your rating...",
+    "thanks": "Thanks for your rating!"
+  },
+  "formRating": {
+    "terrible": "Needs lots of love",
+    "poor": "Could be better",
+    "average": "Good",
+    "great": "Really good",
+    "amazing": "Outstanding"
+  },
+  "formPhotoStatus": {
+    "detecting": "Detecting and blurring faces...",
+    "preparing": "Preparing upload...",
+    "uploading": "Uploading photo...",
+    "finishing": "Finishing upload...",
+    "processing": "Processing..."
+  },
+  "formAlerts": {
+    "phoneInvalid": "Please enter an 8-digit MobilePay number",
+    "missingPhotoUpload": "Photo not uploaded properly. Please retake or select it again.",
+    "locationPermissionTitle": "Location permission",
+    "locationPermissionMessage": "Location permission is needed to save your rating location. The rating will be saved without location data.",
+    "locationErrorTitle": "Location error",
+    "locationErrorMessage": "Could not get your location. The rating will be saved without location data.",
+    "submitSuccessTitle": "Thanks for your rating!",
+    "submitSuccessMessage": "Your rating has been submitted successfully. Thanks for helping other treasure hunters!"
+  },
   "camera": {
     "takePhoto": "Take Photo",
     "fromLibrary": "From Library",
@@ -60,7 +97,7 @@
     "cancel": "Cancel",
     "noCamera": "No camera available",
     "permissionDenied": "Camera permission denied",
-    "processing": "Processing image...",
+  "processing": "Processing image...",
     "flip": "Flip",
     "instructionsTitle": "Focus on the main attraction of the stall",
     "instructionsSubtitle": "For best results, capture the photo in landscape",

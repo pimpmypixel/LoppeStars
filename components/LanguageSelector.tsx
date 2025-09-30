@@ -23,10 +23,10 @@ export default function LanguageSelector({ onLanguageChange }: LanguageSelectorP
     <Card>
       <CardHeader className="items-center">
         <CardTitle className="text-base">
-          {t('language.selectorTitle') || 'Language / Sprog'}
+          {t('language.selectorTitle')}
         </CardTitle>
         <Text variant="muted" className="text-center text-sm">
-          {t('language.selectorSubtitle') || 'Choose your preferred language'}
+          {t('language.selectorSubtitle')}
         </Text>
       </CardHeader>
       <CardContent>
@@ -38,7 +38,7 @@ export default function LanguageSelector({ onLanguageChange }: LanguageSelectorP
             {...({} as any)}
           >
             <Text className="font-medium">
-              English
+              {t('language.english')}
             </Text>
           </Button>
           <Button
@@ -48,7 +48,7 @@ export default function LanguageSelector({ onLanguageChange }: LanguageSelectorP
             {...({} as any)}
           >
             <Text className="font-medium">
-              Dansk
+              {t('language.danish')}
             </Text>
           </Button>
         </View>
