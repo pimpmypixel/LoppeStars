@@ -1,6 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import { getCurrentLanguage, changeLanguage, t } from '../utils/localization';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Text } from './ui/text';
 
 interface LanguageSelectorProps {
   onLanguageChange?: () => void;
@@ -17,81 +20,39 @@ export default function LanguageSelector({ onLanguageChange }: LanguageSelectorP
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Language / Sprog</Text>
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[
-            styles.languageButton,
-            currentLanguage === 'en' && styles.activeButton
-          ]}
-          onPress={() => handleLanguageChange('en')}
-        >
-          <Text style={[
-            styles.buttonText,
-            currentLanguage === 'en' && styles.activeButtonText
-          ]}>
-            English
-          </Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity
-          style={[
-            styles.languageButton,
-            currentLanguage === 'da' && styles.activeButton
-          ]}
-          onPress={() => handleLanguageChange('da')}
-        >
-          <Text style={[
-            styles.buttonText,
-            currentLanguage === 'da' && styles.activeButtonText
-          ]}>
-            Dansk
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    <Card>
+      <CardHeader className="items-center">
+        <CardTitle className="text-base">
+          {t('language.selectorTitle') || 'Language / Sprog'}
+        </CardTitle>
+        <Text variant="muted" className="text-center text-sm">
+          {t('language.selectorSubtitle') || 'Choose your preferred language'}
+        </Text>
+      </CardHeader>
+      <CardContent>
+        <View className="flex-row justify-center gap-3" {...({} as any)}>
+          <Button
+            variant={currentLanguage === 'en' ? 'default' : 'outline'}
+            className="flex-1 h-10"
+            onPress={() => handleLanguageChange('en')}
+            {...({} as any)}
+          >
+            <Text className="font-medium">
+              English
+            </Text>
+          </Button>
+          <Button
+            variant={currentLanguage === 'da' ? 'default' : 'outline'}
+            className="flex-1 h-10"
+            onPress={() => handleLanguageChange('da')}
+            {...({} as any)}
+          >
+            <Text className="font-medium">
+              Dansk
+            </Text>
+          </Button>
+        </View>
+      </CardContent>
+    </Card>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: 'white',
-    margin: 20,
-    padding: 20,
-    borderRadius: 12,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 15,
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  languageButton: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    backgroundColor: '#f8f8f8',
-    minWidth: 80,
-  },
-  activeButton: {
-    backgroundColor: '#007AFF',
-    borderColor: '#007AFF',
-  },
-  buttonText: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-    fontWeight: '500',
-  },
-  activeButtonText: {
-    color: 'white',
-  },
-});

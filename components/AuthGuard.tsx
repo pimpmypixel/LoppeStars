@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { t } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
+import { Card, CardContent } from './ui/card';
+import { Text } from './ui/text';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -15,10 +17,16 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View className="flex-1 bg-background" {...({} as any)}>
         <AppHeader title={t('common.loading')} />
-        <View style={styles.centerContent}>
-          <Text style={styles.loadingText}>{t('common.loading')}</Text>
+        <View className="flex-1 items-center justify-center px-10" {...({} as any)}>
+          <Card className="w-full max-w-sm">
+            <CardContent className="items-center gap-3 py-6">
+              <Text variant="muted" className="text-base">
+                {t('common.loading')}
+              </Text>
+            </CardContent>
+          </Card>
         </View>
         <AppFooter />
       </View>
@@ -27,14 +35,20 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
 
   if (!session) {
     return fallback || (
-      <View style={styles.container}>
+      <View className="flex-1 bg-background" {...({} as any)}>
         <AppHeader title={t('auth.signIn')} />
-        <View style={styles.centerContent}>
-          <Text style={styles.errorIcon}>🔒</Text>
-          <Text style={styles.errorTitle}>{t('auth.pleaseSignIn')}</Text>
-          <Text style={styles.errorMessage}>
-            {t('form.loginRequired')}
-          </Text>
+        <View className="flex-1 items-center justify-center px-10" {...({} as any)}>
+          <Card className="w-full max-w-sm items-center py-8 gap-3">
+            <CardContent className="items-center gap-3">
+              <Text className="text-5xl">🔒</Text>
+              <Text variant="h3" className="text-center text-foreground">
+                {t('auth.pleaseSignIn')}
+              </Text>
+              <Text variant="muted" className="text-center">
+                {t('form.loginRequired')}
+              </Text>
+            </CardContent>
+          </Card>
         </View>
         <AppFooter />
       </View>
@@ -43,37 +57,3 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
 
   return <>{children}</>;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  centerContent: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 40,
-  },
-  errorIcon: {
-    fontSize: 60,
-    marginBottom: 20,
-  },
-  errorTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  errorMessage: {
-    fontSize: 16,
-    color: '#666',
-    textAlign: 'center',
-    lineHeight: 24,
-  },
-  loadingText: {
-    fontSize: 18,
-    color: '#666',
-  },
-});

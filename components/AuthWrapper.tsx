@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useAuth } from '../contexts/AuthContext';
 import { t } from '../utils/localization';
 import SupabaseOfficialAuth from '../components/SupabaseOfficialAuth';
 import AppNavigator from '../navigation/AppNavigator';
 import { supabase } from '../utils/supabase';
+import { Text } from './ui/text';
 
 export default function AuthWrapper() {
   const { session, loading } = useAuth();
@@ -48,28 +49,16 @@ export default function AuthWrapper() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>{t('common.loading')}</Text>
+      <View
+        className="flex-1 items-center justify-center bg-background"
+        {...({} as any)}
+      >
+        <Text variant="lead" className="text-muted-foreground">
+          {t('common.loading')}
+        </Text>
       </View>
     );
   }
 
   return session ? <AppNavigator /> : <SupabaseOfficialAuth />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-  },
-  loadingText: {
-    fontSize: 16,
-    color: '#666',
-  },
-});

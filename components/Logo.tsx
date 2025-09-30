@@ -1,5 +1,6 @@
 import React from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, View } from 'react-native';
+import { cn } from '../lib/utils';
 
 interface LogoProps {
   size?: 'small' | 'medium' | 'large';
@@ -7,43 +8,20 @@ interface LogoProps {
 }
 
 export default function Logo({ size = 'medium', style }: LogoProps) {
-  const logoStyles = [
-    styles.logo,
-    size === 'small' && styles.small,
-    size === 'medium' && styles.medium,
-    size === 'large' && styles.large,
-    style
-  ];
+  const sizeClasses: Record<Required<LogoProps>['size'], string> = {
+    small: 'h-10 w-10',
+    medium: 'h-20 w-20',
+    large: 'h-32 w-32',
+  };
 
   return (
-    <View style={styles.container}>
+    <View className="items-center justify-center" {...({} as any)}>
       <Image
         source={require('../assets/logo.png')}
-        style={logoStyles}
+        className={cn('object-contain', sizeClasses[size])}
         resizeMode="contain"
+        style={style}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  logo: {
-    // Base logo style
-  },
-  small: {
-    width: 40,
-    height: 40,
-  },
-  medium: {
-    width: 80,
-    height: 80,
-  },
-  large: {
-    width: 120,
-    height: 120,
-  },
-});

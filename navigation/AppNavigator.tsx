@@ -7,12 +7,15 @@ import { t } from '../utils/localization';
 import HomeScreen from '../screens/HomeScreen';
 import RatingScreen from '../screens/RatingScreen';
 import MoreNavigator from './MoreNavigator';
+import { NAV_THEME, THEME, useTheme } from '../contexts/ThemeContext';
 
 const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
+  const { theme } = useTheme();
+
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={NAV_THEME[theme]}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -30,17 +33,19 @@ export default function AppNavigator() {
 
             return <Ionicons name={iconName} size={size} color={color} />;
           },
-          tabBarActiveTintColor: '#007AFF',
-          tabBarInactiveTintColor: 'gray',
+          tabBarActiveTintColor: THEME[theme].primary,
+          tabBarInactiveTintColor: THEME[theme].mutedForeground,
           tabBarStyle: {
-            paddingBottom: 5,
-            paddingTop: 5,
-            height: 60,
+            paddingBottom: 6,
+            paddingTop: 6,
+            height: 64,
+            backgroundColor: THEME[theme].card,
+            borderTopColor: THEME[theme].border,
           },
           headerStyle: {
-            backgroundColor: '#007AFF',
+            backgroundColor: THEME[theme].primary,
           },
-          headerTintColor: '#fff',
+          headerTintColor: THEME[theme].primaryForeground,
           headerTitleStyle: {
             fontWeight: 'bold',
           },

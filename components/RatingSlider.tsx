@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { t } from '../utils/localization';
+import { Text } from './ui/text';
 
 interface RatingSliderProps {
   value: number;
@@ -11,95 +12,53 @@ interface RatingSliderProps {
 }
 
 export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }: RatingSliderProps) {
-  const getRatingColor = (rating: number) => {
-    if (rating <= 3) return '#ff3b30'; // Red
-    if (rating <= 6) return '#ff9500'; // Orange
-    if (rating <= 8) return '#ffcc00'; // Yellow
-    return '#34c759'; // Green
+  const getRatingConfig = (rating: number) => {
+    if (rating <= 2) {
+      return { className: 'text-red-500', color: '#ef4444', emoji: '😞', label: 'Dårlig' };
+    }
+    if (rating <= 4) {
+      return { className: 'text-orange-500', color: '#f97316', emoji: '😐', label: 'Middelmådig' };
+    }
+    if (rating <= 6) {
+      return { className: 'text-yellow-500', color: '#eab308', emoji: '🙂', label: 'God' };
+    }
+    if (rating <= 8) {
+      return { className: 'text-lime-500', color: '#84cc16', emoji: '😊', label: 'Virkelig god' };
+    }
+    return { className: 'text-emerald-500', color: '#10b981', emoji: '🤩', label: 'Fremragende' };
   };
 
-  const getRatingEmoji = (rating: number) => {
-    if (rating <= 2) return '😞';
-    if (rating <= 4) return '😐';
-    if (rating <= 6) return '🙂';
-    if (rating <= 8) return '😊';
-    return '🤩';
-  };
-
-  const getRatingText = (rating: number) => {
-    if (rating <= 2) return 'Dårlig';
-    if (rating <= 4) return 'Middelmådig';
-    if (rating <= 6) return 'God';
-    if (rating <= 8) return 'Virkelig god';
-    return 'Fremragende';
-  };
+  const ratingConfig = getRatingConfig(value);
 
   return (
-    <View style={styles.container}>
-      <View style={styles.valueContainer}>
-        <Text style={[styles.valueText, { color: getRatingColor(value) }]}>
-          {getRatingEmoji(value)} {value}/10
+    <View className="py-5" {...({} as any)}>
+      <View className="items-center mb-4" {...({} as any)}>
+        <Text className={`text-3xl font-bold ${ratingConfig.className}`}>
+          {ratingConfig.emoji} {value}/10
         </Text>
-        <Text style={[styles.ratingText, { color: getRatingColor(value) }]}>
-          {getRatingText(value)}
+        <Text className={`text-base font-semibold mt-2 ${ratingConfig.className}`}>
+          {ratingConfig.label}
         </Text>
       </View>
-      
-      <View style={styles.sliderContainer}>
+
+      <View className="px-2" {...({} as any)}>
         <Slider
-          style={styles.slider}
+          style={{ height: 60, marginVertical: 8 }}
           minimumValue={min}
           maximumValue={max}
           value={value}
           step={1}
           onValueChange={onValueChange}
-          minimumTrackTintColor={getRatingColor(value)}
+          minimumTrackTintColor={ratingConfig.color}
           maximumTrackTintColor="#e0e0e0"
-          thumbTintColor={getRatingColor(value)}
+          thumbTintColor={ratingConfig.color}
         />
       </View>
-      
-      <View style={styles.scaleContainer}>
-        <Text style={styles.scaleText}>{min}</Text>
-        <Text style={styles.scaleText}>{max}</Text>
+
+      <View className="flex-row justify-between px-2" {...({} as any)}>
+        <Text className="text-sm text-muted-foreground font-medium">{min}</Text>
+        <Text className="text-sm text-muted-foreground font-medium">{max}</Text>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 20,
-  },
-  valueContainer: {
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  valueText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#007AFF',
-  },
-  ratingText: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginTop: 5,
-  },
-  sliderContainer: {
-    paddingHorizontal: 10,
-  },
-  slider: {
-    height: 80,
-    marginVertical: 10,
-  },
-  scaleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingHorizontal: 10,
-  },
-  scaleText: {
-    fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
-  },
-});

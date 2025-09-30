@@ -1,14 +1,16 @@
 import React from 'react';
-import { View, StyleSheet, Text, Alert, TouchableOpacity, Linking } from 'react-native';
+import { View, Alert, TouchableOpacity, Linking } from 'react-native';
 import {
     GoogleSignin,
-    GoogleSigninButton,
     statusCodes,
 } from '@react-native-google-signin/google-signin';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import Logo from './Logo';
 import { GOOGLE_WEB_CLIENT_ID } from 'react-native-dotenv';
+import { Button } from './ui/button';
+import { Text } from './ui/text';
+import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 export default function Auth() {
 
@@ -80,93 +82,41 @@ export default function Auth() {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.logoContainer}>
-                <Logo size="large" />
-                <Text style={styles.welcomeText}>{t('common.welcome')}</Text>
-                <Text style={styles.subtitle}>{t('auth.pleaseSignIn')}</Text>
-            </View>
-
-            <View style={styles.buttonContainer}>
-                <GoogleSigninButton
-                    size={GoogleSigninButton.Size.Wide}
-                    color={GoogleSigninButton.Color.Dark}
-                    onPress={signIn}
-                />
-
-                {/* Simple test button */}
-                {/* <TouchableOpacity
-                    style={styles.testButton}
-                    onPress={testGoogleSigninOnly}
-                >
-                    <Text style={styles.testButtonText}>
-                        Test Google Sign-in
+        <View className="flex-1 justify-center items-center bg-background p-5" {...({} as any)}>
+            <Card className="w-full max-w-sm">
+                <CardHeader className="items-center">
+                    <Logo size="large" />
+                    <CardTitle className="text-center mt-5">
+                        {t('common.welcome')}
+                    </CardTitle>
+                    <Text variant="muted" className="text-center mt-2">
+                        {t('auth.pleaseSignIn')}
                     </Text>
-                </TouchableOpacity> */}
+                </CardHeader>
 
-                <TouchableOpacity
-                    style={styles.privacyLink}
-                    onPress={() => Linking.openURL('https://loppestars.com/privacy')}
-                >
-                    <Text style={styles.privacyText}>
-                        {t('auth.privacyPolicy')}
-                    </Text>
-                </TouchableOpacity>
-            </View>
+                <CardContent className="gap-4">
+                    <Button
+                        variant="outline"
+                        className="bg-black border-black"
+                        onPress={signIn}
+                        {...({} as any)}
+                    >
+                        <Text className="text-white font-medium">
+                            🔵 {t('auth.signInWithGoogle')}
+                        </Text>
+                    </Button>
+
+                    <TouchableOpacity
+                        className="items-center py-2"
+                        onPress={() => Linking.openURL('https://loppestars.com/privacy')}
+                        {...({} as any)}
+                    >
+                        <Text variant="muted" className="text-xs underline">
+                            {t('auth.privacyPolicy')}
+                        </Text>
+                    </TouchableOpacity>
+                </CardContent>
+            </Card>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f5f5f5',
-        padding: 20,
-    },
-    logoContainer: {
-        alignItems: 'center',
-        marginBottom: 60,
-    },
-    welcomeText: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#333',
-        marginTop: 20,
-        textAlign: 'center',
-    },
-    subtitle: {
-        fontSize: 16,
-        color: '#666',
-        marginTop: 10,
-        textAlign: 'center',
-    },
-    buttonContainer: {
-        width: '100%',
-        alignItems: 'center',
-    },
-    testButton: {
-        marginTop: 15,
-        padding: 12,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 8,
-        width: '80%',
-        alignItems: 'center',
-    },
-    testButtonText: {
-        fontSize: 14,
-        color: '#333',
-        textAlign: 'center',
-    },
-    privacyLink: {
-        marginTop: 20,
-        padding: 10,
-    },
-    privacyText: {
-        fontSize: 14,
-        color: '#007AFF',
-        textAlign: 'center',
-        textDecorationLine: 'underline',
-    },
-});

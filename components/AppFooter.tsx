@@ -1,36 +1,22 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { t } from '../utils/localization';
 import Logo from './Logo';
+import { Text } from './ui/text';
 
 export default function AppFooter() {
   return (
-    <View style={styles.footer}>
+    <View
+      className="bg-card border-t border-border px-6 py-6 items-center gap-2"
+      {...({} as any)}
+    >
       <Logo size="small" />
-      <Text style={styles.footerText}>{t('footer.copyright')}</Text>
-      <Text style={styles.footerSubtext}>{t('footer.tagline')}</Text>
+      <Text variant="muted" className="text-xs uppercase tracking-wide">
+        {t('footer.copyright')}
+      </Text>
+      <Text variant="small" className="text-center text-muted-foreground">
+        {t('footer.tagline')}
+      </Text>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  footer: {
-    backgroundColor: '#f8f8f8',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    borderTopWidth: 1,
-    borderTopColor: '#e0e0e0',
-  },
-  footerText: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '600',
-    marginTop: 8,
-  },
-  footerSubtext: {
-    fontSize: 10,
-    color: '#999',
-    marginTop: 2,
-  },
-});

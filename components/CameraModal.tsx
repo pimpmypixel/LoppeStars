@@ -1,9 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, Image, Modal } from 'react-native';
+import { View, Alert, Image, Modal } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { t } from '../utils/localization';
 import { detectAndBlurFaces } from '../utils/faceDetection';
+import { Button } from './ui/button';
+import { Text } from './ui/text';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 
 interface CameraModalProps {
   visible: boolean;
@@ -25,14 +28,37 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
   if (!permission.granted) {
     return (
       <Modal visible={visible} animationType="slide">
-        <View style={styles.container}>
-          <Text style={styles.message}>{t('permissions.camera.message')}</Text>
-          <TouchableOpacity style={styles.button} onPress={requestPermission}>
-            <Text style={styles.buttonText}>Grant Permission</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-            <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
-          </TouchableOpacity>
+        <View
+          className="flex-1 items-center justify-center bg-black/90 px-6"
+          {...({} as any)}
+        >
+          <Card className="w-full max-w-sm gap-5 border border-border/60 bg-card/95">
+            <CardHeader className="items-center">
+              <CardTitle className="text-center text-lg">
+                {t('permissions.camera.title')}
+              </CardTitle>
+              <CardDescription className="text-center">
+                {t('permissions.camera.message')}
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="gap-3">
+              <Button className="w-full" onPress={requestPermission} {...({} as any)}>
+                <Text className="font-medium">
+                  {t('permissions.camera.grant')}
+                </Text>
+              </Button>
+              <Button
+                variant="ghost"
+                className="w-full"
+                onPress={onClose}
+                {...({} as any)}
+              >
+                <Text className="text-muted-foreground font-medium">
+                  {t('common.cancel')}
+                </Text>
+              </Button>
+            </CardContent>
+          </Card>
         </View>
       </Modal>
     );
@@ -57,7 +83,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
           }
         }
       } catch (error) {
-        Alert.alert(t('common.error'), 'Failed to take picture');
+        Alert.alert(t('common.error'), t('camera.errorCapture'));
         console.log('Camera error:', error);
       } finally {
         setIsProcessing(false);
@@ -85,7 +111,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
         }
       }
     } catch (error) {
-      Alert.alert(t('common.error'), 'Failed to select image');
+      Alert.alert(t('common.error'), t('camera.errorSelect'));
       console.log('Image picker error:', error);
     } finally {
       setIsProcessing(false);
@@ -111,57 +137,111 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen">
-      <View style={styles.container}>
+      <View className="flex-1 bg-black" {...({} as any)}>
         {isProcessing && (
-          <View style={styles.processingOverlay}>
-            <Text style={styles.processingText}>{t('camera.processing')}</Text>
+          <View className="absolute inset-0 z-20 items-center justify-center bg-black/70" {...({} as any)}>
+            <Text className="text-white text-lg font-semibold">{t('camera.processing')}</Text>
           </View>
         )}
-        
+
         {capturedImage ? (
-          <>
-            <Image source={{ uri: capturedImage }} style={styles.previewImage} />
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.button} onPress={resetImage}>
-                <Text style={styles.buttonText}>{t('camera.retake')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, styles.saveButton]} onPress={handleSave}>
-                <Text style={styles.buttonText}>{t('camera.usePhoto')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={handleClose}>
-                <Text style={styles.buttonText}>{t('camera.cancel')}</Text>
-              </TouchableOpacity>
+          <View className="flex-1" {...({} as any)}>
+            <Image
+              source={{ uri: capturedImage }}
+              className="flex-1 w-full"
+              resizeMode="contain"
+              {...({} as any)}
+            />
+            <View className="flex-row items-center justify-between gap-3 bg-black/90 px-4 py-6" {...({} as any)}>
+              <Button
+                variant="outline"
+                className="flex-1 h-12 border-white/40"
+                onPress={resetImage}
+                {...({} as any)}
+              >
+                <Text className="text-white font-medium">{t('camera.retake')}</Text>
+              </Button>
+              <Button
+                className="flex-1 h-12"
+                onPress={handleSave}
+                {...({} as any)}
+              >
+                <Text className="text-primary-foreground font-medium">{t('camera.usePhoto')}</Text>
+              </Button>
+              <Button
+                variant="ghost"
+                className="flex-1 h-12"
+                onPress={handleClose}
+                {...({} as any)}
+              >
+                <Text className="text-white font-medium">{t('camera.cancel')}</Text>
+              </Button>
             </View>
-          </>
+          </View>
         ) : (
           <>
-            <View style={styles.header}>
-              <TouchableOpacity style={styles.closeButton} onPress={handleClose}>
-                <Text style={styles.closeButtonText}>✕</Text>
-              </TouchableOpacity>
-              <Text style={styles.headerTitle}>{t('camera.takePhoto')}</Text>
-              <View style={styles.placeholder} />
-            </View>
-            
-            <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
-            <View style={styles.instructionsOverlay}>
-              <Text style={styles.instructionText}>
-                Tag hovedbordet eller hovedattraktionen på standen
+            <View
+              className="flex-row items-center justify-between bg-black/80 px-5 pt-14 pb-4"
+              {...({} as any)}
+            >
+              <Button
+                variant="ghost"
+                className="h-10 w-10 rounded-full bg-white/10"
+                onPress={handleClose}
+                {...({} as any)}
+              >
+                <Text className="text-white text-lg">✕</Text>
+              </Button>
+              <Text className="text-white text-lg font-semibold">
+                {t('camera.takePhoto')}
               </Text>
-              <Text style={styles.instructionSubText}>
-                Anbefales at tage billedet vandret
-              </Text>
+              <View className="h-10 w-10" {...({} as any)} />
             </View>
-            <View style={styles.cameraButtonContainer}>
-              <TouchableOpacity style={styles.button} onPress={pickImageFromLibrary}>
-                <Text style={styles.buttonText}>{t('camera.fromLibrary')}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={[styles.button, styles.captureButton]} onPress={takePicture}>
-                <Text style={styles.buttonText}>📷</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.button} onPress={toggleCameraFacing}>
-                <Text style={styles.buttonText}>Flip</Text>
-              </TouchableOpacity>
+
+            <View className="flex-1" {...({} as any)}>
+              <CameraView style={{ flex: 1 }} facing={facing} ref={cameraRef} />
+              <View
+                className="absolute top-24 left-5 right-5 items-center rounded-xl bg-black/70 p-4"
+                {...({} as any)}
+              >
+                <Text className="text-white text-base font-semibold text-center">
+                  {t('camera.instructionsTitle')}
+                </Text>
+                <Text className="text-white/80 text-sm text-center">
+                  {t('camera.instructionsSubtitle')}
+                </Text>
+              </View>
+            </View>
+
+            <View
+              className="absolute bottom-16 left-0 right-0 flex-row items-center justify-around px-6"
+              {...({} as any)}
+            >
+              <Button
+                variant="ghost"
+                className="h-12 px-5 bg-white/10"
+                onPress={pickImageFromLibrary}
+                {...({} as any)}
+              >
+                <Text className="text-white font-medium">{t('camera.fromLibrary')}</Text>
+              </Button>
+              <Button
+                className="h-16 w-16 rounded-full border border-white/40 bg-white/20"
+                onPress={takePicture}
+                {...({} as any)}
+              >
+                <Text className="text-2xl">📷</Text>
+              </Button>
+              <Button
+                variant="ghost"
+                className="h-12 px-5 bg-white/10"
+                onPress={toggleCameraFacing}
+                {...({} as any)}
+              >
+                <Text className="text-white font-medium">
+                  {t('camera.flip')}
+                </Text>
+              </Button>
             </View>
           </>
         )}
@@ -169,142 +249,3 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'black',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 50,
-    paddingHorizontal: 20,
-    paddingBottom: 10,
-    backgroundColor: 'rgba(0,0,0,0.8)',
-  },
-  closeButton: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeButtonText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  placeholder: {
-    width: 40,
-  },
-  message: {
-    textAlign: 'center',
-    paddingBottom: 10,
-    color: 'white',
-    fontSize: 16,
-  },
-  camera: {
-    flex: 1,
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    margin: 20,
-    justifyContent: 'space-around',
-  },
-  cameraButtonContainer: {
-    position: 'absolute',
-    bottom: 64,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    backgroundColor: 'transparent',
-    marginHorizontal: 64,
-    alignItems: 'flex-end',
-    justifyContent: 'space-around',
-  },
-  button: {
-    backgroundColor: 'rgba(0,0,0,0.8)',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 25,
-    alignItems: 'center',
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'white',
-  },
-  cancelButton: {
-    backgroundColor: '#666',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 25,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  cancelButtonText: {
-    fontSize: 16,
-    color: 'white',
-  },
-  captureButton: {
-    width: 70,
-    height: 70,
-    borderRadius: 35,
-    backgroundColor: 'rgba(255,255,255,0.3)',
-    justifyContent: 'center',
-  },
-  saveButton: {
-    backgroundColor: '#007AFF',
-  },
-  previewImage: {
-    flex: 1,
-    width: '100%',
-    resizeMode: 'cover',
-  },
-  processingOverlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    zIndex: 1000,
-  },
-  processingText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: '600',
-  },
-  instructionsOverlay: {
-    position: 'absolute',
-    top: 100,
-    left: 20,
-    right: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  instructionText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-    marginBottom: 5,
-  },
-  instructionSubText: {
-    color: 'white',
-    fontSize: 14,
-    textAlign: 'center',
-    opacity: 0.9,
-  },
-});

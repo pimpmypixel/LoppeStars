@@ -1,9 +1,12 @@
+import './global.css';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { useEffect } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import AuthWrapper from './components/AuthWrapper';
 import { initializeLanguage } from './utils/localization';
+import { PortalHost } from '@rn-primitives/portal';
 
 export default function App() {
   useEffect(() => {
@@ -11,18 +14,14 @@ export default function App() {
   }, []);
 
   return (
-    <AuthProvider>
-      <View style={styles.container}>
-        <AuthWrapper />
-        <StatusBar style="auto" />
-      </View>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <View className="flex-1 bg-background" {...({} as any)}>
+          <AuthWrapper />
+          <StatusBar style="auto" />
+        </View>
+        <PortalHost />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-});

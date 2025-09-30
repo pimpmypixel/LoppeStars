@@ -1,56 +1,27 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import { t } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
 import Logo from '../components/Logo';
+import { Text } from '../components/ui';
 
 export default function HomeScreen() {
   return (
-    <View style={styles.container}>
+    <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
       <AppHeader title="Loppestars" />
-      
-      <View style={styles.content}>
+
+      <View className="flex-1 justify-center items-center px-5" {...({} as any)}>
         <Logo size="large" />
-        <Text style={styles.title}>{t('home.welcome')}</Text>
-        <Text style={styles.subtitle}>{t('home.subtitle')}</Text>
+        <Text variant="h1" className="text-center mt-5 mb-4">
+          {t('home.welcome')}
+        </Text>
+        <Text variant="lead" className="text-center mb-5">
+          {t('home.subtitle')}
+        </Text>
       </View>
-      
+
       <AppFooter />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    marginTop: 20,
-    textAlign: 'center',
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: 18,
-    color: '#666',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  description: {
-    fontSize: 16,
-    color: '#777',
-    textAlign: 'center',
-    lineHeight: 24,
-    paddingHorizontal: 20,
-  },
-});

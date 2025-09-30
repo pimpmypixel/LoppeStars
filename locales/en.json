@@ -60,7 +60,12 @@
     "cancel": "Cancel",
     "noCamera": "No camera available",
     "permissionDenied": "Camera permission denied",
-    "processing": "Processing image..."
+    "processing": "Processing image...",
+    "flip": "Flip",
+    "instructionsTitle": "Focus on the main attraction of the stall",
+    "instructionsSubtitle": "For best results, capture the photo in landscape",
+    "errorCapture": "Failed to take picture",
+    "errorSelect": "Failed to select image"
   },
   "more": {
     "more": "More",
@@ -75,7 +80,8 @@
     "camera": {
       "title": "Camera Permission",
       "message": "This app needs access to your camera to take photos of items you want to sell.",
-      "denied": "Camera permission is required to take photos"
+      "denied": "Camera permission is required to take photos",
+      "grant": "Grant Permission"
     },
     "location": {
       "title": "Location Permission", 

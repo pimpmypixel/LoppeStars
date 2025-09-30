@@ -1,6 +1,8 @@
 import React from 'react';
-import { View, Text, StyleSheet, Modal, ActivityIndicator } from 'react-native';
+import { View, Modal, ActivityIndicator } from 'react-native';
 import { t } from '../utils/localization';
+import { Card, CardContent } from './ui/card';
+import { Text } from './ui/text';
 
 interface PhotoUploadProgressProps {
   visible: boolean;
@@ -36,96 +38,41 @@ export default function PhotoUploadProgress({
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          <ActivityIndicator
-            size="large"
-            color={getProgressColor()}
-            style={styles.spinner}
-          />
-          
-          <Text style={styles.statusText}>
-            {getStatusText()}
-          </Text>
-          
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBackground}>
-              <View
-                style={[
-                  styles.progressBar,
-                  {
+      <View className="flex-1 items-center justify-center bg-black/70" {...({} as any)}>
+        <Card className="w-72">
+          <CardContent className="items-center gap-4 py-6">
+            <ActivityIndicator
+              size="large"
+              color={getProgressColor()}
+            />
+
+            <Text className="text-center text-base font-semibold">
+              {getStatusText()}
+            </Text>
+
+            <View className="w-full items-center" {...({} as any)}>
+              <View className="w-full h-2 bg-muted rounded-full overflow-hidden" {...({} as any)}>
+                <View
+                  className="h-full rounded-full"
+                  style={{
                     width: `${Math.max(0, Math.min(100, progress))}%`,
                     backgroundColor: getProgressColor(),
-                  },
-                ]}
-              />
+                  }}
+                />
+              </View>
+              <Text variant="muted" className="mt-2 text-sm font-medium">
+                {Math.round(progress)}%
+              </Text>
             </View>
-            <Text style={styles.progressText}>
-              {Math.round(progress)}%
-            </Text>
-          </View>
 
-          {error && (
-            <Text style={styles.errorText}>
-              {error}
-            </Text>
-          )}
-        </View>
+            {error && (
+              <Text className="text-destructive text-sm text-center">
+                {error}
+              </Text>
+            )}
+          </CardContent>
+        </Card>
       </View>
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  container: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 30,
-    alignItems: 'center',
-    minWidth: 280,
-    maxWidth: 320,
-  },
-  spinner: {
-    marginBottom: 20,
-  },
-  statusText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  progressContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  progressBackground: {
-    width: '100%',
-    height: 8,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 4,
-    overflow: 'hidden',
-    marginBottom: 10,
-  },
-  progressBar: {
-    height: '100%',
-    borderRadius: 4,
-  },
-  progressText: {
-    fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
-  },
-  errorText: {
-    fontSize: 14,
-    color: '#ff3b30',
-    textAlign: 'center',
-    marginTop: 10,
-  },
-});

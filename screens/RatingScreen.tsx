@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  StyleSheet, 
-  TextInput, 
-  TouchableOpacity, 
-  ScrollView, 
+import {
+  View,
+  ScrollView,
   Alert,
   KeyboardAvoidingView,
   Platform,
@@ -24,6 +20,11 @@ import AuthGuard from '../components/AuthGuard';
 import CameraModal from '../components/CameraModal';
 import RatingSlider from '../components/RatingSlider';
 import PhotoUploadProgress from '../components/PhotoUploadProgress';
+import { Button } from '../components/ui/button';
+import { Text } from '../components/ui/text';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 
 export default function FormScreen() {
   const { user } = useAuth();
@@ -243,101 +244,126 @@ export default function FormScreen() {
 
   return (
     <AuthGuard>
-      <View style={styles.container}>
+      <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
       <AppHeader title={t('form.rateStall')} />
-      
-      <KeyboardAvoidingView 
-        style={styles.keyboardContainer} 
+
+      <KeyboardAvoidingView
+        className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        {...({} as any)}
       >
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-          
+        <ScrollView className="flex-1" {...({} as any)}>
+          <View className="p-5 gap-5" {...({} as any)}>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('form.stallName')} *</Text>
-            <TextInput
-              style={styles.input}
-              value={formData.stallName}
-              onChangeText={(text) => handleInputChange('stallName', text)}
-              placeholder={t('form.stallNamePlaceholder')}
-              maxLength={100}
-            />
-          </View>
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('form.stallName')} *</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Input
+                  value={formData.stallName}
+                  onChangeText={(text: string) => handleInputChange('stallName', text)}
+                  placeholder={t('form.stallNamePlaceholder')}
+                  maxLength={100}
+                  {...({} as any)}
+                />
+              </CardContent>
+            </Card>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('form.mobilePayPhone')} *</Text>
-            <TextInput
-              style={styles.input}
-              value={formData.mobilePayPhone}
-              onChangeText={(text) => handleInputChange('mobilePayPhone', text)}
-              placeholder={t('form.mobilePayPhonePlaceholder')}
-              keyboardType="phone-pad"
-              maxLength={20}
-            />
-          </View>
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('form.mobilePayPhone')} *</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Input
+                  value={formData.mobilePayPhone}
+                  onChangeText={(text: string) => handleInputChange('mobilePayPhone', text)}
+                  placeholder={t('form.mobilePayPhonePlaceholder')}
+                  keyboardType="phone-pad"
+                  maxLength={20}
+                  {...({} as any)}
+                />
+              </CardContent>
+            </Card>
 
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('form.photo')}</Text>
-            <TouchableOpacity
-              style={styles.photoButton}
-              onPress={() => setShowCamera(true)}
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('form.photo')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Button
+                  variant="outline"
+                  className="border-dashed border-2 h-32 items-center justify-center"
+                  onPress={() => setShowCamera(true)}
+                  {...({} as any)}
+                >
+                  {selectedImage ? (
+                    <Image source={{ uri: selectedImage }} className="w-full h-32 rounded" {...({} as any)} />
+                  ) : (
+                    <View className="items-center" {...({} as any)}>
+                      <Text className="text-3xl mb-2">📷</Text>
+                      <Text variant="muted">{t('form.addPhoto')}</Text>
+                    </View>
+                  )}
+                </Button>
+                {selectedImage && (
+                  <Button
+                    variant="ghost"
+                    className="mt-2 text-destructive"
+                    onPress={() => setSelectedImage(null)}
+                    {...({} as any)}
+                  >
+                    <Text className="text-destructive">{t('form.removePhoto')}</Text>
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>{t('form.ratingLabel')}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <RatingSlider
+                  value={rating}
+                  onValueChange={setRating}
+                  min={1}
+                  max={10}
+                />
+              </CardContent>
+            </Card>
+
+            <Button
+              className="mt-5"
+              onPress={handleSubmit}
+              disabled={isSubmitting}
+              {...({} as any)}
             >
-              {selectedImage ? (
-                <Image source={{ uri: selectedImage }} style={styles.photoPreview} />
-              ) : (
-                <>
-                  <Text style={styles.photoButtonIcon}>📷</Text>
-                  <Text style={styles.photoButtonText}>{t('form.addPhoto')}</Text>
-                </>
-              )}
-            </TouchableOpacity>
-            {selectedImage && (
-              <TouchableOpacity
-                style={styles.removePhotoButton}
-                onPress={() => setSelectedImage(null)}
-              >
-                <Text style={styles.removePhotoText}>{t('form.removePhoto')}</Text>
-              </TouchableOpacity>
-            )}
-          </View>
-          
-          <View style={styles.inputContainer}>
-            <Text style={styles.label}>{t('form.ratingLabel')}</Text>
-            <RatingSlider
-              value={rating}
-              onValueChange={setRating}
-              min={1}
-              max={10}
-            />
-          </View>
+              <Text className="text-primary-foreground font-bold">
+                {isSubmitting ? t('form.submitting') : t('form.submit')}
+              </Text>
+            </Button>
 
-          <TouchableOpacity 
-            style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-          >
-            <Text style={styles.submitButtonText}>
-              {isSubmitting ? t('form.submitting') : t('form.submit')}
-            </Text>
-          </TouchableOpacity>
-
-          {submissionStep ? (
-            <View style={styles.submissionStatus}>
-              <ActivityIndicator size="small" color="#007AFF" />
-              <Text style={styles.submissionStatusText}>{submissionStep}</Text>
-            </View>
-          ) : null}
+            {submissionStep ? (
+              <Card className="mt-4">
+                <CardContent className="flex-row items-center justify-center p-4">
+                  <ActivityIndicator size="small" color="#007AFF" />
+                  <Text className="ml-3 text-primary font-medium">{submissionStep}</Text>
+                </CardContent>
+              </Card>
+            ) : null}
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      
+
       <AppFooter />
-      
+
       <CameraModal
         visible={showCamera}
         onClose={handleCameraClose}
         onImageTaken={handleImageTaken}
       />
-      
+
       <PhotoUploadProgress
         visible={uploadProgress.isUploading}
         progress={uploadProgress.progress}
@@ -349,103 +375,3 @@ export default function FormScreen() {
     </AuthGuard>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  keyboardContainer: {
-    flex: 1,
-  },
-  scrollContainer: {
-    padding: 20,
-  },
-  inputContainer: {
-    marginBottom: 20,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: '#333',
-  },
-  input: {
-    backgroundColor: 'white',
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    fontSize: 16,
-    minHeight: 48,
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: 'top',
-  },
-  photoButton: {
-    backgroundColor: 'white',
-    borderWidth: 2,
-    borderColor: '#ddd',
-    borderStyle: 'dashed',
-    borderRadius: 8,
-    padding: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 120,
-  },
-  photoButtonIcon: {
-    fontSize: 30,
-    marginBottom: 8,
-  },
-  photoButtonText: {
-    fontSize: 16,
-    color: '#666',
-  },
-  photoPreview: {
-    width: '100%',
-    height: 120,
-    borderRadius: 8,
-    resizeMode: 'cover',
-  },
-  removePhotoButton: {
-    marginTop: 8,
-    alignSelf: 'center',
-  },
-  removePhotoText: {
-    color: '#ff3b30',
-    fontSize: 14,
-  },
-  submitButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 8,
-    paddingVertical: 15,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  submitButtonDisabled: {
-    backgroundColor: '#ccc',
-  },
-  submitButtonText: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  submissionStatus: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 15,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: 'rgba(0, 122, 255, 0.1)',
-    borderRadius: 8,
-  },
-  submissionStatusText: {
-    marginLeft: 10,
-    fontSize: 14,
-    color: '#007AFF',
-    fontWeight: '500',
-  },
-});

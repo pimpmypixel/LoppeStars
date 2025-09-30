@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Linking, Alert } from 'react-native';
+import { View, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../utils/supabase';
@@ -7,6 +7,9 @@ import { t } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
 import LanguageSelector from '../components/LanguageSelector';
+import { Button } from '../components/ui/button';
+import { Text } from '../components/ui/text';
+import { Card, CardContent } from '../components/ui/card';
 
 export default function MoreScreen() {
     const navigation = useNavigation();
@@ -26,10 +29,6 @@ export default function MoreScreen() {
         navigation.navigate(screen as never);
     };
 
-    const handleContact = () => {
-        Linking.openURL('mailto:contact@loppestars.com');
-    };
-
     const handleLanguageChange = () => {
         // Force re-render to update all localized strings
         setRefreshKey(prev => prev + 1);
@@ -45,43 +44,62 @@ export default function MoreScreen() {
     ];
 
     return (
-        <View style={styles.container} key={refreshKey}>
+        <View className="flex-1 bg-[#f5f5f5]" key={refreshKey} {...({} as any)}>
             <AppHeader title={t('more.more')} />
 
-            <ScrollView style={styles.scrollView}>
-                <LanguageSelector onLanguageChange={handleLanguageChange} />
-                
-                <View style={styles.menuContainer}>
-                    {menuItems.map((item, index) => (
-                        <TouchableOpacity
-                            key={index}
-                            style={styles.menuItem}
-                            onPress={item.onPress}
-                        >
-                            <Text style={styles.menuItemText}>{item.title}</Text>
-                            <Text style={styles.menuItemArrow}>›</Text>
-                        </TouchableOpacity>
-                    ))}
+            <ScrollView className="flex-1" {...({} as any)}>
+                <View className="p-5 gap-5" {...({} as any)}>
+                    <LanguageSelector onLanguageChange={handleLanguageChange} />
 
-                    <View style={styles.separator} />
+                    <Card>
+                        <CardContent className="p-0">
+                            {menuItems.map((item, index) => (
+                                <View key={index} {...({} as any)}>
+                                    <Button
+                                        variant="ghost"
+                                        className="flex-row justify-between items-center h-14 px-4 rounded-none border-b border-border"
+                                        onPress={item.onPress}
+                                        {...({} as any)}
+                                    >
+                                        <Text className="text-left flex-1">{item.title}</Text>
+                                        <Text className="text-muted-foreground">›</Text>
+                                    </Button>
+                                    {index < menuItems.length - 1 && (
+                                        <View className="h-px bg-border mx-4" {...({} as any)} />
+                                    )}
+                                </View>
+                            ))}
 
-                    <TouchableOpacity style={styles.signOutButton} onPress={handleLogout}>
-                        <Text style={styles.signOutText}>{t('auth.signOut')}</Text>
-                    </TouchableOpacity>
-                    
+                            <View className="h-5 bg-muted" {...({} as any)} />
+
+                            <Button
+                                variant="ghost"
+                                className="h-14 px-4 rounded-none text-destructive"
+                                onPress={handleLogout}
+                                {...({} as any)}
+                            >
+                                <Text className="text-destructive font-medium">{t('auth.signOut')}</Text>
+                            </Button>
+                        </CardContent>
+                    </Card>
+
                     {/* User session info */}
-                    <View style={styles.userInfoContainer}>
-                        {user?.email && (
-                            <Text style={styles.userInfoText}>
-                                {t('user.email')}: {user.email}
-                            </Text>
-                        )}
-                        {session?.access_token && (
-                            <Text style={styles.userInfoText}>
-                                {t('user.sessionId')}: ...{session.access_token.slice(-8)}
-                            </Text>
-                        )}
-                    </View>
+                    {(user?.email || session?.access_token) && (
+                        <Card>
+                            <CardContent className="items-center p-4">
+                                {user?.email && (
+                                    <Text variant="muted" className="text-xs">
+                                        {t('user.email')}: {user.email}
+                                    </Text>
+                                )}
+                                {session?.access_token && (
+                                    <Text variant="muted" className="text-xs mt-1">
+                                        {t('user.sessionId')}: ...{session.access_token.slice(-8)}
+                                    </Text>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
                 </View>
             </ScrollView>
 
@@ -89,61 +107,3 @@ export default function MoreScreen() {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#f5f5f5',
-    },
-    scrollView: {
-        flex: 1,
-    },
-    menuContainer: {
-        backgroundColor: 'white',
-        marginTop: 20,
-        marginHorizontal: 20,
-        borderRadius: 12,
-        overflow: 'hidden',
-    },
-    menuItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        borderBottomWidth: 1,
-        borderBottomColor: '#f0f0f0',
-    },
-    menuItemText: {
-        fontSize: 17,
-        color: '#333',
-    },
-    menuItemArrow: {
-        fontSize: 18,
-        color: '#ccc',
-    },
-    separator: {
-        height: 20,
-        backgroundColor: '#f5f5f5',
-    },
-    signOutButton: {
-        paddingHorizontal: 20,
-        paddingVertical: 16,
-        alignItems: 'center',
-    },
-    signOutText: {
-        fontSize: 17,
-        color: '#ff3b30',
-        fontWeight: '600',
-    },
-    userInfoContainer: {
-        paddingHorizontal: 20,
-        paddingBottom: 10,
-        alignItems: 'center',
-    },
-    userInfoText: {
-        fontSize: 10,
-        color: '#999',
-        marginTop: 2,
-    },
-});

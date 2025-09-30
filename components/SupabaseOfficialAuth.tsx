@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, Alert, View } from 'react-native';
 import { makeRedirectUri } from 'expo-auth-session';
 import * as QueryParams from 'expo-auth-session/build/QueryParams';
 import * as WebBrowser from 'expo-web-browser';
@@ -7,336 +7,232 @@ import * as Linking from 'expo-linking';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import Logo from './Logo';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Button } from './ui/button';
+import { Text } from './ui/text';
 
 // Complete the auth session for web browser
-WebBrowser.maybeCompleteAuthSession(); // required for web only
+WebBrowser.maybeCompleteAuthSession();
+
+type OAuthProvider = 'google' | 'facebook';
+
+type ParsedParams = {
+  access_token?: string;
+  refresh_token?: string;
+  code?: string;
+  error?: string;
+  error_description?: string;
+};
 
 export default function SupabaseOfficialAuth() {
   const [isLoading, setIsLoading] = useState(false);
-  const [loadingProvider, setLoadingProvider] = useState<'google' | 'facebook' | null>(null);
-  
+  const [loadingProvider, setLoadingProvider] = useState<OAuthProvider | null>(null);
+
   // Create redirect URI for this app
-  const redirectTo = makeRedirectUri();
+  const redirectTo = useMemo(
+    () =>
+      makeRedirectUri({
+        scheme: 'loppestars',
+        path: 'auth/callback',
+        preferLocalhost: true,
+      }),
+    []
+  );
 
-  console.log('🔧 Redirect URI:', redirectTo);
+  const resetLoadingState = useCallback(() => {
+    setIsLoading(false);
+    setLoadingProvider(null);
+  }, []);
 
-  const createSessionFromUrl = async (url: string) => {
-    console.log('🔧 Creating session from URL:', url);
-    const { params, errorCode } = QueryParams.getQueryParams(url);
+  const handleOAuthResponse = useCallback(
+    async (url?: string | null) => {
+      if (!url) {
+        return;
+      }
 
-    if (errorCode) {
-      console.error('❌ OAuth error code:', errorCode);
-      throw new Error(errorCode);
-    }
-    
-    const { access_token, refresh_token } = params;
-    console.log('🔧 Tokens extracted:', { 
-      hasAccessToken: !!access_token, 
-      hasRefreshToken: !!refresh_token 
-    });
+      const { params } = QueryParams.getQueryParams(url);
+      const parsed = params as ParsedParams;
 
-    if (!access_token) {
-      console.log('🔧 No access token found in URL');
-      return;
-    }
+      if (parsed?.error || parsed?.error_description) {
+        console.error('❌ Supabase OAuth error:', parsed.error, parsed.error_description);
+        Alert.alert(t('common.error'), parsed.error_description || parsed.error || t('auth.signInError'));
+        resetLoadingState();
+        return;
+      }
 
-    const { data, error } = await supabase.auth.setSession({
-      access_token,
-      refresh_token,
-    });
-    
-    if (error) {
-      console.error('❌ Error setting session:', error);
-      throw error;
-    }
-    
-    console.log('✅ Session created successfully:', data.session?.user?.email);
-    return data.session;
-  };
+      try {
+        if (parsed?.access_token && parsed?.refresh_token) {
+          const { error } = await supabase.auth.setSession({
+            access_token: parsed.access_token,
+            refresh_token: parsed.refresh_token,
+          });
 
-  const performGoogleOAuth = async () => {
-    try {
-      console.log('🔧 Starting Google OAuth with official Supabase method...');
-      setIsLoading(true);
-      setLoadingProvider('google');
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo,
-          skipBrowserRedirect: true,
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
+          if (error) {
+            throw error;
           }
-        },
-      });
-
-      if (error) {
-        console.error('❌ Supabase OAuth error:', error);
-        throw error;
-      }
-
-      if (data?.url) {
-        console.log('🔧 OAuth URL generated, opening browser...');
-        console.log('🔧 Redirect URI:', redirectTo);
-        
-        const res = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
-        console.log('🔧 Browser session result:', res);
-
-        if (res.type === 'success') {
-          console.log('✅ OAuth success, creating session from URL...');
-          const { url } = res;
-          await createSessionFromUrl(url);
-        } else if (res.type === 'cancel') {
-          console.log('🔧 User cancelled OAuth');
-        } else {
-          console.log('🔧 OAuth result:', res.type);
+        } else if (parsed?.code) {
+          const { error } = await supabase.auth.exchangeCodeForSession(parsed.code);
+          if (error) {
+            throw error;
+          }
         }
+      } catch (error: any) {
+        console.error('❌ Supabase session error:', error);
+        Alert.alert(t('common.error'), error?.message || t('auth.signInError'));
+      } finally {
+        resetLoadingState();
       }
-    } catch (error: any) {
-      console.error('❌ Google OAuth error:', error);
-      Alert.alert(t('common.error'), `Google sign-in failed: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-      setLoadingProvider(null);
-    }
-  };
+    },
+    [resetLoadingState]
+  );
 
-  const performFacebookOAuth = async () => {
-    try {
-      console.log('🔧 Starting Facebook OAuth with official Supabase method...');
-      setIsLoading(true);
-      setLoadingProvider('facebook');
-
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'facebook',
-        options: {
-          redirectTo,
-          skipBrowserRedirect: true,
-        },
-      });
-
-      if (error) {
-        console.error('❌ Supabase Facebook OAuth error:', error);
-        throw error;
-      }
-
-      if (data?.url) {
-        console.log('🔧 Facebook OAuth URL generated, opening browser...');
-        
-        const res = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
-        console.log('🔧 Facebook browser session result:', res);
-
-        if (res.type === 'success') {
-          console.log('✅ Facebook OAuth success, creating session from URL...');
-          const { url } = res;
-          await createSessionFromUrl(url);
-        } else if (res.type === 'cancel') {
-          console.log('🔧 User cancelled Facebook OAuth');
-        }
-      }
-    } catch (error: any) {
-      console.error('❌ Facebook OAuth error:', error);
-      Alert.alert(t('common.error'), `Facebook sign-in failed: ${error.message}`);
-    } finally {
-      setIsLoading(false);
-      setLoadingProvider(null);
-    }
-  };
-
-  // Handle linking into app from OAuth redirect
-  const url = Linking.useURL();
   useEffect(() => {
-    if (url) {
-      console.log('🔗 Deep link detected:', url);
-      createSessionFromUrl(url).catch(console.error);
-    }
-  }, [url]);
+    const subscription = Linking.addEventListener('url', event => handleOAuthResponse(event.url));
+
+    Linking.getInitialURL().then(initialUrl => {
+      if (initialUrl) {
+        handleOAuthResponse(initialUrl);
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, [handleOAuthResponse]);
+
+  const performOAuth = useCallback(
+    async (provider: OAuthProvider) => {
+      try {
+        setIsLoading(true);
+        setLoadingProvider(provider);
+
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider,
+          options: {
+            redirectTo,
+            skipBrowserRedirect: true,
+          },
+        });
+
+        if (error) {
+          throw error;
+        }
+
+        if (data?.url) {
+          const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+
+          if (result.type === 'success') {
+            await handleOAuthResponse(result.url);
+          } else if (result.type === 'cancel') {
+            resetLoadingState();
+          }
+        }
+      } catch (error: any) {
+        console.error(`❌ ${provider} OAuth error:`, error);
+        Alert.alert(t('common.error'), error?.message || t('auth.signInError'));
+        resetLoadingState();
+      }
+    },
+    [redirectTo, handleOAuthResponse, resetLoadingState]
+  );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.logoContainer}>
-        <Logo size="large" />
-        <Text style={styles.welcomeText}>{t('common.welcome')}</Text>
-        <Text style={styles.subtitle}>{t('auth.pleaseSignIn')}</Text>
-      </View>
+    <View className="flex-1 items-center justify-center bg-background px-6" {...({} as any)}>
+      <Card className="w-full max-w-md gap-6">
+        <CardHeader className="items-center gap-3 pb-0">
+          <Logo size="large" />
+          <CardTitle className="text-center text-2xl">
+            {t('common.welcome')}
+          </CardTitle>
+          <CardDescription className="text-center text-base">
+            {t('auth.pleaseSignIn')}
+          </CardDescription>
+        </CardHeader>
 
-      <View style={styles.buttonContainer}>
-        {/* Google Sign In Button */}
-        <TouchableOpacity
-          style={[styles.socialButton, styles.googleButton]}
-          onPress={performGoogleOAuth}
-          disabled={isLoading}
-        >
-          {loadingProvider === 'google' ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <>
-              <Text style={styles.googleButtonText}>📧</Text>
-              <Text style={styles.socialButtonText}>
-                {t('auth.signInWithGoogle') || 'Sign in with Google'}
+        <CardContent className="gap-4 pt-6">
+          <Button
+            variant="destructive"
+            className="h-12"
+            onPress={() => performOAuth('google')}
+            disabled={isLoading}
+            {...({} as any)}
+          >
+            {loadingProvider === 'google' ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text className="text-primary-foreground text-base font-semibold">
+                📧 {t('auth.signInWithGoogle')}
               </Text>
-            </>
-          )}
-        </TouchableOpacity>
+            )}
+          </Button>
 
-        {/* Facebook Sign In Button */}
-        <TouchableOpacity
-          style={[styles.socialButton, styles.facebookButton]}
-          onPress={performFacebookOAuth}
-          disabled={isLoading}
-        >
-          {loadingProvider === 'facebook' ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <>
-              <Text style={styles.facebookButtonText}>📘</Text>
-              <Text style={styles.socialButtonText}>
-                {t('auth.signInWithFacebook') || 'Sign in with Facebook'}
+          <Button
+            className="h-12 bg-[#1877F2] dark:bg-[#1877F2]"
+            onPress={() => performOAuth('facebook')}
+            disabled={isLoading}
+            {...({} as any)}
+          >
+            {loadingProvider === 'facebook' ? (
+              <ActivityIndicator size="small" color="#ffffff" />
+            ) : (
+              <Text className="text-primary-foreground text-base font-semibold">
+                📘 {t('auth.signInWithFacebook')}
               </Text>
-            </>
+            )}
+          </Button>
+
+          <Button
+            variant="link"
+            className="justify-center"
+            onPress={() => Linking.openURL('https://loppestars.com/privacy')}
+            {...({} as any)}
+          >
+            <Text className="underline">{t('auth.privacyPolicy')}</Text>
+          </Button>
+
+          <Card className="border-dashed border-muted bg-muted/40">
+            <CardContent className="items-center gap-2 p-4">
+              <Text variant="muted" className="text-center text-sm">
+                {t('auth.signIn')}
+              </Text>
+              <Text variant="muted" className="text-center text-xs text-muted-foreground/80">
+                Redirect URI: {redirectTo}
+              </Text>
+            </CardContent>
+          </Card>
+
+          {__DEV__ && (
+            <Card className="bg-card/60">
+              <CardContent className="gap-3">
+                <Text variant="muted" className="text-xs">
+                  OAuth debug
+                </Text>
+                <Button
+                  variant="outline"
+                  className="h-10"
+                  onPress={async () => {
+                    console.log('🔧 Manual session check triggered...');
+                    const { data: session, error } = await supabase.auth.getSession();
+                    if (session?.session?.user) {
+                      console.log('✅ Session found:', session.session.user.email);
+                      Alert.alert('Session Found', session.session.user.email ?? '');
+                    } else {
+                      Alert.alert('No Session', 'No authenticated session found');
+                    }
+                    if (error) {
+                      console.error('❌ Manual check error:', error);
+                      Alert.alert('Error', error.message);
+                    }
+                  }}
+                  {...({} as any)}
+                >
+                  <Text className="font-medium">Check Session</Text>
+                </Button>
+              </CardContent>
+            </Card>
           )}
-        </TouchableOpacity>
-
-        {/* Instructions */}
-        <View style={styles.instructionContainer}>
-          <Text style={styles.instructionText}>
-            Official Supabase OAuth method with proper redirect handling.
-          </Text>
-        </View>
-
-        {/* Debug Info */}
-        {__DEV__ && (
-          <View style={styles.debugContainer}>
-            <Text style={styles.debugText}>
-              Using Official Supabase OAuth
-            </Text>
-            <Text style={styles.debugText}>
-              Redirect URI: {redirectTo}
-            </Text>
-            
-            <TouchableOpacity
-              style={styles.debugButton}
-              onPress={async () => {
-                console.log('🔧 Manual session check triggered...');
-                const { data: session, error } = await supabase.auth.getSession();
-                if (session?.session?.user) {
-                  console.log('✅ Manual check - Session found:', session.session.user.email);
-                  Alert.alert('Session Found', `User: ${session.session.user.email}`);
-                } else {
-                  console.log('❌ Manual check - No session');
-                  Alert.alert('No Session', 'No authenticated session found');
-                }
-                if (error) {
-                  console.error('❌ Manual check error:', error);
-                  Alert.alert('Error', `Session check error: ${error.message}`);
-                }
-              }}
-            >
-              <Text style={styles.debugButtonText}>Check Session</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </View>
+        </CardContent>
+      </Card>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f5f5f5',
-    padding: 20,
-  },
-  logoContainer: {
-    alignItems: 'center',
-    marginBottom: 60,
-  },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop: 20,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: '#666',
-    marginTop: 10,
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  socialButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '80%',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    marginVertical: 8,
-    minHeight: 50,
-  },
-  googleButton: {
-    backgroundColor: '#db4437',
-  },
-  facebookButton: {
-    backgroundColor: '#4267B2',
-  },
-  socialButtonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: '600',
-    marginLeft: 10,
-  },
-  googleButtonText: {
-    fontSize: 20,
-  },
-  facebookButtonText: {
-    fontSize: 20,
-  },
-  instructionContainer: {
-    marginTop: 20,
-    padding: 15,
-    backgroundColor: '#e3f2fd',
-    borderRadius: 8,
-    width: '90%',
-  },
-  instructionText: {
-    fontSize: 14,
-    color: '#1976d2',
-    textAlign: 'center',
-    lineHeight: 20,
-  },
-  debugContainer: {
-    marginTop: 20,
-    padding: 10,
-    backgroundColor: '#f0f0f0',
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  debugText: {
-    fontSize: 12,
-    color: '#666',
-    textAlign: 'center',
-    marginBottom: 5,
-  },
-  debugButton: {
-    marginTop: 10,
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-    backgroundColor: '#007AFF',
-    borderRadius: 6,
-  },
-  debugButtonText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-});

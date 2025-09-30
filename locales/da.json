@@ -60,7 +60,12 @@
     "cancel": "Annuller",
     "noCamera": "Intet kamera tilgængeligt",
     "permissionDenied": "Kamera tilladelse nægtet",
-    "processing": "Behandler billede..."
+    "processing": "Behandler billede...",
+    "flip": "Vend",
+    "instructionsTitle": "Fokuser på bodens hovedattraktion",
+    "instructionsSubtitle": "For det bedste resultat, tag billedet vandret",
+    "errorCapture": "Kunne ikke tage billede",
+    "errorSelect": "Kunne ikke vælge billede"
   },
   "more": {
     "more": "Mere",
@@ -75,7 +80,8 @@
     "camera": {
       "title": "Kamera tilladelse",
       "message": "Denne app har brug for adgang til dit kamera for at tage billeder af varer du vil sælge.",
-      "denied": "Kamera tilladelse er påkrævet for at tage billeder"
+      "denied": "Kamera tilladelse er påkrævet for at tage billeder",
+      "grant": "Giv tilladelse"
     },
     "location": {
       "title": "Placering tilladelse",
