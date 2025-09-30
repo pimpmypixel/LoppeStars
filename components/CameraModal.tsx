@@ -144,6 +144,14 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
             </View>
             
             <CameraView style={styles.camera} facing={facing} ref={cameraRef} />
+            <View style={styles.instructionsOverlay}>
+              <Text style={styles.instructionText}>
+                Tag hovedbordet eller hovedattraktionen på standen
+              </Text>
+              <Text style={styles.instructionSubText}>
+                Anbefales at tage billedet vandret
+              </Text>
+            </View>
             <View style={styles.cameraButtonContainer}>
               <TouchableOpacity style={styles.button} onPress={pickImageFromLibrary}>
                 <Text style={styles.buttonText}>{t('camera.fromLibrary')}</Text>
@@ -275,5 +283,28 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: '600',
+  },
+  instructionsOverlay: {
+    position: 'absolute',
+    top: 100,
+    left: 20,
+    right: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  instructionText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+  instructionSubText: {
+    color: 'white',
+    fontSize: 14,
+    textAlign: 'center',
+    opacity: 0.9,
   },
 });
