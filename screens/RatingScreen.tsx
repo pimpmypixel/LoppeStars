@@ -177,11 +177,17 @@ export default function FormScreen() {
       }
       
       console.log('✅ Rating saved successfully:', data);
-      setSubmissionStep('Rating submitted successfully!');
+      setSubmissionStep('Thank you for your rating! 🎉');
       
       // Show success message briefly
       setTimeout(() => {
-        Alert.alert(t('form.success'), t('form.submitSuccess'));
+        Alert.alert(
+          'Thank You! 🎉', 
+          'Your rating has been submitted successfully. Thank you for helping other shoppers find great stalls!',
+          [
+            { text: 'OK', onPress: () => {} }
+          ]
+        );
         
         // Reset form
         setFormData({
@@ -195,7 +201,7 @@ export default function FormScreen() {
         setSubmissionStep('');
 
         console.log('🔄 Form reset completed');
-      }, 500);
+      }, 1000);
 
     } catch (error) {
       console.error('❌ Submit error:', error);

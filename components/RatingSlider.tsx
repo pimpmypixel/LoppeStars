@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   slider: {
-    height: 60,
+    height: 80,
     marginVertical: 10,
   },
   scaleContainer: {
