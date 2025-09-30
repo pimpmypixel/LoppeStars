@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Alert, TouchableOpacity, Linking, ActivityIndicator, AppState } from 'react-native';
 import * as WebBrowser from 'expo-web-browser';
+import Config from 'react-native-config';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import Logo from './Logo';
-import { 
-  GOOGLE_WEB_CLIENT_ID, 
-  FACEBOOK_APP_ID
-} from 'react-native-dotenv';
 import { Facebook, Mail } from 'lucide-react-native';
 
 // Complete the auth session for web browser
@@ -20,8 +17,8 @@ export default function SimpleAuth() {
   // Debug logging
   useEffect(() => {
     console.log('🔧 Simple OAuth Debug Info:');
-    console.log('   Google Client ID:', GOOGLE_WEB_CLIENT_ID);
-    console.log('   Facebook App ID:', FACEBOOK_APP_ID);
+    console.log('   Google Client ID:', Config.GOOGLE_WEB_CLIENT_ID);
+    console.log('   Facebook App ID:', Config.FACEBOOK_APP_ID);
   }, []);
 
   // Listen for app state changes to detect returning from OAuth

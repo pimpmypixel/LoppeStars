@@ -8,7 +8,8 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.2",
@@ -44,7 +45,7 @@
     "nativewind": "^4.2.1",
     "react": "19.1.0",
     "react-native": "0.81.4",
-    "react-native-dotenv": "^3.4.11",
+    "react-native-config": "^1.5.9",
     "react-native-gesture-handler": "^2.28.0",
     "react-native-reanimated": "^4.1.2",
     "react-native-safe-area-context": "^5.6.1",
@@ -58,7 +59,7 @@
   },
   "devDependencies": {
     "@types/react": "~19.1.0",
-    "@types/react-native-dotenv": "^0.2.2",
+    "patch-package": "^8.0.0",
     "typescript": "~5.9.2"
   },
   "private": true

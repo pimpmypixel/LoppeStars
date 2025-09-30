@@ -1,40 +1,46 @@
 import React from 'react';
 import { View, Alert, TouchableOpacity, Linking } from 'react-native';
-import {
-    GoogleSignin,
-    statusCodes,
-} from '@react-native-google-signin/google-signin';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import Config from 'react-native-config';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import Logo from './Logo';
-import { GOOGLE_WEB_CLIENT_ID } from 'react-native-dotenv';
 import { Button } from './ui/button';
 import { Text } from './ui/text';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 export default function Auth() {
 
-    // Configure Google Sign-in once when component loads
+    const ensureGoogleClientId = React.useCallback(() => {
+        if (!Config.GOOGLE_WEB_CLIENT_ID) {
+            Alert.alert(t('common.error'), 'Google web client ID is not set. Please update your .env file.');
+            return false;
+        }
+        return true;
+    }, []);
+
     React.useEffect(() => {
+        if (!Config.GOOGLE_WEB_CLIENT_ID) {
+            console.warn('⚠️ GOOGLE_WEB_CLIENT_ID is not defined in the environment configuration. Google Sign-In will fail.');
+            return;
+        }
+
         GoogleSignin.configure({
-            webClientId: GOOGLE_WEB_CLIENT_ID,
-            scopes: [
-                'email',
-                'profile',
-            ],
+            webClientId: Config.GOOGLE_WEB_CLIENT_ID,
+            scopes: ['email', 'profile'],
         });
     }, []);
 
     const testGoogleSigninOnly = async () => {
         try {
+            if (!ensureGoogleClientId()) {
+                return;
+            }
             console.log('🔧 Testing Google Sign-in ONLY...');
             await GoogleSignin.hasPlayServices();
             console.log('✅ Google Play Services available');
 
             const userInfo = await GoogleSignin.signIn();
-            console.log('✅ Google Sign-in successful!');
-            console.log('🔧 User info:', JSON.stringify(userInfo, null, 2));
-
             Alert.alert('Google Sign-in Success', `Welcome ${userInfo.data?.user?.name}!`);
 
             // Sign out immediately for testing
@@ -49,6 +55,9 @@ export default function Auth() {
 
     const signIn = async () => {
         try {
+            if (!ensureGoogleClientId()) {
+                return;
+            }
             console.log('🔧 Starting Google sign-in process...');
 
             await GoogleSignin.hasPlayServices();

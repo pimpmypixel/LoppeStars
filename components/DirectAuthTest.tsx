@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
-import { GOOGLE_WEB_CLIENT_ID } from 'react-native-dotenv';
+import Config from 'react-native-config';
 import { supabase } from '../utils/supabase';
 
 WebBrowser.maybeCompleteAuthSession();
@@ -14,6 +14,12 @@ export default function DirectAuthTest() {
     try {
       setLoading(true);
       console.log('🧪 Testing direct Google OAuth...');
+
+      const clientId = Config.GOOGLE_WEB_CLIENT_ID;
+      if (!clientId) {
+        Alert.alert('Configuration error', 'Google web client ID is not set. Please update your .env file.');
+        return;
+      }
       
       // Create discovery document
       const discovery = {
@@ -24,7 +30,7 @@ export default function DirectAuthTest() {
 
       // Configure the request
       const request = new AuthSession.AuthRequest({
-        clientId: GOOGLE_WEB_CLIENT_ID,
+        clientId,
         scopes: ['openid', 'profile', 'email'],
         responseType: AuthSession.ResponseType.Code,
         redirectUri: 'loppestars://auth/callback',
@@ -45,7 +51,7 @@ export default function DirectAuthTest() {
         // Exchange code for tokens
         const tokenResult = await AuthSession.exchangeCodeAsync(
           {
-            clientId: GOOGLE_WEB_CLIENT_ID,
+            clientId,
             code: result.params.code,
             redirectUri: request.redirectUri!,
             extraParams: {},

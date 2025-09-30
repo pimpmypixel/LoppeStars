@@ -2,13 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, Alert, TouchableOpacity, Linking, ActivityIndicator } from 'react-native';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
+import Config from 'react-native-config';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import Logo from './Logo';
-import { 
-  GOOGLE_WEB_CLIENT_ID, 
-  FACEBOOK_APP_ID
-} from 'react-native-dotenv';
 import { Facebook, Mail } from 'lucide-react-native';
 
 // Complete the auth session for web browser
@@ -18,6 +15,11 @@ export default function SupabaseAuth() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState<'google' | 'facebook' | null>(null);
 
+  const googleClientId = Config.GOOGLE_WEB_CLIENT_ID ?? '';
+  const facebookAppId = Config.FACEBOOK_APP_ID ?? '';
+  const hasGoogleClientId = Boolean(Config.GOOGLE_WEB_CLIENT_ID);
+  const hasFacebookAppId = Boolean(Config.FACEBOOK_APP_ID);
+
   // Use explicit Expo proxy URL that Google accepts
   const redirectUri = 'https://auth.expo.io/@anonymous/loppestars';
 
@@ -26,7 +28,7 @@ export default function SupabaseAuth() {
   
   const [googleRequest, googleResponse, googlePromptAsync] = AuthSession.useAuthRequest(
     {
-      clientId: GOOGLE_WEB_CLIENT_ID,
+      clientId: googleClientId || 'missing-google-client-id',
       scopes: ['openid', 'profile', 'email'],
       redirectUri: redirectUri,
     },
@@ -40,7 +42,7 @@ export default function SupabaseAuth() {
 
   const [facebookRequest, facebookResponse, facebookPromptAsync] = AuthSession.useAuthRequest(
     {
-      clientId: FACEBOOK_APP_ID,
+      clientId: facebookAppId || 'missing-facebook-app-id',
       scopes: ['public_profile', 'email'],
       redirectUri: redirectUri,
     },
@@ -51,8 +53,8 @@ export default function SupabaseAuth() {
   useEffect(() => {
     console.log('🔧 OAuth Debug Info:');
     console.log('   Redirect URI:', redirectUri);
-    console.log('   Google Client ID:', GOOGLE_WEB_CLIENT_ID);
-    console.log('   Facebook App ID:', FACEBOOK_APP_ID);
+    console.log('   Google Client ID:', googleClientId);
+    console.log('   Facebook App ID:', facebookAppId);
   }, []);
 
   // Handle Google OAuth response
@@ -118,7 +120,7 @@ export default function SupabaseAuth() {
       
       // Exchange code for tokens
       const tokenRequestBody = {
-        client_id: GOOGLE_WEB_CLIENT_ID,
+        client_id: googleClientId,
         code,
         grant_type: 'authorization_code',
         redirect_uri: redirectUri,
@@ -200,6 +202,10 @@ export default function SupabaseAuth() {
 
   const signInWithGoogle = async () => {
     try {
+      if (!hasGoogleClientId) {
+        Alert.alert(t('common.error'), 'Google web client ID is not set. Please update your .env file.');
+        return;
+      }
       console.log('🔧 Starting Google sign-in...');
       console.log('   Google Request Ready:', !!googleRequest);
       console.log('   Redirect URI:', redirectUri);
@@ -237,6 +243,10 @@ export default function SupabaseAuth() {
 
   const signInWithFacebook = async () => {
     try {
+      if (!hasFacebookAppId) {
+        Alert.alert(t('common.error'), 'Facebook app ID is not set. Please update your .env file.');
+        return;
+      }
       console.log('🔧 Starting Facebook sign-in...');
       setIsLoading(true);
       setLoadingProvider('facebook');

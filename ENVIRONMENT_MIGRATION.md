@@ -8,21 +8,24 @@ This document summarizes the migration of sensitive strings to environment varia
 - ✅ Created `.env` file with actual sensitive values
 - ✅ Created `.env.example` template for new developers  
 - ✅ Added `.env` and `keys/` directory to `.gitignore`
-- ✅ Installed `react-native-dotenv` package for environment variable support
+- ✅ Installed `react-native-config` for native env injection (with `patch-package` to disable unsupported TurboModule codegen)
 
 ### 2. Configuration Files Updated
 
-#### `babel.config.js` (NEW)
-- Added react-native-dotenv plugin configuration
-- Enables environment variable processing in React Native
+#### `android/app/build.gradle`
+- Applies `dotenv.gradle` from `react-native-config` so Gradle passes env vars into the Android app build
 
+#### `babel.config.js`
+- Cleanup: removed the `react-native-dotenv` Babel plugin (no longer needed)
+ 
 #### `tsconfig.json`
-- Added types directory for environment variable declarations
-- Updated include paths for TypeScript
+- Added `types` directory to `typeRoots` so custom declarations are discovered
 
-#### `types/env.d.ts` (NEW)
-- TypeScript declarations for environment variables
-- Provides type safety for imported env vars
+#### `types/react-native-config.d.ts` (NEW)
+- TypeScript declaration file describing the Config shape returned by `react-native-config`
+
+#### `types/env.d.ts`
+- Converted into a no-op stub (legacy import signature retained for compatibility)
 
 ### 3. Migrated Sensitive Strings
 
