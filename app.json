@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": false,
+    "newArchEnabled": true,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -23,18 +23,17 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
-      "package": "com.pimpmypixel.loppestars"
+      "package": "com.pimpmypixel.loppestars",
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ]
     },
+    "scheme": "loppestars",
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      [
-        "@react-native-google-signin/google-signin",
-        {
-          "iosUrlScheme": "com.googleusercontent.apps.512928992479-i0sf04bb1qkn1eic3pbh0oj1hpq9iq3q"
-        }
-      ],
       [
         "expo-camera",
         {
@@ -49,6 +48,12 @@
           "photosPermission": "The app accesses your photos to let you share them."
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "fab7f61e-8185-4cde-9468-762bcf5abc7b"
+      }
+    },
+    "owner": "pimpmypixel"
   }
 }

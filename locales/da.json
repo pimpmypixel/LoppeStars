@@ -16,6 +16,7 @@
     "signIn": "Log ind",
     "signOut": "Log ud",
     "signInWithGoogle": "Log ind med Google",
+    "signInWithFacebook": "Log ind med Facebook",
     "pleaseSignIn": "Log venligst ind for at fortsætte",
     "signInError": "Login mislykkedes",
     "signOutError": "Logout mislykkedes",

@@ -16,6 +16,7 @@
     "signIn": "Sign In",
     "signOut": "Sign Out",
     "signInWithGoogle": "Sign in with Google",
+    "signInWithFacebook": "Sign in with Facebook",
     "pleaseSignIn": "Please sign in to continue",
     "signInError": "Failed to sign in",
     "signOutError": "Failed to sign out",

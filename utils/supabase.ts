@@ -2,14 +2,19 @@ import { AppState, Platform } from 'react-native'
 import 'react-native-url-polyfill/auto'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createClient, processLock } from '@supabase/supabase-js'
-import { SUPABASE_URL_ANDROID, SUPABASE_URL_IOS, SUPABASE_ANON_KEY } from 'react-native-dotenv'
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from 'react-native-dotenv'
 
-// Use environment variables for different platforms
-const supabaseUrl = Platform.OS === 'android' 
-  ? SUPABASE_URL_ANDROID 
-  : SUPABASE_URL_IOS
+// Use Supabase Cloud - same URL for all platforms
+const supabaseUrl = SUPABASE_URL
+const supabaseAnonKey = SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, SUPABASE_ANON_KEY, {
+// Log the configuration for debugging
+console.log('🔧 Supabase Cloud Configuration:', {
+  platform: Platform.OS,
+  supabaseUrl: supabaseUrl ? `${supabaseUrl.substring(0, 30)}...` : 'NOT SET'
+})
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     ...(Platform.OS !== "web" ? { storage: AsyncStorage } : {}),
     autoRefreshToken: true,

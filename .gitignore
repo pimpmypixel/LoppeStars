@@ -49,3 +49,8 @@ keys/
 /android/app/build/
 /android/.gradle/
 *.zip
+
+# Expo
+.expo
+dist/
+web-build/
