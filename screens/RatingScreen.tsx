@@ -9,13 +9,15 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native';
 import * as Location from 'expo-location';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import { useAuth } from '../contexts/AuthContext';
 import { usePhotoUpload } from '../hooks/usePhotoUpload';
+import { checkLocationPermission } from '../utils/permissions';
 import AppHeader from '../components/AppHeader';
 import AppFooter from '../components/AppFooter';
 import AuthGuard from '../components/AuthGuard';
@@ -32,6 +34,7 @@ export default function FormScreen() {
   });
   const [rating, setRating] = useState(5);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submissionStep, setSubmissionStep] = useState<string>('');
   const [showCamera, setShowCamera] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string | null>(null);
@@ -63,11 +66,11 @@ export default function FormScreen() {
 
   const getCurrentLocation = async () => {
     try {
-      console.log('📍 Requesting location permission...');
-      const { status } = await Location.requestForegroundPermissionsAsync();
+      console.log('📍 Rating: checking location permission...');
+      const hasPermission = await checkLocationPermission();
       
-      if (status !== 'granted') {
-        console.log('❌ Location permission denied');
+      if (!hasPermission) {
+        console.log('❌ Location permission not granted');
         Alert.alert(
           'Location Permission',
           'Location permission is needed to save your rating location. The rating will be saved without location data.'
@@ -118,8 +121,11 @@ export default function FormScreen() {
     console.log('✅ Form validation passed');
 
     setIsSubmitting(true);
+    setSubmissionStep('Validating user session...');
+
     try {
       // Get current user
+      setSubmissionStep('Getting user information...');
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -128,6 +134,7 @@ export default function FormScreen() {
       }
 
       // Get current location
+      setSubmissionStep('Getting your location...');
       console.log('📍 Getting location...');
       const location = await getCurrentLocation();
       
@@ -143,6 +150,7 @@ export default function FormScreen() {
       }
 
       // Save stall rating to database
+      setSubmissionStep('Saving your rating...');
       console.log('💾 Saving to database...');
       const ratingData = {
         user_id: user.id,
@@ -169,25 +177,34 @@ export default function FormScreen() {
       }
       
       console.log('✅ Rating saved successfully:', data);
-      Alert.alert(t('form.success'), t('form.submitSuccess'));
+      setSubmissionStep('Rating submitted successfully!');
       
-      // Reset form
-      setFormData({
-        stallName: '',
-        mobilePayPhone: '',
-      });
-      setRating(5);
-      setSelectedImage(null);
-      setPhotoUrl(null);
-      resetUpload();
+      // Show success message briefly
+      setTimeout(() => {
+        Alert.alert(t('form.success'), t('form.submitSuccess'));
+        
+        // Reset form
+        setFormData({
+          stallName: '',
+          mobilePayPhone: '',
+        });
+        setRating(5);
+        setSelectedImage(null);
+        setPhotoUrl(null);
+        resetUpload();
+        setSubmissionStep('');
 
-      console.log('🔄 Form reset completed');
+        console.log('🔄 Form reset completed');
+      }, 500);
 
     } catch (error) {
       console.error('❌ Submit error:', error);
       Alert.alert(t('common.error'), t('form.submitError'));
     } finally {
       setIsSubmitting(false);
+      if (!submissionStep.includes('successfully')) {
+        setSubmissionStep('');
+      }
       console.log('✨ Form submission completed');
     }
   };
@@ -297,6 +314,13 @@ export default function FormScreen() {
               {isSubmitting ? t('form.submitting') : t('form.submit')}
             </Text>
           </TouchableOpacity>
+
+          {submissionStep ? (
+            <View style={styles.submissionStatus}>
+              <ActivityIndicator size="small" color="#007AFF" />
+              <Text style={styles.submissionStatusText}>{submissionStep}</Text>
+            </View>
+          ) : null}
         </ScrollView>
       </KeyboardAvoidingView>
       
@@ -401,5 +425,21 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  submissionStatus: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 15,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: 'rgba(0, 122, 255, 0.1)',
+    borderRadius: 8,
+  },
+  submissionStatusText: {
+    marginLeft: 10,
+    fontSize: 14,
+    color: '#007AFF',
+    fontWeight: '500',
   },
 });
