@@ -226,29 +226,32 @@ async def get_nearby_markets(
     except Exception as e:
         raise HTTPException(500, f"Error fetching nearby markets: {str(e)}")
 
-@app.get("/markets/search")
-async def search_markets(
-    query: str = Query(..., description="Search query for market names or municipalities"),
-    limit: int = Query(20, description="Maximum number of markets to return")
-):
-    """Search markets by name or municipality"""
+@app.post("/scraper/trigger")
+async def trigger_scraper():
+    """Manually trigger the market scraper"""
     try:
-        # Use Supabase's text search capabilities
-        result = supabase.table('markets').select('*').or_(
-            f"name.ilike.%{query}%,municipality.ilike.%{query}%"
-        ).limit(limit).execute()
+        import subprocess
+        import sys
 
-        markets = []
-        for market in result.data:
-            market_dict = dict(market)
-            market_dict['start_date'] = date.fromisoformat(market['start_date'])
-            market_dict['end_date'] = date.fromisoformat(market['end_date'])
-            market_dict['scraped_at'] = datetime.fromisoformat(market['scraped_at'].replace('Z', '+00:00'))
+        # Run the scraper script
+        result = subprocess.run([
+            sys.executable, "/app/scraper_cron.py"
+        ], capture_output=True, text=True, cwd="/app")
 
-            markets.append(MarketResponse(**market_dict))
-
-        return markets
+        if result.returncode == 0:
+            return {
+                "success": True,
+                "message": "Scraper triggered successfully",
+                "output": result.stdout
+            }
+        else:
+            raise HTTPException(500, f"Scraper failed: {result.stderr}")
 
     except Exception as e:
-        raise HTTPException(500, f"Error searching markets: {str(e)}")
+        raise HTTPException(500, f"Error triggering scraper: {str(e)}")
+
+@app.get("/health")
+async def health_check():
+    """Health check endpoint"""
+    return {"status": "healthy", "service": "loppestars-faceblur-api"}
 
