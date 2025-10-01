@@ -219,37 +219,72 @@ export default function MarketsScreen() {
   };
 
   const renderMarketItem = ({ item }: { item: Market & { distance?: number } }) => (
-    <Card className="mb-3" {...({} as any)}>
-      <CardHeader>
-        <View className="flex-row justify-between items-center" {...({} as any)}>
-          <CardTitle className="text-lg font-semibold flex-1">{item.name}</CardTitle>
+    <Card className="mb-4 mx-4 bg-white shadow-sm" {...({} as any)}>
+      <CardContent className="p-4">
+        {/* Header with name and distance */}
+        <View className="flex-row justify-between items-start mb-3" {...({} as any)}>
+          <Text className="text-lg font-semibold text-gray-900 flex-1 mr-2" numberOfLines={2}>
+            {item.name}
+          </Text>
           {item.distance && (
-            <Text className="text-sm text-blue-600 font-medium">
-              {formatDistance(item.distance)}
-            </Text>
+            <View className="bg-blue-50 px-2 py-1 rounded-full" {...({} as any)}>
+              <Text className="text-sm text-blue-600 font-medium">
+                {formatDistance(item.distance)}
+              </Text>
+            </View>
           )}
         </View>
-      </CardHeader>
-      <CardContent>
-        <CardDescription className="text-sm text-muted-foreground mb-3">
-          {item.description}
-        </CardDescription>
 
-        <View className="flex-row justify-between items-center" {...({} as any)}>
-          <View className="flex-row items-center gap-1" {...({} as any)}>
-            <Ionicons name="location-outline" size={16} color="#666" />
-            <Text className="text-sm text-muted-foreground">{item.location.city}</Text>
+        {/* Tags */}
+        <View className="flex-row flex-wrap gap-2 mb-3" {...({} as any)}>
+          <View className="bg-green-50 px-2 py-1 rounded-full" {...({} as any)}>
+            <Text className="text-xs text-green-700 font-medium">Aktiv</Text>
           </View>
+          <View className="bg-orange-50 px-2 py-1 rounded-full" {...({} as any)}>
+            <Text className="text-xs text-orange-700 font-medium">Loppemarked</Text>
+          </View>
+          {item.location.city && (
+            <View className="bg-gray-50 px-2 py-1 rounded-full" {...({} as any)}>
+              <Text className="text-xs text-gray-700 font-medium">{item.location.city}</Text>
+            </View>
+          )}
+        </View>
 
-          <View className="flex-row items-center gap-1" {...({} as any)}>
-            <Ionicons name="calendar-outline" size={16} color="#666" />
-            <Text className="text-sm text-muted-foreground">
-              {new Date(item.startDate).toLocaleDateString('da-DK', {
-                day: 'numeric',
-                month: 'short',
-              })}
+        {/* Location and date info */}
+        <View className="flex-row justify-between items-center mb-4" {...({} as any)}>
+          <View className="flex-row items-center gap-1 flex-1" {...({} as any)}>
+            <Ionicons name="location-outline" size={14} color="#666" />
+            <Text className="text-sm text-gray-600" numberOfLines={1}>
+              {item.location.address}, {item.location.city}
             </Text>
           </View>
+        </View>
+
+        {/* Action buttons */}
+        <View className="flex-row gap-2" {...({} as any)}>
+          <TouchableOpacity
+            className="flex-1 bg-green-500 rounded-lg py-2 px-3 flex-row items-center justify-center"
+            onPress={() => {
+              // Handle "Vi er her" action
+              Alert.alert('Vi er her', `Du har markeret at du er ved ${item.name}`);
+            }}
+            {...({} as any)}
+          >
+            <Ionicons name="checkmark-circle-outline" size={16} color="white" />
+            <Text className="text-white font-medium text-sm ml-1">Vi er her</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            className="flex-1 bg-gray-100 rounded-lg py-2 px-3 flex-row items-center justify-center border border-gray-200"
+            onPress={() => {
+              // Handle "Tilføj favorit" action
+              Alert.alert('Tilføj favorit', `${item.name} tilføjet til favoritter`);
+            }}
+            {...({} as any)}
+          >
+            <Ionicons name="heart-outline" size={16} color="#374151" />
+            <Text className="text-gray-700 font-medium text-sm ml-1">Tilføj favorit</Text>
+          </TouchableOpacity>
         </View>
       </CardContent>
     </Card>
