@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { View, ScrollView, Linking } from 'react-native';
 import { t } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
-import AppFooter from '../../components/AppFooter';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 
@@ -109,8 +108,6 @@ export default function ContactScreen() {
           </Text>
         </View>
       </ScrollView>
-
-      <AppFooter />
     </View>
   );
 }

@@ -4,9 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
-import { testFaceBlur } from '../utils/testFaceBlur';
 import AppHeader from '../components/AppHeader';
-import AppFooter from '../components/AppFooter';
 import LanguageSelector from '../components/LanguageSelector';
 import { Button } from '../components/ui/button';
 import { Text } from '../components/ui/text';
@@ -36,26 +34,8 @@ export default function MoreScreen() {
         setRefreshKey(prev => prev + 1);
     };
 
-    const handleTestFaceBlur = async () => {
-        Alert.alert(
-            'Face Blur Test',
-            'This will test the face detection and blurring functionality. Take a photo with faces visible for the best test results.',
-            [
-                { text: 'Cancel', style: 'cancel' },
-                { 
-                    text: 'Start Test', 
-                    onPress: async () => {
-                        console.log('🧪 Starting face blur test from More screen...');
-                        await testFaceBlur();
-                    }
-                }
-            ]
-        );
-    };
-
     const menuItems = [
         { title: t('myRatings.title'), onPress: () => handleMenuPress('MyRatings') },
-        { title: '🧪 Test Face Blur', onPress: handleTestFaceBlur },
         { title: t('more.privacy'), onPress: () => handleMenuPress('Privacy') },
         { title: t('more.organiser'), onPress: () => handleMenuPress('Organiser') },
         { title: t('more.advertising'), onPress: () => handleMenuPress('Advertising') },
@@ -95,35 +75,21 @@ export default function MoreScreen() {
 
                     <Button
                         variant="destructive"
-                        className="flex-row items-center justify-center gap-2 h-12"
+                        className="flex-row outline border-red-500 bg-white items-center justify-center gap-2 h-12"
                         onPress={handleLogout}
                         {...({} as any)}
                     >
-                        <Lock size={18} color="#ffffff" />
-                        <Text className="text-primary-foreground font-semibold">{t('auth.signOut')}</Text>
+                        <Lock size={18} color="#f00" />
+                        <Text className="text-red-500 font-semibold">{t('auth.signOut')}</Text>
+                        {user?.email && (
+                            <Text variant="muted" className="text-red-200 text-xs">
+                                {user.email}
+                            </Text>
+                        )}
                     </Button>
 
-                    {/* User session info */}
-                    {(user?.email || session?.access_token) && (
-                        <Card>
-                            <CardContent className="items-center p-4">
-                                {user?.email && (
-                                    <Text variant="muted" className="text-xs">
-                                        {t('user.email')}: {user.email}
-                                    </Text>
-                                )}
-                                {session?.access_token && (
-                                    <Text variant="muted" className="text-xs mt-1">
-                                        {t('user.sessionId')}: ...{session.access_token.slice(-8)}
-                                    </Text>
-                                )}
-                            </CardContent>
-                        </Card>
-                    )}
                 </View>
             </ScrollView>
-
-            <AppFooter />
         </View>
     );
 }

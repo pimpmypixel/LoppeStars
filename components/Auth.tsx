@@ -27,8 +27,10 @@ export default function Auth() {
 
         GoogleSignin.configure({
             webClientId: Config.GOOGLE_WEB_CLIENT_ID,
+            androidClientId: Config.GOOGLE_ANDROID_CLIENT_ID,
+            iosClientId: Config.GOOGLE_WEB_CLIENT_ID, // iOS can use web client ID
             scopes: ['email', 'profile'],
-        });
+        } as any);
     }, []);
 
     const testGoogleSigninOnly = async () => {
@@ -106,13 +108,18 @@ export default function Auth() {
                 <CardContent className="gap-4">
                     <Button
                         variant="outline"
-                        className="bg-black border-black"
+                        className="bg-white border-gray-300 hover:bg-gray-50 h-12 rounded-full"
                         onPress={signIn}
                         {...({} as any)}
                     >
-                        <Text className="text-white font-medium">
-                            🔵 {t('auth.signInWithGoogle')}
-                        </Text>
+                        <View className="flex-row items-center gap-3" {...({} as any)}>
+                            <View className="w-6 h-6 bg-blue-500 rounded-full items-center justify-center" {...({} as any)}>
+                                <Text className="text-white font-bold text-sm">G</Text>
+                            </View>
+                            <Text className="text-gray-700 font-medium">
+                                {t('auth.signInWithGoogle')}
+                            </Text>
+                        </View>
                     </Button>
 
                     <TouchableOpacity

@@ -31,11 +31,24 @@
   "navigation": {
     "home": "Home",
     "rateStall": "Rate Stall",
+    "markets": "Markets",
     "more": "More"
   },
   "home": {
     "welcome": "Welcome to Loppestars!",
-    "subtitle": "Your Danish marketplace for second-hand treasures"
+    "subtitle": "Your Danish marketplace for second-hand treasures",
+    "rateFinds": "Rate Your Finds",
+    "rateFindsDescription": "Discover amazing stalls at your local flea market and rate them with stars!",
+    "captureMemories": "Capture Memories",
+    "captureMemoriesDescription": "Take photos of your favorite finds and share them with the community.",
+    "funForEveryone": "Fun for Everyone",
+    "funForEveryoneDescription": "A kid-friendly app that makes flea market shopping exciting and easy!"
+  },
+  "markets": {
+    "title": "Markets",
+    "searchPlaceholder": "Search markets...",
+    "noMarkets": "No markets found",
+    "loadError": "Could not load markets"
   },
   "form": {
     "rateStall": "Rate a Stall",
@@ -45,11 +58,15 @@
     "stallName": "Stall Name",
     "stallNameRequired": "Stall name is required",
     "stallNamePlaceholder": "Enter the name of the stall",
+    "stallNameDescription": "Enter the name of the flea market stall",
     "mobilePayPhone": "MobilePay Phone",
     "mobilePayPhoneRequired": "MobilePay phone number is required",
     "mobilePayPhonePlaceholder": "+45 12 34 56 78",
+    "mobilePayPhoneDescription": "We are GDPR compliant - your data is safe and secure",
     "rating": "Rating",
     "ratingLabel": "How would you rate this stall?",
+    "ratingDescription": "Rate the stall from 1 to 10 stars",
+    "photoDescription": "Add a photo of the stall for better ratings",
     "submit": "Submit Rating",
     "submitting": "Submitting...",
     "submitSuccess": "Rating submitted successfully!",
@@ -113,18 +130,10 @@
     "contact": "Contact",
     "signOut": "Sign Out"
   },
-  "permissions": {
-    "camera": {
-      "title": "Camera Permission",
-      "message": "This app needs access to your camera to take photos of items you want to sell.",
-      "denied": "Camera permission is required to take photos",
-      "grant": "Grant Permission"
-    },
-    "location": {
-      "title": "Location Permission", 
-      "message": "This app needs access to your location to help buyers find items near them.",
-      "denied": "Location permission helps buyers find your items"
-    }
+  "location": {
+    "permissionRequired": "Location Permission Required",
+    "permissionMessage": "We need your location to show nearby flea markets.",
+    "locationError": "Could not get your location. The markets will be shown without distance sorting."
   },
   "footer": {
     "copyright": "© 2025 Loppestars",

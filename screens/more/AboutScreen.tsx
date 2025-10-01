@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { t } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
-import AppFooter from '../../components/AppFooter';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 
@@ -58,8 +57,6 @@ export default function AboutScreen() {
           </Text>
         </View>
       </ScrollView>
-
-      <AppFooter />
     </View>
   );
 }

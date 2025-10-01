@@ -6,29 +6,27 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
-  ActivityIndicator
+  ActivityIndicator,
+  TouchableOpacity
 } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import { supabase } from '../utils/supabase';
 import { t } from '../utils/localization';
 import { useAuth } from '../contexts/AuthContext';
-import { usePhotoUpload } from '../hooks/usePhotoUpload';
 import { checkLocationPermission } from '../utils/permissions';
 import AppHeader from '../components/AppHeader';
-import AppFooter from '../components/AppFooter';
 import AuthGuard from '../components/AuthGuard';
 import CameraModal from '../components/CameraModal';
 import RatingSlider from '../components/RatingSlider';
-import PhotoUploadProgress from '../components/PhotoUploadProgress';
 import { Button } from '../components/ui/button';
 import { Text } from '../components/ui/text';
 import { Input } from '../components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Camera } from 'lucide-react-native';
 
 export default function FormScreen() {
   const { user } = useAuth();
-  const { uploadProgress, uploadPhoto, resetUpload } = usePhotoUpload();
   const [formData, setFormData] = useState({
     stallName: '',
     mobilePayPhone: '',
@@ -65,7 +63,7 @@ export default function FormScreen() {
       return false;
     }
     // Basic phone number validation
-    const phoneRegex = /^\d{8}$/;
+    const phoneRegex = /^\d{8,10}$/;
     if (!phoneRegex.test(formData.mobilePayPhone)) {
       Alert.alert(t('form.validationError'), t('formAlerts.phoneInvalid'));
       return false;
@@ -210,7 +208,6 @@ export default function FormScreen() {
         setPhotoUrl(null);
         setOriginalPhotoUrl(null);
         setProcessedPhotoUrl(null);
-        resetUpload();
         setSubmissionStep('');
 
         console.log('[rating] Form reset completed');
@@ -238,34 +235,16 @@ export default function FormScreen() {
       return;
     }
 
+    // The CameraModal already processed the image, so we just need to set the URLs
+    // The URI returned is the processed image URL from Supabase storage
     setSelectedImage(uri);
+    setPhotoUrl(uri);
+    setProcessedPhotoUrl(uri);
+    setOriginalPhotoUrl(null); // We don't have the original URL from CameraModal
 
-    // Upload immediately in the background
-    console.log('[rating] Starting immediate photo upload');
-    const uploadResult = await uploadPhoto(uri, user.id);
-
-    if (uploadResult.success) {
-      // Store both URLs
-      setOriginalPhotoUrl(uploadResult.originalUrl || null);
-      setProcessedPhotoUrl(uploadResult.processedUrl || null);
-      
-      // Use the processed photo for display (face-blurred version)
-      const displayUrl = uploadResult.processedUrl || uploadResult.originalUrl;
-      setPhotoUrl(displayUrl || null);
-      setSelectedImage(displayUrl || uri);
-      console.log('[rating] Photo uploaded successfully', {
-        original: uploadResult.originalUrl,
-        processed: uploadResult.processedUrl,
-        displaying: displayUrl
-      });
-    } else {
-      console.log('[rating] Immediate photo upload failed', uploadResult.error);
-      Alert.alert(t('common.error'), t('form.photoUploadError'));
-      setSelectedImage(null);
-      setPhotoUrl(null);
-      setOriginalPhotoUrl(null);
-      setProcessedPhotoUrl(null);
-    }
+    console.log('[rating] Photo from camera processed successfully', {
+      processedUrl: uri
+    });
   };
 
   return (
@@ -283,14 +262,16 @@ export default function FormScreen() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>{t('form.stallName')} *</CardTitle>
+                  <CardTitle className="text-xl font-bold">{t('form.stallName')} *</CardTitle>
+                  <CardDescription className="text-xs text-muted-foreground">{t('form.stallNameDescription')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Input
                     value={formData.stallName}
                     onChangeText={(text: string) => handleInputChange('stallName', text)}
                     placeholder={t('form.stallNamePlaceholder')}
-                    maxLength={100}
+                    maxLength={10}
+                    className="text-center text-lg h-12 w-[80%] mx-auto"
                     {...({} as any)}
                   />
                 </CardContent>
@@ -298,7 +279,8 @@ export default function FormScreen() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>{t('form.mobilePayPhone')} *</CardTitle>
+                  <CardTitle className="text-xl font-bold">{t('form.mobilePayPhone')} *</CardTitle>
+                  <CardDescription className="text-xs text-muted-foreground">{t('form.mobilePayPhoneDescription')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Input
@@ -306,8 +288,8 @@ export default function FormScreen() {
                     onChangeText={(text: string) => handleInputChange('mobilePayPhone', text)}
                     placeholder={t('form.mobilePayPhonePlaceholder')}
                     keyboardType="phone-pad"
-                    maxLength={8}
-                    className="text-center"
+                    maxLength={10}
+                    className="text-center text-lg h-12 w-1/2 mx-auto"
                     {...({} as any)}
                   />
                 </CardContent>
@@ -315,7 +297,8 @@ export default function FormScreen() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>{t('form.photo')}</CardTitle>
+                  <CardTitle className="text-xl font-bold">{t('form.photo')}</CardTitle>
+                  <CardDescription className="text-xs text-muted-foreground">{t('form.photoDescription')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <Button
@@ -347,7 +330,6 @@ export default function FormScreen() {
                         setPhotoUrl(null);
                         setOriginalPhotoUrl(null);
                         setProcessedPhotoUrl(null);
-                        resetUpload();
                       }}
                       {...({} as any)}
                     >
@@ -359,7 +341,8 @@ export default function FormScreen() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>{t('form.ratingLabel')}</CardTitle>
+                  <CardTitle className="text-xl font-bold">{t('form.ratingLabel')}</CardTitle>
+                  <CardDescription className="text-xs text-muted-foreground">{t('form.ratingDescription')}</CardDescription>
                 </CardHeader>
                 <CardContent>
                   <RatingSlider
@@ -371,16 +354,24 @@ export default function FormScreen() {
                 </CardContent>
               </Card>
 
-              <Button
-                className="mt-5"
+              <TouchableOpacity
+                className="mt-5 h-14 rounded-xl shadow-lg overflow-hidden"
                 onPress={handleSubmit}
                 disabled={isSubmitting}
                 {...({} as any)}
               >
-                <Text className="text-primary-foreground font-bold">
-                  {isSubmitting ? t('form.submitting') : t('form.submit')}
-                </Text>
-              </Button>
+                <LinearGradient
+                  colors={['#FFD700', '#FFA500', '#FF8C00']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  className="flex-1 justify-center items-center"
+                  {...({} as any)}
+                >
+                  <Text className="text-white font-bold text-lg">
+                    {isSubmitting ? t('form.submitting') : t('form.submit')}
+                  </Text>
+                </LinearGradient>
+              </TouchableOpacity>
 
               {submissionStep ? (
                 <Card className="mt-4">
@@ -394,20 +385,10 @@ export default function FormScreen() {
           </ScrollView>
         </KeyboardAvoidingView>
 
-        <AppFooter />
-
         <CameraModal
           visible={showCamera}
           onClose={handleCameraClose}
           onImageTaken={handleImageTaken}
-        />
-
-        <PhotoUploadProgress
-          visible={uploadProgress.isUploading}
-          progress={uploadProgress.progress}
-          isProcessing={uploadProgress.isProcessing}
-          isUploading={uploadProgress.isUploading}
-          error={uploadProgress.error}
         />
       </View>
     </AuthGuard>

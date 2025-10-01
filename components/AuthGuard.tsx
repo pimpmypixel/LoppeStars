@@ -3,7 +3,6 @@ import { View } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { t } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
-import AppFooter from '../components/AppFooter';
 import { Card, CardContent } from './ui/card';
 import { Text } from './ui/text';
 
@@ -28,7 +27,6 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
             </CardContent>
           </Card>
         </View>
-        <AppFooter />
       </View>
     );
   }
@@ -50,7 +48,6 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
             </CardContent>
           </Card>
         </View>
-        <AppFooter />
       </View>
     );
   }

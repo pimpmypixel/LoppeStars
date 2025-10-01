@@ -31,11 +31,24 @@
   "navigation": {
     "home": "Hjem",
     "rateStall": "Bedøm bod",
+    "markets": "Markeder",
     "more": "Mere"
   },
   "home": {
     "welcome": "Velkommen til Loppestars!",
-    "subtitle": "Din danske markedsplads for brugte skatte"
+    "subtitle": "Din danske markedsplads for brugte skatte",
+    "rateFinds": "Bedøm dine fund",
+    "rateFindsDescription": "Opdag fantastiske boder på dit lokale loppemarked og bedøm dem med stjerner!",
+    "captureMemories": "Fang minder",
+    "captureMemoriesDescription": "Tag billeder af dine yndlingsfund og del dem med fællesskabet.",
+    "funForEveryone": "Sjov for alle",
+    "funForEveryoneDescription": "En børnevenlig app der gør loppemarked shopping spændende og nem!"
+  },
+  "markets": {
+    "title": "Markeder",
+    "searchPlaceholder": "Søg markeder...",
+    "noMarkets": "Ingen markeder fundet",
+    "loadError": "Kunne ikke indlæse markeder"
   },
   "form": {
     "rateStall": "Bedøm en bod",
@@ -45,11 +58,15 @@
     "stallName": "Bod navn",
     "stallNameRequired": "Bod navn er påkrævet",
     "stallNamePlaceholder": "Indtast navnet på boden",
+    "stallNameDescription": "Indtast navnet på loppemarkedsboden",
     "mobilePayPhone": "MobilePay telefon",
     "mobilePayPhoneRequired": "MobilePay telefonnummer er påkrævet",
     "mobilePayPhonePlaceholder": "30405060",
+    "mobilePayPhoneDescription": "Vi er GDPR compliant - dine data er sikre og beskyttede",
     "rating": "Bedømmelse",
     "ratingLabel": "Hvordan vil du bedømme denne bod?",
+    "ratingDescription": "Bedøm boden fra 1 til 10 stjerner",
+    "photoDescription": "Tilføj et foto af boden for bedre bedømmelser",
     "submit": "Send bedømmelse",
     "submitting": "Sender...",
     "submitSuccess": "Bedømmelse sendt med succes!",
@@ -80,7 +97,7 @@
     "processing": "Behandler..."
   },
   "formAlerts": {
-    "phoneInvalid": "Indtast et 8-cifret MobilePay nummer",
+    "phoneInvalid": "Indtast et 6-8-cifret MobilePay nummer",
     "missingPhotoUpload": "Foto blev ikke uploadet korrekt. Prøv igen.",
     "locationPermissionTitle": "Placeringstilladelse",
     "locationPermissionMessage": "Placeringstilladelse er nødvendig for at gemme din bedømmelses placering. Bedømmelsen gemmes uden placering.",
@@ -113,18 +130,10 @@
     "contact": "Kontakt",
     "signOut": "Log ud"
   },
-  "permissions": {
-    "camera": {
-      "title": "Kamera tilladelse",
-      "message": "Denne app har brug for adgang til dit kamera for at tage billeder af varer du vil sælge.",
-      "denied": "Kamera tilladelse er påkrævet for at tage billeder",
-      "grant": "Giv tilladelse"
-    },
-    "location": {
-      "title": "Placering tilladelse",
-      "message": "Denne app har brug for adgang til din placering for at hjælpe købere med at finde varer i nærheden af dem.",
-      "denied": "Placering tilladelse hjælper købere med at finde dine varer"
-    }
+  "location": {
+    "permissionRequired": "Placeringstilladelse påkrævet",
+    "permissionMessage": "Vi har brug for din placering for at vise nærliggende loppemarkeder.",
+    "locationError": "Kunne ikke hente din placering. Markederne vises uden afstandssortering."
   },
   "footer": {
     "copyright": "© 2025 Loppestars", 
