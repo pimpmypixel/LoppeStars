@@ -11,40 +11,23 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import * as Location from 'expo-location';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { t } from '../utils/localization';
 import { supabase } from '../utils/supabase';
 import { useAuth } from '../contexts/AuthContext';
+import { useMarket } from '../contexts/MarketContext';
 import AppHeader from '../components/AppHeader';
 import AuthGuard from '../components/AuthGuard';
 import { Button } from '../components/ui/button';
 import { Text } from '../components/ui/text';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Input } from '../components/ui/input';
-
-// Types
-interface MarketLocation {
-  latitude: number;
-  longitude: number;
-  address: string;
-  city: string;
-  postalCode: string;
-}
-
-interface Market {
-  id: string;
-  name: string;
-  description: string;
-  location: MarketLocation;
-  startDate: string;
-  endDate: string;
-  isActive: boolean;
-  stalls: any[];
-  distance?: number;
-}
+import { Market, MarketLocation } from '../types/common/market';
 
 export default function MarketsScreen() {
   const navigation = useNavigation<any>();
   const { user } = useAuth();
+  const { selectedMarket, setSelectedMarket } = useMarket();
 
   const [markets, setMarkets] = useState<Market[]>([]);
   const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
@@ -88,59 +71,22 @@ export default function MarketsScreen() {
     try {
       setIsLoading(true);
 
-      // For now, use mock data until backend is ready
-      const mockMarkets: Market[] = [
-        {
-          id: '1',
-          name: 'Frederiksberg Loppemarked',
-          description: 'Stort loppemarked med mange spændende boder',
-          location: {
-            latitude: 55.6761,
-            longitude: 12.5683,
-            address: 'Frederiksberg Allé 1',
-            city: 'Frederiksberg',
-            postalCode: '2000',
-          },
-          startDate: '2025-09-26T08:00:00Z',
-          endDate: '2025-09-26T16:00:00Z',
-          isActive: true,
-          stalls: [],
-        },
-        {
-          id: '2',
-          name: 'Nørrebro Genbrugsloppemarked',
-          description: 'Bæredygtigt loppemarked med unikke fund',
-          location: {
-            latitude: 55.6867,
-            longitude: 12.5700,
-            address: 'Nørrebrogade 100',
-            city: 'København N',
-            postalCode: '2200',
-          },
-          startDate: '2025-09-27T09:00:00Z',
-          endDate: '2025-09-27T15:00:00Z',
-          isActive: true,
-          stalls: [],
-        },
-        {
-          id: '3',
-          name: 'Amager Strand Loppemarked',
-          description: 'Loppemarked ved stranden med hyggelig stemning',
-          location: {
-            latitude: 55.6586,
-            longitude: 12.6232,
-            address: 'Amager Strandpark',
-            city: 'København S',
-            postalCode: '2300',
-          },
-          startDate: '2025-09-28T10:00:00Z',
-          endDate: '2025-09-28T17:00:00Z',
-          isActive: true,
-          stalls: [],
-        },
-      ];
+      // Query the database for markets
+      const { data: marketsData, error } = await supabase
+        .from('markets')
+        .select('*')
+        .order('start_date', { ascending: true })
+        .limit(50);
 
-      setMarkets(mockMarkets);
+      if (error) {
+        console.error('Database error:', error);
+        Alert.alert(t('common.error'), 'Kunne ikke hente markeder fra databasen');
+        return;
+      }
+
+      if (marketsData) {
+        setMarkets(marketsData);
+      }
 
     } catch (error) {
       console.error('Load markets error:', error);
@@ -176,7 +122,7 @@ export default function MarketsScreen() {
     if (searchQuery) {
       filtered = filtered.filter(market =>
         market.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        market.location.city.toLowerCase().includes(searchQuery.toLowerCase())
+        (market.city?.toLowerCase().includes(searchQuery.toLowerCase()) || false)
       );
     }
 
@@ -184,13 +130,13 @@ export default function MarketsScreen() {
     if (userLocation) {
       filtered = filtered.map(market => ({
         ...market,
-        distance: calculateDistance(
+        distance: market.latitude && market.longitude ? calculateDistance(
           userLocation.latitude,
           userLocation.longitude,
-          market.location.latitude,
-          market.location.longitude
-        ),
-      })).sort((a, b) => (a.distance || 0) - (b.distance || 0));
+          market.latitude,
+          market.longitude
+        ) : undefined,
+      })).sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
     }
 
     setFilteredMarkets(filtered);
@@ -218,77 +164,138 @@ export default function MarketsScreen() {
     setRefreshing(false);
   };
 
-  const renderMarketItem = ({ item }: { item: Market & { distance?: number } }) => (
-    <Card className="mb-4 mx-4 bg-white shadow-sm" {...({} as any)}>
-      <CardContent className="p-4">
-        {/* Header with name and distance */}
-        <View className="flex-row justify-between items-start mb-3" {...({} as any)}>
-          <Text className="text-lg font-semibold text-gray-900 flex-1 mr-2" numberOfLines={2}>
-            {item.name}
-          </Text>
-          {item.distance && (
-            <View className="bg-blue-50 px-2 py-1 rounded-full" {...({} as any)}>
-              <Text className="text-sm text-blue-600 font-medium">
-                {formatDistance(item.distance)}
-              </Text>
+  const renderMarketItem = ({ item }: { item: Market & { distance?: number } }) => {
+    const isSelected = selectedMarket?.id === item.id;
+    
+    // Check if market is currently active
+    const now = new Date();
+    const startDate = new Date(item.start_date);
+    const endDate = item.end_date ? new Date(item.end_date) : null;
+    const isActive = now >= startDate && (!endDate || now <= endDate);
+
+    return (
+      <TouchableOpacity
+        onPress={() => {
+          setSelectedMarket(item);
+          navigation.navigate('MarketDetails', { market: item });
+        }}
+        activeOpacity={0.7}
+        {...({} as any)}
+      >
+        <View className="relative" {...({} as any)}>
+          <Card className="mb-4 mx-4 bg-white shadow-sm" {...({} as any)}>
+            <CardContent className="px-4">
+            {/* Header with name, city and distance */}
+            <View className="flex-row justify-between items-start mb-2" {...({} as any)}>
+              <View className="flex-1 mr-2" {...({} as any)}>
+                <Text className="text-lg font-semibold text-gray-900 flex-1 mr-2" numberOfLines={2}>
+                  {item.name}
+                </Text>
+                {item.city && (
+                  <Text className="text-sm text-gray-600 font-medium mt-1">
+                    {item.city}
+                  </Text>
+                )}
+              </View>
+              {item.distance && (
+                <View className="bg-blue-50 px-2 py-1 rounded-full" {...({} as any)}>
+                  <Text className="text-sm text-blue-600 font-medium">
+                    {formatDistance(item.distance)}
+                  </Text>
+                </View>
+              )}
             </View>
-          )}
-        </View>
 
-        {/* Tags */}
-        <View className="flex-row flex-wrap gap-2 mb-3" {...({} as any)}>
-          <View className="bg-green-50 px-2 py-1 rounded-full" {...({} as any)}>
-            <Text className="text-xs text-green-700 font-medium">Aktiv</Text>
-          </View>
-          <View className="bg-orange-50 px-2 py-1 rounded-full" {...({} as any)}>
-            <Text className="text-xs text-orange-700 font-medium">Loppemarked</Text>
-          </View>
-          {item.location.city && (
-            <View className="bg-gray-50 px-2 py-1 rounded-full" {...({} as any)}>
-              <Text className="text-xs text-gray-700 font-medium">{item.location.city}</Text>
+            {/* Tags */}
+            <View className="flex-row flex-wrap gap-2 mb-3" {...({} as any)}>
+              {isActive && (
+                <View className="bg-green-50 px-2 py-1 rounded-full" {...({} as any)}>
+                  <Text className="text-xs text-green-700 font-medium">Aktiv</Text>
+                </View>
+              )}
+              <View className="bg-orange-50 px-2 py-1 rounded-full" {...({} as any)}>
+                <Text className="text-xs text-orange-700 font-medium">Loppemarked</Text>
+              </View>
+              {item.city && (
+                <View className="bg-gray-50 px-2 py-1 rounded-full" {...({} as any)}>
+                  <Text className="text-xs text-gray-700 font-medium">{item.city}</Text>
+                </View>
+              )}
             </View>
-          )}
-        </View>
 
-        {/* Location and date info */}
-        <View className="flex-row justify-between items-center mb-4" {...({} as any)}>
-          <View className="flex-row items-center gap-1 flex-1" {...({} as any)}>
-            <Ionicons name="location-outline" size={14} color="#666" />
-            <Text className="text-sm text-gray-600" numberOfLines={1}>
-              {item.location.address}, {item.location.city}
-            </Text>
+            {/* Location and date info */}
+            <View className="flex-row justify-between items-center mb-4" {...({} as any)}>
+              <View className="flex-row items-center gap-1 flex-1" {...({} as any)}>
+                <Ionicons name="location-outline" size={14} color="#666" />
+                <Text className="text-sm text-gray-600" numberOfLines={1}>
+                  {item.address}, {item.city}
+                </Text>
+              </View>
+              <View className="flex-row items-center gap-1 ml-2" {...({} as any)}>
+                <Ionicons name="calendar-outline" size={14} color="#666" />
+                <Text className="text-sm text-gray-600">
+                  {new Date(item.start_date).toLocaleDateString('da-DK', {
+                    day: 'numeric',
+                    month: 'short'
+                  })}
+                  {item.end_date && new Date(item.end_date).toDateString() !== new Date(item.start_date).toDateString() &&
+                    ` - ${new Date(item.end_date).toLocaleDateString('da-DK', {
+                      day: 'numeric',
+                      month: 'short'
+                    })}`
+                  }
+                </Text>
+              </View>
+            </View>
+
+            {/* Action buttons */}
+            <View className="flex-row gap-2" {...({} as any)}>
+              <TouchableOpacity
+                className="flex-1 bg-green-500 rounded-lg py-2 px-3 flex-row items-center justify-center"
+                onPress={() => {
+                  // Handle "Vi er her" action - silent
+                  console.log('User marked as being at:', item.name);
+                }}
+                {...({} as any)}
+              >
+                <Ionicons name="checkmark-circle-outline" size={16} color="white" />
+                <Text className="text-white font-medium text-sm ml-1">Vi er her</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                className="flex-1 bg-gray-100 rounded-lg py-2 px-3 flex-row items-center justify-center border border-gray-200"
+                onPress={() => {
+                  // Handle "Tilføj favorit" action - silent
+                  console.log('Added to favorites:', item.name);
+                }}
+                {...({} as any)}
+              >
+                <Ionicons name="heart-outline" size={16} color="#374151" />
+                <Text className="text-gray-700 font-medium text-sm ml-1">Tilføj favorit</Text>
+              </TouchableOpacity>
+            </View>
+          </CardContent>
+        </Card>
+
+        {/* Green diagonal corner with star for selected market */}
+        {isSelected && isActive && (
+          <View className="absolute top-0 right-0 w-0 h-0" style={{
+            borderLeftWidth: 0,
+            borderRightWidth: 60,
+            borderBottomWidth: 60,
+            borderLeftColor: 'transparent',
+            borderRightColor: 'transparent',
+            borderBottomColor: '#10b981', // green-500
+          }} {...({} as any)}>
+            <View className="absolute top-1 right-1" {...({} as any)}>
+              <Ionicons name="star" size={20} color="white" />
+            </View>
           </View>
-        </View>
-
-        {/* Action buttons */}
-        <View className="flex-row gap-2" {...({} as any)}>
-          <TouchableOpacity
-            className="flex-1 bg-green-500 rounded-lg py-2 px-3 flex-row items-center justify-center"
-            onPress={() => {
-              // Handle "Vi er her" action
-              Alert.alert('Vi er her', `Du har markeret at du er ved ${item.name}`);
-            }}
-            {...({} as any)}
-          >
-            <Ionicons name="checkmark-circle-outline" size={16} color="white" />
-            <Text className="text-white font-medium text-sm ml-1">Vi er her</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            className="flex-1 bg-gray-100 rounded-lg py-2 px-3 flex-row items-center justify-center border border-gray-200"
-            onPress={() => {
-              // Handle "Tilføj favorit" action
-              Alert.alert('Tilføj favorit', `${item.name} tilføjet til favoritter`);
-            }}
-            {...({} as any)}
-          >
-            <Ionicons name="heart-outline" size={16} color="#374151" />
-            <Text className="text-gray-700 font-medium text-sm ml-1">Tilføj favorit</Text>
-          </TouchableOpacity>
-        </View>
-      </CardContent>
-    </Card>
-  );
+        )}
+      </View>
+      </TouchableOpacity>
+    );
+  };
 
   return (
     <AuthGuard>

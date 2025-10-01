@@ -48,7 +48,31 @@
     "title": "Markeder",
     "searchPlaceholder": "Søg markeder...",
     "noMarkets": "Ingen markeder fundet",
-    "loadError": "Kunne ikke indlæse markeder"
+    "loadError": "Kunne ikke indlæse markeder",
+    "details": "Markedsdetaljer",
+    "location": "Placering",
+    "dateTime": "Dato & Tid",
+    "category": "Kategori",
+    "features": "Faciliteter",
+    "food": "Mad",
+    "parking": "Parkering",
+    "toilets": "Toiletter",
+    "wifi": "WiFi",
+    "indoor": "Indendørs",
+    "outdoor": "Udendørs",
+    "additionalInfo": "Yderligere information",
+    "entryFee": "Entré",
+    "stallCount": "Antal boder",
+    "organizer": "Arrangør",
+    "away": "væk",
+    "rateStall": "Bedøm en bod",
+    "here": "Vi er her",
+    "markedHere": "Du har markeret at du er ved",
+    "addFavorite": "Tilføj favorit",
+    "addedToFavorites": "tilføjet til favoritter"
+  },
+  "marketDetails": {
+    "navigationError": "Kunne ikke navigere til bedømmelsesskærmen. Prøv igen."
   },
   "form": {
     "rateStall": "Bedøm en bod",
@@ -59,11 +83,11 @@
     "stallNameRequired": "Bod navn er påkrævet",
     "stallNamePlaceholder": "Indtast navnet på boden",
     "stallNameDescription": "Indtast navnet på loppemarkedsboden",
-    "mobilePayPhone": "MobilePay telefon",
+    "mobilePayPhone": "MobilePay telefon eller kode",
     "mobilePayPhoneRequired": "MobilePay telefonnummer er påkrævet",
     "mobilePayPhonePlaceholder": "30405060",
     "mobilePayPhoneDescription": "Vi er GDPR compliant - dine data er sikre og beskyttede",
-    "rating": "Bedømmelse",
+    "ratingMarket": "Bedømmer marked",
     "ratingLabel": "Hvordan vil du bedømme denne bod?",
     "ratingDescription": "Bedøm boden fra 1 til 10 stjerner",
     "photoDescription": "Tilføj et foto af boden for bedre bedømmelser",
@@ -73,7 +97,10 @@
     "submitError": "Kunne ikke sende bedømmelse",
     "validationError": "Valideringsfejl",
     "loginRequired": "Du skal være logget ind for at sende",
-    "photoUploadError": "Kunne ikke uploade foto"
+    "photoUploadError": "Kunne ikke uploade foto",
+    "noMarketSelected": "Intet marked valgt",
+    "selectMarketFirst": "Vælg venligst et marked først for at bedømme en bod",
+    "goToMarkets": "Gå til Markeder fanen for at vælge et marked"
   },
   "formStatus": {
     "validating": "Validerer bruger...",

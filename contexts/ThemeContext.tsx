@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useColorScheme, Appearance, Platform } from 'react-native';
 import { DarkTheme, DefaultTheme, type Theme } from '@react-navigation/native';
 import { colorScheme } from 'nativewind';
+import { ThemeContextType, ThemeProviderProps } from '../types/contexts/ThemeContext';
 
 export const THEME = {
   light: {
@@ -83,12 +84,6 @@ export const NAV_THEME: Record<'light' | 'dark', Theme> = {
   },
 };
 
-type ThemeContextType = {
-  theme: 'light' | 'dark';
-  setTheme: (theme: 'light' | 'dark') => void;
-  toggleTheme: () => void;
-};
-
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function useTheme() {
@@ -97,10 +92,6 @@ export function useTheme() {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
-}
-
-interface ThemeProviderProps {
-  children: React.ReactNode;
 }
 
 export function ThemeProvider({ children }: ThemeProviderProps) {

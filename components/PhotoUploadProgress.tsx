@@ -3,14 +3,7 @@ import { View, Modal, ActivityIndicator } from 'react-native';
 import { t } from '../utils/localization';
 import { Card, CardContent } from './ui/card';
 import { Text } from './ui/text';
-
-interface PhotoUploadProgressProps {
-  visible: boolean;
-  progress: number;
-  isProcessing: boolean;
-  isUploading: boolean;
-  error?: string;
-}
+import { PhotoUploadProgressProps } from '../types/components/PhotoUploadProgress';
 
 export default function PhotoUploadProgress({
   visible,

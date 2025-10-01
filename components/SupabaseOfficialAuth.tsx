@@ -11,19 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/
 import { Button } from './ui/button';
 import { Text } from './ui/text';
 import { Facebook, Mail, Shield } from 'lucide-react-native';
-
-// Complete the auth session for web browser
-WebBrowser.maybeCompleteAuthSession();
-
-type OAuthProvider = 'google' | 'facebook';
-
-type ParsedParams = {
-  access_token?: string;
-  refresh_token?: string;
-  code?: string;
-  error?: string;
-  error_description?: string;
-};
+import { OAuthProvider, ParsedParams } from '../types/components/SupabaseOfficialAuth';
 
 export default function SupabaseOfficialAuth() {
   const [isLoading, setIsLoading] = useState(false);

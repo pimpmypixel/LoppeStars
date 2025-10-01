@@ -5,18 +5,21 @@ import { Ionicons } from '@expo/vector-icons';
 import { t } from '../utils/localization';
 
 import HomeScreen from '../screens/HomeScreen';
-import MarketsScreen from '../screens/MarketsScreen';
-import RatingScreen from '../screens/RatingScreen';
+import MarketsNavigator from './MarketsNavigator';
+import RatingNavigator from './RatingNavigator';
 import MoreNavigator from './MoreNavigator';
 import { NAV_THEME, THEME, useTheme } from '../contexts/ThemeContext';
+import { navigationRef } from '../utils/navigation';
 
 const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
   const { theme } = useTheme();
 
+  console.log('AppNavigator - rendering, navigationRef ready:', navigationRef.isReady());
+
   return (
-    <NavigationContainer theme={NAV_THEME[theme]}>
+    <NavigationContainer ref={navigationRef} theme={NAV_THEME[theme]}>
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
@@ -29,7 +32,7 @@ export default function AppNavigator() {
             } else if (route.name === 'Markets') {
               iconName = focused ? 'storefront' : 'storefront-outline';
               iconColor = focused ? '#10b981' : '#6ee7b7'; // Green
-            } else if (route.name === 'Add Item') {
+            } else if (route.name === 'Rating') {
               iconName = focused ? 'star' : 'star-outline';
               iconColor = focused ? '#f59e0b' : '#fcd34d'; // Orange/Yellow
             } else if (route.name === 'More') {
@@ -46,7 +49,7 @@ export default function AppNavigator() {
           tabBarStyle: {
             paddingBottom: 8,
             paddingTop: 8,
-            height: 80,
+            height: 100,
             backgroundColor: THEME[theme].card,
             borderTopColor: THEME[theme].border,
             borderTopWidth: 2,
@@ -75,18 +78,17 @@ export default function AppNavigator() {
         />
         <Tab.Screen 
           name="Markets" 
-          component={MarketsScreen}
+          component={MarketsNavigator}
           options={{
             title: t('navigation.markets'),
             headerShown: false,
           }}
         />
-        <Tab.Screen 
-          name="Add Item" 
-          component={RatingScreen}
+        <Tab.Screen
+          name="Rating"
+          component={RatingNavigator}
           options={{
-            title: t('navigation.rateStall'),
-            headerShown: false,
+            tabBarLabel: t('navigation.rateStall'),
           }}
         />
         <Tab.Screen 

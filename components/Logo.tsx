@@ -1,11 +1,7 @@
 import React from 'react';
 import { Image, View } from 'react-native';
 import { cn } from '../lib/utils';
-
-interface LogoProps {
-  size?: 'small' | 'medium' | 'large';
-  style?: any;
-}
+import { LogoProps } from '../types/components/Logo';
 
 export default function Logo({ size = 'medium', style }: LogoProps) {
   const sizeClasses: Record<Required<LogoProps>['size'], string> = {

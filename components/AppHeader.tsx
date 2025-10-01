@@ -2,10 +2,7 @@ import React from 'react';
 import { View } from 'react-native';
 import { Text } from './ui/text';
 import Logo from './Logo';
-
-interface AppHeaderProps {
-  title: string;
-}
+import { AppHeaderProps } from '../types/components/AppHeader';
 
 export default function AppHeader({ title }: AppHeaderProps) {
   return (

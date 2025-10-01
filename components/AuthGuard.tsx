@@ -5,16 +5,15 @@ import { t } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
 import { Card, CardContent } from './ui/card';
 import { Text } from './ui/text';
-
-interface AuthGuardProps {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
-}
+import { AuthGuardProps } from '../types/components/AuthGuard';
 
 export default function AuthGuard({ children, fallback }: AuthGuardProps) {
   const { session, loading } = useAuth();
 
+  console.log('AuthGuard - session:', !!session, 'loading:', loading);
+
   if (loading) {
+    console.log('AuthGuard - showing loading screen');
     return (
       <View className="flex-1 bg-background" {...({} as any)}>
         <AppHeader title={t('common.loading')} />
@@ -32,6 +31,7 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
   }
 
   if (!session) {
+    console.log('AuthGuard - showing sign in screen');
     return fallback || (
       <View className="flex-1 bg-background" {...({} as any)}>
         <AppHeader title={t('auth.signIn')} />
@@ -52,5 +52,6 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
     );
   }
 
+  console.log('AuthGuard - rendering children');
   return <>{children}</>;
 }

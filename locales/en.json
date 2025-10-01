@@ -48,7 +48,31 @@
     "title": "Markets",
     "searchPlaceholder": "Search markets...",
     "noMarkets": "No markets found",
-    "loadError": "Could not load markets"
+    "loadError": "Could not load markets",
+    "details": "Market Details",
+    "location": "Location",
+    "dateTime": "Date & Time",
+    "category": "Category",
+    "features": "Features",
+    "food": "Food",
+    "parking": "Parking",
+    "toilets": "Toilets",
+    "wifi": "WiFi",
+    "indoor": "Indoor",
+    "outdoor": "Outdoor",
+    "additionalInfo": "Additional Information",
+    "entryFee": "Entry Fee",
+    "stallCount": "Number of Stalls",
+    "organizer": "Organizer",
+    "away": "away",
+    "rateStall": "Rate a Stall",
+    "here": "We're here",
+    "markedHere": "You have marked that you are at",
+    "addFavorite": "Add Favorite",
+    "addedToFavorites": "added to favorites"
+  },
+  "marketDetails": {
+    "navigationError": "Could not navigate to rating screen. Please try again."
   },
   "form": {
     "rateStall": "Rate a Stall",
@@ -63,7 +87,7 @@
     "mobilePayPhoneRequired": "MobilePay phone number is required",
     "mobilePayPhonePlaceholder": "+45 12 34 56 78",
     "mobilePayPhoneDescription": "We are GDPR compliant - your data is safe and secure",
-    "rating": "Rating",
+    "ratingMarket": "Rating market",
     "ratingLabel": "How would you rate this stall?",
     "ratingDescription": "Rate the stall from 1 to 10 stars",
     "photoDescription": "Add a photo of the stall for better ratings",
@@ -73,7 +97,10 @@
     "submitError": "Failed to submit rating",
     "validationError": "Validation Error",
     "loginRequired": "You must be logged in to submit",
-    "photoUploadError": "Failed to upload photo"
+    "photoUploadError": "Failed to upload photo",
+    "noMarketSelected": "No market selected",
+    "selectMarketFirst": "Please select a market first to rate a stall",
+    "goToMarkets": "Go to the Markets tab to choose a market"
   },
   "formStatus": {
     "validating": "Validating user session...",

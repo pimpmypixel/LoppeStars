@@ -4,6 +4,7 @@ from dateutil import parser
 import re
 import requests
 import time
+import random
 
 class FleamarketItem(scrapy.Item):
     external_id = scrapy.Field()
@@ -39,6 +40,21 @@ class FleamarketSpider(scrapy.Spider):
     allowed_domains = ['markedskalenderen.dk']
     start_urls = ['https://markedskalenderen.dk/marked/kategori/loppemarked']
 
+    # Limit to 10 markets for testing
+    max_markets = 10
+    markets_scraped = 0
+
+    # Random user agents for requests
+    user_agents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.101 Safari/537.36',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.59',
+    ]
+
     def geocode_address(self, address, city, postal_code):
         """Geocode an address using Nominatim (OpenStreetMap)"""
         if not address and not city:
@@ -57,7 +73,7 @@ class FleamarketSpider(scrapy.Spider):
         query = ", ".join(query_parts)
 
         try:
-            # Use Nominatim API
+            # Use Nominatim API with random user agent
             url = "https://nominatim.openstreetmap.org/search"
             params = {
                 'q': query,
@@ -66,7 +82,7 @@ class FleamarketSpider(scrapy.Spider):
                 'countrycodes': 'dk'  # Limit to Denmark
             }
             headers = {
-                'User-Agent': 'FleamarketScraper/1.0'
+                'User-Agent': random.choice(self.user_agents)
             }
 
             response = requests.get(url, params=params, headers=headers, timeout=10)
@@ -96,13 +112,19 @@ class FleamarketSpider(scrapy.Spider):
             if len(tds) < 4:
                 continue
 
-            # Extract market name and link
+            # Extract market name and link - try multiple selectors
             name_elem = tds[0].css('a::text').get() or tds[0].css('strong::text').get() or tds[0].css('td::text').get()
             if not name_elem:
                 continue
 
             name = name_elem.strip()
+            
+            # Try multiple ways to find the market link
             market_link = tds[0].css('a::attr(href)').get()
+            if not market_link:
+                # Try to find any link in the cell
+                market_link = tds[0].css('a::attr(href)').getall()
+                market_link = market_link[0] if market_link else None
 
             # Extract municipality and category
             municipality_category = tds[1].css('::text').get()
@@ -152,8 +174,8 @@ class FleamarketSpider(scrapy.Spider):
             # Generate external ID from name and dates
             external_id = f"{name}_{start_date}_{end_date}".replace(' ', '_').replace('/', '_') if start_date and end_date else name.replace(' ', '_')
 
-            # Only yield markets that have dates
-            if start_date is not None:
+            # Only yield markets that have dates and limit to max_markets
+            if start_date is not None and self.markets_scraped < self.max_markets:
                 market_item = FleamarketItem(
                     external_id=external_id,
                     name=name,
@@ -166,12 +188,16 @@ class FleamarketSpider(scrapy.Spider):
                     source_url=response.url
                 )
 
-                # If there's a market detail link, follow it for more information
+                # Always visit market detail links for complete metadata extraction
                 if market_link and market_link.startswith('/'):
                     full_url = response.urljoin(market_link)
+                    self.markets_scraped += 1
+                    self.logger.info(f"Visiting detail page for market: {name} (URL: {full_url})")
                     yield response.follow(full_url, self.parse_market_detail, meta={'market_item': market_item})
                 else:
-                    yield market_item
+                    # Skip markets without detail links - we only want complete metadata
+                    self.logger.info(f"Skipping market without detail link: {name}")
+                    continue
 
         # Handle pagination
         next_page = response.css('a:contains("»")::attr(href)').get()
