@@ -3,9 +3,10 @@ import { Construct } from "constructs";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecspatterns from "aws-cdk-lib/aws-ecs-patterns";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
-import 'dotenv/config';
+import { config } from 'dotenv';
 
-const config = require('dotenv').config({ path: '../.env' });
+// Load environment variables from root .env file
+config({ path: '../.env' });
 
 export class LoppestarsEcsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
