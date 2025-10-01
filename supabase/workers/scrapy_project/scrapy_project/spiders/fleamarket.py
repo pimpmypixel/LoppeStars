@@ -1,0 +1,277 @@
+import scrapy
+from datetime import datetime
+from dateutil import parser
+import re
+import requests
+import time
+
+class FleamarketItem(scrapy.Item):
+    external_id = scrapy.Field()
+    name = scrapy.Field()
+    municipality = scrapy.Field()
+    category = scrapy.Field()
+    start_date = scrapy.Field()
+    end_date = scrapy.Field()
+    address = scrapy.Field()
+    city = scrapy.Field()
+    postal_code = scrapy.Field()
+    latitude = scrapy.Field()
+    longitude = scrapy.Field()
+    description = scrapy.Field()
+    organizer_name = scrapy.Field()
+    organizer_phone = scrapy.Field()
+    organizer_email = scrapy.Field()
+    organizer_website = scrapy.Field()
+    opening_hours = scrapy.Field()
+    entry_fee = scrapy.Field()
+    stall_count = scrapy.Field()
+    has_food = scrapy.Field()
+    has_parking = scrapy.Field()
+    has_toilets = scrapy.Field()
+    has_wifi = scrapy.Field()
+    is_indoor = scrapy.Field()
+    is_outdoor = scrapy.Field()
+    special_features = scrapy.Field()
+    source_url = scrapy.Field()
+
+class FleamarketSpider(scrapy.Spider):
+    name = 'fleamarket'
+    allowed_domains = ['markedskalenderen.dk']
+    start_urls = ['https://markedskalenderen.dk/marked/kategori/loppemarked']
+
+    def geocode_address(self, address, city, postal_code):
+        """Geocode an address using Nominatim (OpenStreetMap)"""
+        if not address and not city:
+            return None, None
+
+        # Build query string
+        query_parts = []
+        if address:
+            query_parts.append(address)
+        if postal_code:
+            query_parts.append(postal_code)
+        if city:
+            query_parts.append(city)
+        query_parts.append("Denmark")  # Add country for better results
+
+        query = ", ".join(query_parts)
+
+        try:
+            # Use Nominatim API
+            url = "https://nominatim.openstreetmap.org/search"
+            params = {
+                'q': query,
+                'format': 'json',
+                'limit': 1,
+                'countrycodes': 'dk'  # Limit to Denmark
+            }
+            headers = {
+                'User-Agent': 'FleamarketScraper/1.0'
+            }
+
+            response = requests.get(url, params=params, headers=headers, timeout=10)
+            response.raise_for_status()
+
+            data = response.json()
+            if data:
+                lat = float(data[0]['lat'])
+                lon = float(data[0]['lon'])
+                return lat, lon
+
+        except Exception as e:
+            self.logger.warning(f"Geocoding failed for {query}: {str(e)}")
+
+        return None, None
+
+    def parse(self, response):
+        # Extract market listings from the page
+        markets = response.css('table tr')
+
+        for market in markets:
+            # Skip header rows
+            if not market.css('td'):
+                continue
+
+            tds = market.css('td')
+            if len(tds) < 4:
+                continue
+
+            # Extract market name and link
+            name_elem = tds[0].css('a::text').get() or tds[0].css('strong::text').get() or tds[0].css('td::text').get()
+            if not name_elem:
+                continue
+
+            name = name_elem.strip()
+            market_link = tds[0].css('a::attr(href)').get()
+
+            # Extract municipality and category
+            municipality_category = tds[1].css('::text').get()
+            if municipality_category:
+                # Usually format: "Municipality Category"
+                parts = municipality_category.strip().split()
+                municipality = ' '.join(parts[:-1]) if len(parts) > 1 else municipality_category
+                category = parts[-1] if len(parts) > 1 else 'Loppemarked'
+            else:
+                municipality = None
+                category = 'Loppemarked'
+
+            # Extract dates - dates are in the 6th column (index 5)
+            date_text = tds[5].css('::text').get() if len(tds) > 5 else None
+            start_date = None
+            end_date = None
+
+            if date_text:
+                date_text = date_text.strip()
+                # Handle formats like "04-10-2025<br>05-10-2025" or "05-10-2025<br>05-10-2025"
+                # Split by <br> or newlines
+                date_lines = date_text.replace('<br>', '\n').split('\n')
+                dates = []
+                for line in date_lines:
+                    line_dates = re.findall(r'\d{2}-\d{2}-\d{4}', line.strip())
+                    dates.extend(line_dates)
+
+                if len(dates) >= 1:
+                    try:
+                        start_date = datetime.strptime(dates[0], '%d-%m-%Y').date()
+                    except ValueError:
+                        self.logger.warning(f"Could not parse start date: {dates[0]}")
+                if len(dates) >= 2:
+                    try:
+                        end_date = datetime.strptime(dates[1], '%d-%m-%Y').date()
+                    except ValueError:
+                        self.logger.warning(f"Could not parse end date: {dates[1]}")
+                elif len(dates) == 1 and start_date:
+                    # If only one date, use it for both start and end
+                    end_date = start_date
+
+            # Extract icons (features)
+            icons_text = tds[3].css('::text').get() or ''
+            has_food = '' in icons_text  # Food icon
+            has_parking = '' in icons_text  # Parking icon
+
+            # Generate external ID from name and dates
+            external_id = f"{name}_{start_date}_{end_date}".replace(' ', '_').replace('/', '_') if start_date and end_date else name.replace(' ', '_')
+
+            # Only yield markets that have dates
+            if start_date is not None:
+                market_item = FleamarketItem(
+                    external_id=external_id,
+                    name=name,
+                    municipality=municipality,
+                    category=category,
+                    start_date=start_date.isoformat() if start_date else None,
+                    end_date=end_date.isoformat() if end_date else None,
+                    has_food=has_food,
+                    has_parking=has_parking,
+                    source_url=response.url
+                )
+
+                # If there's a market detail link, follow it for more information
+                if market_link and market_link.startswith('/'):
+                    full_url = response.urljoin(market_link)
+                    yield response.follow(full_url, self.parse_market_detail, meta={'market_item': market_item})
+                else:
+                    yield market_item
+
+        # Handle pagination
+        next_page = response.css('a:contains("»")::attr(href)').get()
+        if next_page:
+            yield response.follow(next_page, self.parse)
+
+    def parse_market_detail(self, response):
+        """Parse individual market detail pages for additional metadata"""
+        market_item = response.meta['market_item']
+
+        try:
+            # Extract additional details from market detail page
+            # Note: These selectors may need adjustment based on actual page structure
+
+            # Address information
+            address = response.css('.address::text, .location::text').get()
+            if address:
+                market_item['address'] = address.strip()
+
+            # City and postal code
+            city_postal = response.css('.city::text, .postal-code::text').get()
+            if city_postal:
+                # Try to extract postal code and city
+                postal_match = re.search(r'(\d{4})\s*(.+)', city_postal.strip())
+                if postal_match:
+                    market_item['postal_code'] = postal_match.group(1)
+                    market_item['city'] = postal_match.group(2).strip()
+
+            # Description
+            description = response.css('.description::text, .content::text').get()
+            if description:
+                market_item['description'] = description.strip()
+
+            # Organizer information
+            organizer_name = response.css('.organizer::text, .contact-name::text').get()
+            if organizer_name:
+                market_item['organizer_name'] = organizer_name.strip()
+
+            organizer_phone = response.css('.phone::text, .contact-phone::text').get()
+            if organizer_phone:
+                # Clean phone number
+                phone_clean = re.sub(r'[^\d+\-\s]', '', organizer_phone)
+                market_item['organizer_phone'] = phone_clean.strip()
+
+            organizer_email = response.css('.email::text, .contact-email::text').get()
+            if organizer_email:
+                market_item['organizer_email'] = organizer_email.strip()
+
+            organizer_website = response.css('.website::attr(href), .website::text').get()
+            if organizer_website:
+                market_item['organizer_website'] = organizer_website.strip()
+
+            # Opening hours (if available)
+            opening_hours = response.css('.hours::text, .opening-hours::text').get()
+            if opening_hours:
+                market_item['opening_hours'] = opening_hours.strip()
+
+            # Entry fee
+            entry_fee_text = response.css('.fee::text, .entry-fee::text').get()
+            if entry_fee_text:
+                # Try to extract numeric fee
+                fee_match = re.search(r'(\d+(?:[.,]\d{1,2})?)', entry_fee_text)
+                if fee_match:
+                    market_item['entry_fee'] = float(fee_match.group(1).replace(',', '.'))
+
+            # Stall count
+            stall_text = response.css('.stalls::text, .stall-count::text').get()
+            if stall_text:
+                stall_match = re.search(r'(\d+)', stall_text)
+                if stall_match:
+                    market_item['stall_count'] = int(stall_match.group(1))
+
+            # Additional features
+            features = []
+            if response.css('.indoor::text, .indoor-icon').get():
+                market_item['is_indoor'] = True
+            if response.css('.outdoor::text, .outdoor-icon').get():
+                market_item['is_outdoor'] = True
+            if response.css('.toilet::text, .toilet-icon').get():
+                market_item['has_toilets'] = True
+            if response.css('.wifi::text, .wifi-icon').get():
+                market_item['has_wifi'] = True
+
+            # Special features as JSON
+            special_features = response.css('.features li::text, .amenities li::text').getall()
+            if special_features:
+                market_item['special_features'] = str(special_features)
+
+            # Geocode the address if we have location information
+            if market_item.get('address') or market_item.get('city'):
+                lat, lon = self.geocode_address(
+                    market_item.get('address'),
+                    market_item.get('city'),
+                    market_item.get('postal_code')
+                )
+                if lat and lon:
+                    market_item['latitude'] = lat
+                    market_item['longitude'] = lon
+
+        except Exception as e:
+            self.logger.warning(f"Error parsing market detail for {market_item.get('name')}: {str(e)}")
+
+        yield market_item

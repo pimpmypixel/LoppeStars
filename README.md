@@ -122,6 +122,8 @@ bun install
 - **Styling:** NativeWind plus shadcn-inspired primitives and Lucide icons
 - **Auth:** Google OAuth (`@react-native-google-signin/google-signin`) with Supabase session management
 - **Backend:** Supabase (database, auth, storage); local stack on port 54321
+- **Data Scraping:** Scrapy spider for fleamarket data from markedskalenderen.dk
+- **Image Processing:** FastAPI worker with OpenCV face detection and blurring
 - **State & storage:** AsyncStorage for auth persistence; Supabase for user data
 - **Localization:** `i18n-js` with Danish and English translations
 - **Navigation:** React Navigation bottom tabs with nested stacks
@@ -198,6 +200,34 @@ Google OAuth is fully wired up; once the IDs are correct, sign-in works on Andro
 | `npm run ts:watch` | Type-check continuously while editing. |
 
 > Replace `npm` with `bun run` if you installed dependencies using Bun.
+
+---
+
+## Fleamarket Data Scraping
+
+The app includes automated scraping of fleamarket data from markedskalenderen.dk:
+
+### Scraping Infrastructure
+- **Scrapy Spider**: Extracts market listings, dates, and features from the website
+- **Daily Automation**: Cron job runs scraper at 2 AM daily
+- **Data Storage**: Markets stored in Supabase with upsert logic
+- **API Endpoints**: FastAPI and Edge Functions serve market data to the app
+
+### Market Data Available
+- Market names and municipalities
+- Date ranges (start/end dates)
+- Location details (address, city, postal code, coordinates)
+- Organizer contact information (name, phone, email, website)
+- Opening hours and entry fees
+- Stall counts and venue types (indoor/outdoor)
+- Amenities (food service, parking, toilets, WiFi)
+- Special features and descriptions
+- Source URLs for reference
+
+### API Endpoints
+- `GET /markets/today` - Markets happening today
+- `GET /markets/nearby?latitude=...&longitude=...` - Markets within radius
+- `GET /markets/search?query=...` - Search markets by name/location
 
 ---
 
