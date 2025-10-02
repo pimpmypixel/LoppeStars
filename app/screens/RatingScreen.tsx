@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Alert, ScrollView } from 'react-native';
+import { View, Alert, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import { useMarket } from '../contexts/MarketContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Text } from '../components/ui/text';
@@ -13,15 +13,18 @@ import RatingSlider from '../components/RatingSlider';
 import CameraModal from '../components/CameraModal';
 import PhotoUploadProgress from '../components/PhotoUploadProgress';
 import { usePhotoUpload } from '../hooks/usePhotoUpload';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import { supabase } from '../utils/supabase';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function RatingScreen() {
   console.log('=== RATING SCREEN MOUNTED ===');
   const { selectedMarket } = useMarket();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [rating, setRating] = useState(5);
   const [stallName, setStallName] = useState('');
+  const [mobilePayCode, setMobilePayCode] = useState('');
   const [comments, setComments] = useState('');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [showCamera, setShowCamera] = useState(false);
@@ -40,10 +43,13 @@ export default function RatingScreen() {
       return;
     }
 
+
     if (!stallName.trim()) {
       Alert.alert(t('common.error'), t('rating.errorNoStallName'));
       return;
     }
+
+    // Optionally validate MobilePay code (e.g., length or numeric)
 
     setIsSubmitting(true);
 
@@ -62,12 +68,14 @@ export default function RatingScreen() {
 
       // Submit rating to database
       console.log('Submitting rating...');
+
       const { error } = await supabase
         .from('ratings')
         .insert({
           user_id: user.id,
           market_id: selectedMarket.id,
           stall_name: stallName.trim(),
+          mobilepay_code: mobilePayCode.trim() || null,
           rating: rating,
           comments: comments.trim() || null,
           photo_url: photoUrl,
@@ -85,6 +93,7 @@ export default function RatingScreen() {
           onPress: () => {
             // Reset form
             setStallName('');
+            setMobilePayCode('');
             setComments('');
             setRating(5);
             setPhotoUri(null);
@@ -108,7 +117,7 @@ export default function RatingScreen() {
           {/* Selected Market Display */}
           {selectedMarket && selectedMarket.name ? (
             <Card className="bg-blue-50 border-blue-200 mb-5">
-              <CardContent className="p-4">
+              <CardContent className="p-0">
                 <View className="flex-row items-center" {...({} as any)}>
                   <Ionicons name="storefront" size={20} color="#3b82f6" />
                   <Text className="text-blue-800 font-medium ml-2">
@@ -141,6 +150,7 @@ export default function RatingScreen() {
               <CardTitle>{t('rating.rateStall')}</CardTitle>
             </CardHeader>
             <CardContent className="gap-4">
+
               {/* Stall Name */}
               <View {...({} as any)}>
                 <Label htmlFor="stallName">{t('rating.stallName')}</Label>
@@ -153,36 +163,19 @@ export default function RatingScreen() {
                 />
               </View>
 
-              {/* Rating Slider */}
+              {/* MobilePay Code */}
               <View {...({} as any)}>
-                <Label>{t('rating.rating')}</Label>
-                <RatingSlider
-                  value={rating}
-                  onValueChange={setRating}
-                  min={1}
-                  max={10}
-                />
-                <Text className="text-center mt-2 text-muted-foreground">
-                  {rating}/10
-                </Text>
-              </View>
-
-              {/* Comments */}
-              <View {...({} as any)}>
-                <Label htmlFor="comments">{t('rating.comments')} ({t('common.optional')})</Label>
+                <Label htmlFor="mobilePayCode">{t('form.mobilePayPhone')}</Label>
                 <Input
-                  id="comments"
-                  placeholder={t('rating.commentsPlaceholder')}
-                  value={comments}
-                  onChangeText={setComments}
-                  multiline
-                  numberOfLines={3}
+                  id="mobilePayCode"
+                  placeholder={t('form.mobilePayPhonePlaceholder')}
+                  value={mobilePayCode}
+                  onChangeText={setMobilePayCode}
                   className="mt-1"
-                  style={{ height: 80, textAlignVertical: 'top' }}
+                  keyboardType="number-pad"
                 />
               </View>
-
-              {/* Photo Upload */}
+               {/* Photo Upload */}
               <View {...({} as any)}>
                 <Label>{t('rating.photo')} ({t('common.optional')})</Label>
                 <View className="flex-row gap-3 mt-2" {...({} as any)}>
@@ -212,19 +205,59 @@ export default function RatingScreen() {
                 )}
               </View>
 
+              {/* Rating Stars */}
+              <View {...({} as any)}>
+                <Label>{t('rating.rating')}</Label>
+                <RatingSlider
+                  value={rating}
+                  onValueChange={setRating}
+                  min={1}
+                  max={10}
+                />
+                <Text className="text-center mt-2 text-muted-foreground">
+                  {rating}/10
+                </Text>
+              </View>
+
+              {/* Comments */}
+              <View {...({} as any)}>
+                <Label htmlFor="comments">{t('rating.comments')} ({t('common.optional')})</Label>
+                <Input
+                  id="comments"
+                  placeholder={t('rating.commentsPlaceholder')}
+                  value={comments}
+                  onChangeText={setComments}
+                  multiline
+                  numberOfLines={3}
+                  className="mt-1"
+                  style={{ height: 80, textAlignVertical: 'top' }}
+                />
+              </View>
+
+             
+
               {/* Submit Button */}
-              <Button
-                className="mt-4"
+              <TouchableOpacity
+                className="mt-5 h-14 rounded-xl shadow-lg overflow-hidden justify-center items-center"
                 onPress={handleSubmit}
-                disabled={isSubmitting || !selectedMarket}
+                disabled={isSubmitting}
+                activeOpacity={0.85}
+                style={{ position: 'relative' }}
                 {...({} as any)}
               >
-                {isSubmitting ? (
-                  <Text>{t('rating.submitting')}</Text>
-                ) : (
-                  <Text>{t('rating.submit')}</Text>
-                )}
-              </Button>
+                <View style={{ ...StyleSheet.absoluteFillObject, zIndex: 0 }} pointerEvents="none">
+                  <LinearGradient
+                    colors={['#FFD700', '#FFA500', '#FF8C00']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{ flex: 1, borderRadius: 12 }}
+                  />
+                </View>
+                <Text className="text-white font-bold text-lg" style={{ zIndex: 1 }}>
+                  {isSubmitting ? t('form.submitting') : t('form.submit')}
+                </Text>
+              </TouchableOpacity>
+              {/* The Button block above is replaced by the TouchableOpacity/LinearGradient submit button. Properly close CardContent here. */}
             </CardContent>
           </Card>
         </View>

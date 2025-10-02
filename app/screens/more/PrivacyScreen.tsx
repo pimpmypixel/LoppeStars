@@ -2,7 +2,7 @@ import React from 'react';
 import { View, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { t } from '../../utils/localization';
+import { useTranslation } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
 import AppFooter from '../../components/AppFooter';
 import { Button } from '../../components/ui/button';
@@ -10,6 +10,7 @@ import { Text } from '../../components/ui/text';
 
 export default function PrivacyScreen() {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   return (
     <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>

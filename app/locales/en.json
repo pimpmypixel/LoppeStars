@@ -10,7 +10,8 @@
     "no": "No",
     "retry": "Retry",
     "done": "Done",
-    "back": "Back"
+    "back": "Back",
+    "optional": "Optional"
   },
   "language": {
     "selectorTitle": "Choose language",
@@ -52,7 +53,7 @@
     "details": "Market Details",
     "location": "Location",
     "dateTime": "Date & Time",
-    "category": "Category",
+  "category": "Category",
     "features": "Features",
     "food": "Food",
     "parking": "Parking",
@@ -65,7 +66,11 @@
     "stallCount": "Number of Stalls",
     "organizer": "Organizer",
     "away": "away",
-    "rateStall": "Rate a Stall",
+  "rateStall": "Rate a Stall",
+  "selected": "SELECTED",
+  "active": "Active",
+
+  "dateUnavailable": "Date unavailable",
     "here": "We're here",
     "markedHere": "You have marked that you are at",
     "addFavorite": "Add Favorite",
@@ -174,5 +179,25 @@
     "title": "My Ratings",
     "noRatings": "You haven't rated any stalls yet",
     "startRating": "Go to camera to rate your first stall!"
+  },
+  "rating": {
+    "selectedMarket": "Selected Market",
+    "noMarketSelected": "No Market Selected",
+    "rateStall": "Rate a Stall",
+    "stallName": "Stall Name",
+    "stallNamePlaceholder": "Enter the name of the stall",
+    "rating": "Rating",
+    "comments": "Comments",
+    "commentsPlaceholder": "Share your thoughts about this stall (optional)",
+    "photo": "Photo",
+    "takePhoto": "Take Photo",
+    "photoAttached": "Photo attached",
+    "submit": "Submit Rating",
+    "submitting": "Submitting...",
+    "successMessage": "Thank you for your rating!",
+    "errorNoMarket": "Please select a market first",
+    "errorNoStallName": "Please enter a stall name",
+    "errorPhotoUpload": "Failed to upload photo",
+    "errorSubmit": "Failed to submit rating"
   }
 }

@@ -10,7 +10,8 @@
     "no": "Nej",
     "retry": "Prøv igen",
     "done": "Færdig",
-    "back": "Tilbage"
+    "back": "Tilbage",
+    "optional": "Valgfrit"
   },
   "language": {
     "selectorTitle": "Vælg sprog",
@@ -52,7 +53,7 @@
     "details": "Markedsdetaljer",
     "location": "Placering",
     "dateTime": "Dato & Tid",
-    "category": "Kategori",
+  "category": "Kategori",
     "features": "Faciliteter",
     "food": "Mad",
     "parking": "Parkering",
@@ -65,7 +66,11 @@
     "stallCount": "Antal boder",
     "organizer": "Arrangør",
     "away": "væk",
-    "rateStall": "Bedøm en bod",
+  "rateStall": "Bedøm en bod",
+  "selected": "VALGT",
+  "active": "Aktiv",
+
+  "dateUnavailable": "Dato ikke tilgængelig",
     "here": "Vi er her",
     "markedHere": "Du har markeret at du er ved",
     "addFavorite": "Tilføj favorit",
@@ -174,5 +179,25 @@
     "title": "Mine bedømmelser",
     "noRatings": "Du har endnu ikke bedømt nogen boder",
     "startRating": "Gå til kameraet for at bedømme din første bod!"
+  },
+  "rating": {
+    "selectedMarket": "Valgt Marked",
+    "noMarketSelected": "Intet Marked Valgt",
+    "rateStall": "Bedøm en Bod",
+    "stallName": "Bod Navn",
+    "stallNamePlaceholder": "Indtast navnet på boden",
+    "rating": "Bedømmelse",
+    "comments": "Kommentarer",
+    "commentsPlaceholder": "Del dine tanker om denne bod (valgfrit)",
+    "photo": "Foto",
+    "takePhoto": "Tag Foto",
+    "photoAttached": "Foto vedhæftet",
+    "submit": "Send Bedømmelse",
+    "submitting": "Sender...",
+    "successMessage": "Tak for din bedømmelse!",
+    "errorNoMarket": "Vælg venligst et marked først",
+    "errorNoStallName": "Indtast venligst et bod navn",
+    "errorPhotoUpload": "Kunne ikke uploade foto",
+    "errorSubmit": "Kunne ikke sende bedømmelse"
   }
 }

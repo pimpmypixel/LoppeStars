@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import * as Linking from 'expo-linking';
 import { useAuth } from '../contexts/AuthContext';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import SupabaseOfficialAuth from '../components/SupabaseOfficialAuth';
 import AppNavigator from '../navigation/AppNavigator';
 import { supabase } from '../utils/supabase';
@@ -10,6 +10,7 @@ import { Text } from './ui/text';
 
 export default function AuthWrapper() {
   const { session, loading } = useAuth();
+  const { t } = useTranslation();
 
   useEffect(() => {
     // Handle deep links for OAuth callback

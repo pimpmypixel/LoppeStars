@@ -3,7 +3,7 @@ import { View, ScrollView, Image, RefreshControl } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../utils/supabase';
-import { t } from '../../utils/localization';
+import { useTranslation } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
 import AppFooter from '../../components/AppFooter';
 import { Button } from '../../components/ui/button';
@@ -24,6 +24,7 @@ interface Rating {
 
 export default function MyRatingsScreen() {
   const navigation = useNavigation();
+  const { t } = useTranslation();
   const [ratings, setRatings] = useState<Rating[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);

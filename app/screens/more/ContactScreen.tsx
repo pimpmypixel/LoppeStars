@@ -2,13 +2,14 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { View, ScrollView, Linking } from 'react-native';
-import { t } from '../../utils/localization';
+import { useTranslation } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
 import { Button } from '../../components/ui/button';
 import { Text } from '../../components/ui/text';
 
 export default function ContactScreen() {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const handleEmailPress = (email: string) => {
     Linking.openURL(`mailto:${email}`);

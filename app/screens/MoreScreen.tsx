@@ -3,7 +3,7 @@ import { View, ScrollView, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../utils/supabase';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
 import LanguageSelector from '../components/LanguageSelector';
 import { Button } from '../components/ui/button';
@@ -15,6 +15,7 @@ export default function MoreScreen() {
     const navigation = useNavigation();
     const { user, session, signOut } = useAuth();
     const [refreshKey, setRefreshKey] = useState(0);
+    const { t } = useTranslation();
 
     const handleLogout = async () => {
         try {

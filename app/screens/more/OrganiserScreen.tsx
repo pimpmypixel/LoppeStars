@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { View, ScrollView, Linking } from 'react-native';
-import { t } from '../../utils/localization';
+import { useTranslation } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
 import AppFooter from '../../components/AppFooter';
 import { Button } from '../../components/ui/button';
@@ -10,6 +10,7 @@ import { Text } from '../../components/ui/text';
 
 export default function OrganiserScreen() {
   const navigation = useNavigation();
+  const { t } = useTranslation();
 
   const handleEmailPress = () => {
     Linking.openURL('mailto:organiser@loppestars.com');

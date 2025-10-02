@@ -1,6 +1,8 @@
 import React from 'react';
 import { View } from 'react-native';
-import { getCurrentLanguage, changeLanguage, t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
+import { useLanguage } from '../stores/appStore';
+import { changeLanguage } from '../utils/localization';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Text } from './ui/text';
@@ -10,10 +12,12 @@ interface LanguageSelectorProps {
 }
 
 export default function LanguageSelector({ onLanguageChange }: LanguageSelectorProps) {
-  const currentLanguage = getCurrentLanguage();
+  const { language, setLanguage } = useLanguage();
+  const { t } = useTranslation();
 
-  const handleLanguageChange = async (language: 'en' | 'da') => {
-    await changeLanguage(language);
+
+  const handleLanguageChange = async (newLanguage: 'en' | 'da') => {
+    await changeLanguage(newLanguage);
     if (onLanguageChange) {
       onLanguageChange();
     }
@@ -32,23 +36,23 @@ export default function LanguageSelector({ onLanguageChange }: LanguageSelectorP
       <CardContent>
         <View className="flex-row justify-center gap-3" {...({} as any)}>
           <Button
-            variant={currentLanguage === 'en' ? 'default' : 'outline'}
-            className="flex-1 h-10"
-            onPress={() => handleLanguageChange('en')}
-            {...({} as any)}
-          >
-            <Text className="font-medium">
-              {t('language.english')}
-            </Text>
-          </Button>
-          <Button
-            variant={currentLanguage === 'da' ? 'default' : 'outline'}
+            variant={language === 'da' ? 'default' : 'outline'}
             className="flex-1 h-10"
             onPress={() => handleLanguageChange('da')}
             {...({} as any)}
           >
             <Text className="font-medium">
               {t('language.danish')}
+            </Text>
+          </Button>
+          <Button
+            variant={language === 'en' ? 'default' : 'outline'}
+            className="flex-1 h-10"
+            onPress={() => handleLanguageChange('en')}
+            {...({} as any)}
+          >
+            <Text className="font-medium">
+              {t('language.english')}
             </Text>
           </Button>
         </View>

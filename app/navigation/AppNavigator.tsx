@@ -2,7 +2,8 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
+import { useLanguage } from '../stores/appStore';
 
 import HomeScreen from '../screens/HomeScreen';
 import MarketsNavigator from './MarketsNavigator';
@@ -15,6 +16,8 @@ const Tab = createBottomTabNavigator();
 
 export default function AppNavigator() {
   const { theme } = useTheme();
+  const { language } = useLanguage(); // Force re-render when language changes
+  const { t } = useTranslation();
 
   console.log('AppNavigator - rendering, navigationRef ready:', navigationRef.isReady());
 
@@ -68,16 +71,16 @@ export default function AppNavigator() {
           },
         })}
       >
-        <Tab.Screen 
-          name="Home" 
+        <Tab.Screen
+          name="Home"
           component={HomeScreen}
           options={{
             title: t('navigation.home'),
             headerShown: false,
           }}
         />
-        <Tab.Screen 
-          name="Markets" 
+        <Tab.Screen
+          name="Markets"
           component={MarketsNavigator}
           options={{
             title: t('navigation.markets'),
@@ -91,8 +94,8 @@ export default function AppNavigator() {
             tabBarLabel: t('navigation.rateStall'),
           }}
         />
-        <Tab.Screen 
-          name="More" 
+        <Tab.Screen
+          name="More"
           component={MoreNavigator}
           options={{
             title: t('navigation.more'),

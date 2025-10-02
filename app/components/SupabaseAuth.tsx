@@ -4,7 +4,7 @@ import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
 import Config from 'react-native-config';
 import { supabase } from '../utils/supabase';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import Logo from './Logo';
 import { Facebook, Mail } from 'lucide-react-native';
 
@@ -14,6 +14,7 @@ WebBrowser.maybeCompleteAuthSession();
 export default function SupabaseAuth() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState<'google' | 'facebook' | null>(null);
+  const { t } = useTranslation();
 
   const googleClientId = Config.GOOGLE_WEB_CLIENT_ID ?? '';
   const facebookAppId = Config.FACEBOOK_APP_ID ?? '';

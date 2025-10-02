@@ -5,7 +5,7 @@ import * as QueryParams from 'expo-auth-session/build/QueryParams';
 import * as WebBrowser from 'expo-web-browser';
 import * as Linking from 'expo-linking';
 import { supabase } from '../utils/supabase';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import Logo from './Logo';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -16,6 +16,7 @@ import { OAuthProvider, ParsedParams } from '../types/components/SupabaseOfficia
 export default function SupabaseOfficialAuth() {
   const [isLoading, setIsLoading] = useState(false);
   const [loadingProvider, setLoadingProvider] = useState<OAuthProvider | null>(null);
+  const { t } = useTranslation();
 
   // Create redirect URI for this app
   const redirectTo = useMemo(

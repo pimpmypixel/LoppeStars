@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { Frown, Laugh, Meh, Smile, Sparkles, Star } from 'lucide-react-native';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import { Text } from './ui/text';
 
 interface RatingSliderProps {
@@ -12,6 +12,7 @@ interface RatingSliderProps {
 }
 
 export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }: RatingSliderProps) {
+  const { t } = useTranslation();
   const ratingConfig = useMemo(() => {
     if (value <= 2) {
       return { color: '#ef4444', labelKey: 'formRating.terrible', Icon: Frown };

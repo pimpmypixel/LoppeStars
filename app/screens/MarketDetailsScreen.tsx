@@ -3,7 +3,7 @@ import { View, ScrollView, TouchableOpacity, Alert, Text as RNText } from 'react
 import { useNavigation, useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import { useAuth } from '../contexts/AuthContext';
 import { useMarket } from '../contexts/MarketContext';
 import { Button } from '../components/ui/button';
@@ -17,6 +17,7 @@ export default function MarketDetailsScreen() {
   const route = useRoute<any>();
   const { user } = useAuth();
   const { setSelectedMarket } = useMarket();
+  const { t } = useTranslation();
 
   const market: Market = route.params?.market;
 

@@ -3,7 +3,7 @@ import { View, Alert, Image, Modal, useWindowDimensions, ActivityIndicator } fro
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { getInfoAsync, readAsStringAsync } from 'expo-file-system/legacy';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import { Button } from './ui/button';
 import { Text } from './ui/text';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -25,6 +25,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
   const { width, height } = useWindowDimensions();
   const orientation = width > height ? 'landscape' : 'portrait';
   const { user } = useAuth();
+  const { t } = useTranslation();
 
   console.log('Current orientation:', orientation, { width, height });
 

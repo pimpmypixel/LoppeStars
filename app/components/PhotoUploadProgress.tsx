@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Modal, ActivityIndicator } from 'react-native';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import { Card, CardContent } from './ui/card';
 import { Text } from './ui/text';
 import { PhotoUploadProgressProps } from '../types/components/PhotoUploadProgress';
@@ -12,6 +12,7 @@ export default function PhotoUploadProgress({
   isUploading,
   error
 }: PhotoUploadProgressProps) {
+  const { t } = useTranslation();
   if (!visible) return null;
 
   const getStatusText = () => {

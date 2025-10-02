@@ -1,13 +1,20 @@
 import React from 'react';
 import { View, ScrollView } from 'react-native';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
 import Logo from '../components/Logo';
 import { Text } from '../components/ui';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { Star, Camera, Heart } from 'lucide-react-native';
+import { Star, Camera, Heart, MapPin } from 'lucide-react-native';
+import { useSelectedMarket } from '../stores/appStore';
+import { Button } from '../components/ui/button';
+import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
+  const { selectedMarket } = useSelectedMarket();
+  const navigation = useNavigation();
+  const { t } = useTranslation();
+
   return (
     <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
       <AppHeader title="Loppestars" />
@@ -21,6 +28,33 @@ export default function HomeScreen() {
           <Text variant="lead" className="text-center mb-8">
             {t('home.subtitle')}
           </Text>
+
+          {/* Selected Market Display */}
+          {selectedMarket && (
+            <Card className="w-full max-w-sm bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200 mb-6">
+              <CardHeader className="items-center pb-2">
+                <MapPin size={24} color="#f97316" />
+                <CardTitle className="text-lg text-center">Current Market</CardTitle>
+              </CardHeader>
+              <CardContent className="items-center">
+                <Text className="text-lg font-semibold text-center mb-1">
+                  {selectedMarket.name}
+                </Text>
+                {selectedMarket.city && (
+                  <Text className="text-muted-foreground text-center mb-3">
+                    {selectedMarket.city}
+                  </Text>
+                )}
+                <Button
+                  className="w-full"
+                  onPress={() => navigation.navigate('Rating' as never)}
+                  {...({} as any)}
+                >
+                  <Text>Rate a Stall</Text>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Nice introduction section */}
           <View className="w-full max-w-sm gap-4" {...({} as any)}>

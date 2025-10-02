@@ -3,13 +3,14 @@ import { View, Alert, TouchableOpacity, Linking } from 'react-native';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import Config from 'react-native-config';
 import { supabase } from '../utils/supabase';
-import { t } from '../utils/localization';
+import { useTranslation } from '../utils/localization';
 import Logo from './Logo';
 import { Button } from './ui/button';
 import { Text } from './ui/text';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 
 export default function Auth() {
+    const { t } = useTranslation();
 
     const ensureGoogleClientId = React.useCallback(() => {
         if (!Config.GOOGLE_WEB_CLIENT_ID) {
