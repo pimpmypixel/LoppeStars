@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /app
 
-COPY requirements.txt .
+COPY api/requirements.txt ./requirements.txt
 # Ensure NumPy 1.x compatibility with installed modules
 RUN pip install --no-cache-dir "numpy<2.0"
 RUN pip install --no-cache-dir -r requirements.txt
