@@ -8,8 +8,7 @@
   },
   "include": [
     "**/*",
-    "types/**/*",
-    "nativewind-env.d.ts"
+    "types/**/*"
   ],
   "exclude": [
     "supabase/**/*"
