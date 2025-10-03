@@ -3,6 +3,8 @@ import { Construct } from "constructs";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecspatterns from "aws-cdk-lib/aws-ecs-patterns";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
+import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { config } from 'dotenv';
 
 // Load environment variables from root .env file
@@ -18,6 +20,18 @@ export class LoppestarsEcsStack extends cdk.Stack {
     // ECS Cluster
     const cluster = new ecs.Cluster(this, "Cluster", { vpc });
 
+    // Create a DNS-validated ACM certificate (DNS hosted in Cloudflare)
+    const cfnCert = new acm.CfnCertificate(this, 'LoadBalancerCfnCert', {
+      domainName: process.env.ECS_DOMAIN!,
+      validationMethod: 'DNS',
+    });
+    // Import the generated certificate ARN for use in ALB
+    const certificate = acm.Certificate.fromCertificateArn(this, 'LoadBalancerCert', cfnCert.ref);
+    // Export Certificate ARN for external automation
+    new cdk.CfnOutput(this, 'CertificateArn', {
+      value: cfnCert.ref,
+    });
+
     // Fargate + ALB
     const fargateService = new ecspatterns.ApplicationLoadBalancedFargateService(this, "Service", {
       cluster,
@@ -25,6 +39,10 @@ export class LoppestarsEcsStack extends cdk.Stack {
       memoryLimitMiB: 1024,
       desiredCount: 1,
       publicLoadBalancer: true,
+      protocol: elbv2.ApplicationProtocol.HTTPS,
+      listenerPort: 443,
+      redirectHTTP: true,
+      certificate: certificate,
       assignPublicIp: true,
       taskImageOptions: {
         image: ecs.ContainerImage.fromAsset(".", {

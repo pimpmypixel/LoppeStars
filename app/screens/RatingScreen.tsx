@@ -58,12 +58,19 @@ export default function RatingScreen() {
 
       // Upload photo if one was taken
       if (photoUri) {
-        console.log('Uploading photo...');
-        const uploadResult = await uploadPhoto(photoUri, user.id);
-        if (!uploadResult.success) {
-          throw new Error(uploadResult.error || t('rating.errorPhotoUpload'));
+        console.log('Handling photo URI:', photoUri);
+        // If photoUri is a remote URL (e.g., processed image), skip upload and use it directly
+        if (/^https?:\/\//.test(photoUri)) {
+          console.log('Using existing remote photo URL');
+          photoUrl = photoUri;
+        } else {
+          console.log('Uploading local photo...');
+          const uploadResult = await uploadPhoto(photoUri, user.id);
+          if (!uploadResult.success) {
+            throw new Error(uploadResult.error || t('rating.errorPhotoUpload'));
+          }
+          photoUrl = uploadResult.processedUrl || uploadResult.originalUrl;
         }
-        photoUrl = uploadResult.processedUrl || uploadResult.originalUrl;
       }
 
       // Submit rating to database

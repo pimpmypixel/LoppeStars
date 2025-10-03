@@ -250,8 +250,8 @@ async def trigger_scraper():
     except Exception as e:
         raise HTTPException(500, f"Error triggering scraper: {str(e)}")
 
-@app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {"status": "healthy", "service": "loppestars-faceblur-api"}
 
+@app.get("/")
+@app.get("/health")
+async def health():
+    return {"status": "healthy", "service": "loppestars"}

@@ -1,5 +1,13 @@
 FROM python:3.11-slim
 
+# Accept build-time args
+ARG SUPABASE_URL
+ARG SUPABASE_SERVICE_ROLE_KEY
+ARG SUPABASE_ANON_KEY
+ARG SOURCE_BUCKET
+ARG STORAGE_BUCKET
+
+
 RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     libglib2.0-0 \
@@ -15,6 +23,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 WORKDIR /app
 
 COPY requirements.txt .
+# Ensure NumPy 1.x compatibility with installed modules
+RUN pip install --no-cache-dir "numpy<2.0"
 RUN pip install --no-cache-dir -r requirements.txt
 
 RUN mkdir -p /models
@@ -36,8 +46,15 @@ RUN echo "0 2 * * * /usr/local/bin/python /app/scraper_cron.py >> /app/logs/scra
 RUN chmod 0644 /etc/cron.d/scraper-cron
 RUN crontab /etc/cron.d/scraper-cron
 
-ENV SOURCE_BUCKET="stall-photos"
-ENV STORAGE_BUCKET="stall-photos-processed"
+# Promote them to runtime env vars
+ENV SUPABASE_URL=$SUPABASE_URL \
+    SUPABASE_SERVICE_ROLE_KEY=$SUPABASE_SERVICE_ROLE_KEY \
+    SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY \
+    SOURCE_BUCKET=$SOURCE_BUCKET \
+    STORAGE_BUCKET=$STORAGE_BUCKET
+
+# ENV SOURCE_BUCKET="stall-photos"
+# ENV STORAGE_BUCKET="stall-photos-processed"
 EXPOSE 8080
 
 # Start both the web service and cron daemon
