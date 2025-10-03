@@ -3,7 +3,7 @@ import { View } from 'react-native';
 import { useTranslation } from '../utils/localization';
 import { useLanguage } from '../stores/appStore';
 import { changeLanguage } from '../utils/localization';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from './ui-kitten';
 import { Button } from './ui/button';
 import { Text } from './ui/text';
 

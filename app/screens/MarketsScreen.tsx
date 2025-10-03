@@ -16,7 +16,7 @@ import { useMarket } from '../contexts/MarketContext';
 import AppHeader from '../components/AppHeader';
 import AuthGuard from '../components/AuthGuard';
 import MarketItem from '../components/MarketItem';
-import { Text } from '../components/ui/text';
+import { Text } from '../components/ui-kitten';
 import { Market } from '../types/common/market';
 
 export default function MarketsScreen() {

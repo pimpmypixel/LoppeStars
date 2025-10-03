@@ -1,8 +1,8 @@
 import React from 'react';
-import { View } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import { useTranslation } from '../utils/localization';
 import Logo from './Logo';
-import { Text } from './ui/text';
+import { Text } from './ui-kitten';
 import { useAuth } from '../contexts/AuthContext';
 import { useSelectedMarket } from '../stores/appStore';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,42 +13,73 @@ export default function AppFooter() {
   const { t } = useTranslation();
 
   return (
-    <View
-      className="bg-card border-t border-border px-2 py-4"
-      {...({} as any)}
-    >
-      <View className="flex-row justify-between items-center" {...({} as any)}>
+    <View style={styles.container}>
+      <View style={styles.content}>
         {/* Left column - Logo */}
-        <View className="flex-1 items-center" {...({} as any)}>
+        <View style={styles.column}>
           <Logo size="small" />
         </View>
 
         {/* Center column - Selected Market or Copyright */}
-        <View className="flex-1 items-center" {...({} as any)}>
+        <View style={styles.column}>
           {selectedMarket ? (
-            <View className="items-center" {...({} as any)}>
-              <View className="flex-row items-center" {...({} as any)}>
+            <View style={styles.marketInfo}>
+              <View style={styles.marketRow}>
                 <Ionicons name="storefront" size={12} color="#6b7280" />
-                <Text className="text-muted-foreground text-xs ml-1">
+                <Text variant="muted" style={styles.marketText}>
                   {selectedMarket.name}
                 </Text>
               </View>
               {selectedMarket.city && (
-                <Text className="text-muted-foreground text-xs">
+                <Text variant="muted" style={styles.marketText}>
                   {selectedMarket.city}
                 </Text>
               )}
             </View>
           ) : (
-            <Text variant="muted" className="text-xs uppercase tracking-wide">
+            <Text variant="muted" style={styles.copyrightText}>
               {t('footer.copyright')}
             </Text>
           )}
         </View>
 
         {/* Right column - Empty for balance */}
-        <View className="flex-1" {...({} as any)} />
+        <View style={styles.column} />
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+    paddingHorizontal: 8,
+    paddingVertical: 16,
+  },
+  content: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  column: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  marketInfo: {
+    alignItems: 'center',
+  },
+  marketRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  marketText: {
+    fontSize: 12,
+    marginLeft: 4,
+  },
+  copyrightText: {
+    fontSize: 12,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+});

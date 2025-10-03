@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Pressable, View } from 'react-native';
 import { Frown, Laugh, Meh, Smile, Sparkles, Star } from 'lucide-react-native';
 import { useTranslation } from '../utils/localization';
-import { Text } from './ui/text';
+import { Text } from './ui-kitten';
 
 interface RatingSliderProps {
   value: number;

@@ -3,8 +3,8 @@ import { View } from 'react-native';
 import { useAuth } from '../contexts/AuthContext';
 import { useTranslation } from '../utils/localization';
 import AppHeader from '../components/AppHeader';
-import { Card, CardContent } from './ui/card';
-import { Text } from './ui/text';
+import { Card, CardContent } from './ui-kitten';
+import { Text } from './ui-kitten';
 import { AuthGuardProps } from '../types/components/AuthGuard';
 
 export default function AuthGuard({ children, fallback }: AuthGuardProps) {

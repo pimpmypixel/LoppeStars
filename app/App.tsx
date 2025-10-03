@@ -1,4 +1,3 @@
-import './global.css';
 import { StatusBar } from 'expo-status-bar';
 import { View, Alert } from 'react-native';
 import { useEffect } from 'react';
@@ -7,12 +6,17 @@ import { ThemeProvider } from './contexts/ThemeContext';
 import { MarketProvider } from './contexts/MarketContext';
 import AuthWrapper from './components/AuthWrapper';
 import { useLanguageSync } from './utils/localization';
-import { PortalHost } from '@rn-primitives/portal';
 import Config from 'react-native-config';
+import * as eva from '@eva-design/eva';
+import { ApplicationProvider, IconRegistry } from '@ui-kitten/components';
+import { EvaIconsPack } from '@ui-kitten/eva-icons';
+import { lightTheme, darkTheme } from './theme/theme.config';
+import { useTheme } from './contexts/ThemeContext';
 
-export default function App() {
+function AppContent() {
   // Keep i18n in sync with global language state
   useLanguageSync();
+  const { theme } = useTheme();
 
   useEffect(() => {
     // Log all environment variables for debugging
@@ -39,16 +43,26 @@ export default function App() {
   }, []);
 
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <MarketProvider>
-          <View className="flex-1 bg-background" {...({} as any)}>
-            <AuthWrapper />
-            <StatusBar style="auto" />
-          </View>
-          <PortalHost />
-        </MarketProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <ApplicationProvider {...eva} theme={theme === 'dark' ? darkTheme : lightTheme}>
+      <View style={{ flex: 1 }}>
+        <AuthWrapper />
+        <StatusBar style="auto" />
+      </View>
+    </ApplicationProvider>
+  );
+}
+
+export default function App() {
+  return (
+    <>
+      <IconRegistry icons={EvaIconsPack} />
+      <ThemeProvider>
+        <AuthProvider>
+          <MarketProvider>
+            <AppContent />
+          </MarketProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </>
   );
 }

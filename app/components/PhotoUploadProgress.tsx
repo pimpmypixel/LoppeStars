@@ -1,8 +1,8 @@
 import React from 'react';
 import { View, Modal, ActivityIndicator } from 'react-native';
 import { useTranslation } from '../utils/localization';
-import { Card, CardContent } from './ui/card';
-import { Text } from './ui/text';
+import { Card, CardContent } from './ui-kitten';
+import { Text } from './ui-kitten';
 import { PhotoUploadProgressProps } from '../types/components/PhotoUploadProgress';
 
 export default function PhotoUploadProgress({

@@ -6,7 +6,7 @@ import { useTranslation } from '../utils/localization';
 import SupabaseOfficialAuth from '../components/SupabaseOfficialAuth';
 import AppNavigator from '../navigation/AppNavigator';
 import { supabase } from '../utils/supabase';
-import { Text } from './ui/text';
+import { Text } from './ui-kitten';
 
 export default function AuthWrapper() {
   const { session, loading } = useAuth();

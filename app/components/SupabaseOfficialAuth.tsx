@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, View } from 'react-native';
+import { ActivityIndicator, Alert, View, StyleSheet } from 'react-native';
 import { makeRedirectUri } from 'expo-auth-session';
 import * as QueryParams from 'expo-auth-session/build/QueryParams';
 import * as WebBrowser from 'expo-web-browser';
@@ -7,11 +7,12 @@ import * as Linking from 'expo-linking';
 import { supabase } from '../utils/supabase';
 import { useTranslation } from '../utils/localization';
 import Logo from './Logo';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
-import { Text } from './ui/text';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui-kitten';
+import { Button } from './ui-kitten';
+import { Text } from './ui-kitten';
 import { Facebook, Mail, Shield } from 'lucide-react-native';
 import { OAuthProvider, ParsedParams } from '../types/components/SupabaseOfficialAuth';
+import { Layout } from '@ui-kitten/components';
 
 export default function SupabaseOfficialAuth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -127,32 +128,31 @@ export default function SupabaseOfficialAuth() {
   );
 
   return (
-    <View className="flex-1 items-center justify-center bg-background px-6" {...({} as any)}>
-      <Card className="w-full max-w-md gap-6">
-        <CardHeader className="items-center gap-3 pb-0">
+    <Layout style={styles.container} level="2">
+      <Card style={styles.card}>
+        <CardHeader style={styles.cardHeader}>
           <Logo size="large" />
-          <CardTitle className="text-center text-2xl">
+          <CardTitle style={styles.title}>
             {t('common.welcome')}
           </CardTitle>
-          <CardDescription className="text-center text-base">
+          <CardDescription style={styles.description}>
             {t('auth.pleaseSignIn')}
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="gap-4 pt-6">
+        <CardContent style={styles.cardContent}>
           <Button
             variant="destructive"
-            className="h-12"
+            style={styles.authButton}
             onPress={() => performOAuth('google')}
             disabled={isLoading}
-            {...({} as any)}
           >
             {loadingProvider === 'google' ? (
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (
-              <View className="flex-row items-center gap-2" {...({} as any)}>
+              <View style={styles.buttonContent}>
                 <Mail size={20} color="#ffffff" />
-                <Text className="text-primary-foreground text-base font-semibold">
+                <Text style={styles.buttonText}>
                   {t('auth.signInWithGoogle')}
                 </Text>
               </View>
@@ -160,17 +160,16 @@ export default function SupabaseOfficialAuth() {
           </Button>
 
           <Button
-            className="h-12 bg-[#1877F2] dark:bg-[#1877F2]"
+            style={{ ...styles.authButton, ...styles.facebookButton }}
             onPress={() => performOAuth('facebook')}
             disabled={isLoading}
-            {...({} as any)}
           >
             {loadingProvider === 'facebook' ? (
               <ActivityIndicator size="small" color="#ffffff" />
             ) : (
-              <View className="flex-row items-center gap-2" {...({} as any)}>
+              <View style={styles.buttonContent}>
                 <Facebook size={20} color="#ffffff" />
-                <Text className="text-primary-foreground text-base font-semibold">
+                <Text style={styles.buttonText}>
                   {t('auth.signInWithFacebook')}
                 </Text>
               </View>
@@ -179,36 +178,35 @@ export default function SupabaseOfficialAuth() {
 
           <Button
             variant="link"
-            className="justify-center"
+            style={styles.linkButton}
             onPress={() => Linking.openURL('https://loppestars.com/privacy')}
-            {...({} as any)}
           >
-            <View className="flex-row items-center gap-2" {...({} as any)}>
+            <View style={styles.buttonContent}>
               <Shield size={18} color="#2563eb" />
-              <Text className="underline">{t('auth.privacyPolicy')}</Text>
+              <Text style={styles.linkText}>{t('auth.privacyPolicy')}</Text>
             </View>
           </Button>
 
-          <Card className="border-dashed border-muted bg-muted/40">
-            <CardContent className="items-center gap-2 p-4">
-              <Text variant="muted" className="text-center text-sm">
+          <Card style={styles.infoCard}>
+            <CardContent style={styles.infoCardContent}>
+              <Text variant="muted" style={styles.infoText}>
                 {t('auth.signIn')}
               </Text>
-              <Text variant="muted" className="text-center text-xs text-muted-foreground/80">
+              <Text variant="small" style={styles.redirectText}>
                 Redirect URI: {redirectTo}
               </Text>
             </CardContent>
           </Card>
 
           {__DEV__ && (
-            <Card className="bg-card/60">
-              <CardContent className="gap-3">
-                <Text variant="muted" className="text-xs">
+            <Card style={styles.debugCard}>
+              <CardContent style={styles.debugCardContent}>
+                <Text variant="small" style={styles.debugText}>
                   OAuth debug
                 </Text>
                 <Button
                   variant="outline"
-                  className="h-10"
+                  style={styles.debugButton}
                   onPress={async () => {
                     console.log('🔧 Manual session check triggered...');
                     const { data: session, error } = await supabase.auth.getSession();
@@ -223,15 +221,98 @@ export default function SupabaseOfficialAuth() {
                       Alert.alert('Error', error.message);
                     }
                   }}
-                  {...({} as any)}
                 >
-                  <Text className="font-medium">Check Session</Text>
+                  <Text>Check Session</Text>
                 </Button>
               </CardContent>
             </Card>
           )}
         </CardContent>
       </Card>
-    </View>
+    </Layout>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 450,
+  },
+  cardHeader: {
+    alignItems: 'center',
+    gap: 12,
+    paddingBottom: 0,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '600',
+  },
+  description: {
+    textAlign: 'center',
+    fontSize: 16,
+  },
+  cardContent: {
+    gap: 16,
+    paddingTop: 24,
+  },
+  authButton: {
+    height: 48,
+  },
+  facebookButton: {
+    backgroundColor: '#1877F2',
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  linkButton: {
+    justifyContent: 'center',
+  },
+  linkText: {
+    textDecorationLine: 'underline',
+  },
+  infoCard: {
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    opacity: 0.7,
+  },
+  infoCardContent: {
+    alignItems: 'center',
+    gap: 8,
+    padding: 16,
+  },
+  infoText: {
+    textAlign: 'center',
+    fontSize: 14,
+  },
+  redirectText: {
+    textAlign: 'center',
+    fontSize: 12,
+    opacity: 0.8,
+  },
+  debugCard: {
+    opacity: 0.8,
+  },
+  debugCardContent: {
+    gap: 12,
+  },
+  debugText: {
+    fontSize: 12,
+  },
+  debugButton: {
+    height: 40,
+  },
+});

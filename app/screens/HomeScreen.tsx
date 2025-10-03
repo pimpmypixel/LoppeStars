@@ -1,13 +1,14 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from '../utils/localization';
+import { Layout } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import Logo from '../components/Logo';
-import { Text } from '../components/ui';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Text } from '../components/ui-kitten';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui-kitten/Card';
 import { Star, Camera, Heart, MapPin } from 'lucide-react-native';
 import { useSelectedMarket } from '../stores/appStore';
-import { Button } from '../components/ui/button';
+import { Button } from '../components/ui-kitten';
 import { useNavigation } from '@react-navigation/native';
 
 export default function HomeScreen() {
@@ -16,39 +17,38 @@ export default function HomeScreen() {
   const { t } = useTranslation();
 
   return (
-    <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
+    <Layout style={styles.container} level="2">
       <AppHeader title="Loppestars" />
 
-      <ScrollView className="flex-1" {...({} as any)}>
-        <View className="justify-center items-center px-5 py-8" {...({} as any)}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.contentContainer}>
           <Logo size="large" />
-          <Text variant="h1" className="text-center mt-5 mb-4">
+          <Text variant="h1" style={styles.welcomeTitle}>
             {t('home.welcome')}
           </Text>
-          <Text variant="lead" className="text-center mb-8">
+          <Text variant="lead" style={styles.subtitle}>
             {t('home.subtitle')}
           </Text>
 
           {/* Selected Market Display */}
           {selectedMarket && (
-            <Card className="w-full max-w-sm bg-gradient-to-r from-orange-50 to-yellow-50 border-orange-200 mb-6">
-              <CardHeader className="items-center pb-2">
+            <Card style={styles.selectedMarketCard}>
+              <CardHeader style={styles.cardHeaderCentered}>
                 <MapPin size={24} color="#f97316" />
-                <CardTitle className="text-lg text-center">Current Market</CardTitle>
+                <CardTitle style={styles.cardTitleCentered}>Current Market</CardTitle>
               </CardHeader>
-              <CardContent className="items-center">
-                <Text className="text-lg font-semibold text-center mb-1">
+              <CardContent style={styles.cardContentCentered}>
+                <Text style={styles.marketName}>
                   {selectedMarket.name}
                 </Text>
                 {selectedMarket.city && (
-                  <Text className="text-muted-foreground text-center mb-3">
+                  <Text variant="muted" style={styles.marketCity}>
                     {selectedMarket.city}
                   </Text>
                 )}
                 <Button
-                  className="w-full"
+                  style={styles.rateButton}
                   onPress={() => navigation.navigate('Rating' as never)}
-                  {...({} as any)}
                 >
                   <Text>Rate a Stall</Text>
                 </Button>
@@ -56,39 +56,39 @@ export default function HomeScreen() {
             </Card>
           )}
 
-          {/* Nice introduction section */}
-          <View className="w-full max-w-sm gap-4" {...({} as any)}>
-            <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-              <CardHeader className="items-center pb-2">
+          {/* Feature Cards */}
+          <View style={styles.featureCards}>
+            <Card style={{...styles.featureCard, ...styles.blueCard}}>
+              <CardHeader style={styles.cardHeaderCentered}>
                 <Star size={32} color="#3b82f6" />
-                <CardTitle className="text-lg text-center">{t('home.rateFinds')}</CardTitle>
+                <CardTitle style={styles.featureTitle}>{t('home.rateFinds')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-center text-sm">
+                <CardDescription style={styles.featureDescription}>
                   {t('home.rateFindsDescription')}
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
-              <CardHeader className="items-center pb-2">
+            <Card style={{...styles.featureCard, ...styles.greenCard}}>
+              <CardHeader style={styles.cardHeaderCentered}>
                 <Camera size={32} color="#10b981" />
-                <CardTitle className="text-lg text-center">{t('home.captureMemories')}</CardTitle>
+                <CardTitle style={styles.featureTitle}>{t('home.captureMemories')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-center text-sm">
+                <CardDescription style={styles.featureDescription}>
                   {t('home.captureMemoriesDescription')}
                 </CardDescription>
               </CardContent>
             </Card>
 
-            <Card className="bg-gradient-to-r from-pink-50 to-rose-50 border-pink-200">
-              <CardHeader className="items-center pb-2">
+            <Card style={{...styles.featureCard, ...styles.pinkCard}}>
+              <CardHeader style={styles.cardHeaderCentered}>
                 <Heart size={32} color="#ef4444" />
-                <CardTitle className="text-lg text-center">{t('home.funForEveryone')}</CardTitle>
+                <CardTitle style={styles.featureTitle}>{t('home.funForEveryone')}</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="text-center text-sm">
+                <CardDescription style={styles.featureDescription}>
                   {t('home.funForEveryoneDescription')}
                 </CardDescription>
               </CardContent>
@@ -96,6 +96,89 @@ export default function HomeScreen() {
           </View>
         </View>
       </ScrollView>
-    </View>
+    </Layout>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  contentContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 32,
+  },
+  welcomeTitle: {
+    textAlign: 'center',
+    marginTop: 20,
+    marginBottom: 16,
+  },
+  subtitle: {
+    textAlign: 'center',
+    marginBottom: 32,
+  },
+  selectedMarketCard: {
+    width: '100%',
+    maxWidth: 384,
+    backgroundColor: '#fff5ed',
+    borderColor: '#fed7aa',
+    marginBottom: 24,
+  },
+  cardHeaderCentered: {
+    alignItems: 'center',
+    paddingBottom: 8,
+  },
+  cardTitleCentered: {
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  cardContentCentered: {
+    alignItems: 'center',
+  },
+  marketName: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  marketCity: {
+    textAlign: 'center',
+    marginBottom: 12,
+  },
+  rateButton: {
+    width: '100%',
+  },
+  featureCards: {
+    width: '100%',
+    maxWidth: 384,
+    gap: 16,
+  },
+  featureCard: {
+    marginVertical: 8,
+  },
+  blueCard: {
+    backgroundColor: '#eff6ff',
+    borderColor: '#bfdbfe',
+  },
+  greenCard: {
+    backgroundColor: '#ecfdf5',
+    borderColor: '#a7f3d0',
+  },
+  pinkCard: {
+    backgroundColor: '#fef2f2',
+    borderColor: '#fecaca',
+  },
+  featureTitle: {
+    fontSize: 18,
+    textAlign: 'center',
+  },
+  featureDescription: {
+    textAlign: 'center',
+    fontSize: 14,
+  },
+});
