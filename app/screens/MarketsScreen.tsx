@@ -189,23 +189,24 @@ export default function MarketsScreen() {
               <Text className="text-lg text-muted-foreground">{t('common.loading')}</Text>
             </View>
           ) : (
-            <FlatList
-              data={filteredMarkets}
-              renderItem={renderMarketItem}
-              keyExtractor={(item) => item.id}
-              contentContainerStyle={{ padding: 20 }}
-              refreshControl={
-                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-              }
-              ListEmptyComponent={
-                <View className="flex-1 justify-center items-center py-16" {...({} as any)}>
-                  <Ionicons name="storefront-outline" size={48} color="#ccc" />
-                  <Text className="text-lg text-muted-foreground mt-4 text-center">
-                    {t('markets.noMarkets')}
-                  </Text>
-                </View>
-              }
-              {...({} as any)}
+              <FlatList
+                data={filteredMarkets}
+                extraData={selectedMarket}
+                renderItem={renderMarketItem}
+                keyExtractor={(item) => item.id}
+                contentContainerStyle={{ padding: 20 }}
+                refreshControl={
+                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                }
+                ListEmptyComponent={
+                  <View className="flex-1 justify-center items-center py-16" {...({} as any)}>
+                    <Ionicons name="storefront-outline" size={48} color="#ccc" />
+                    <Text className="text-lg text-muted-foreground mt-4 text-center">
+                      {t('markets.noMarkets')}
+                    </Text>
+                  </View>
+                }
+                {...({} as any)}
             />
           )}
         </View>

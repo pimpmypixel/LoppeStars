@@ -45,7 +45,7 @@ export class LoppestarsEcsStack extends cdk.Stack {
       certificate: certificate,
       assignPublicIp: true,
       taskImageOptions: {
-        image: ecs.ContainerImage.fromAsset(".", {
+        image: ecs.ContainerImage.fromAsset("../api", {
           file: "Dockerfile",
         }),
         containerPort: 8080,

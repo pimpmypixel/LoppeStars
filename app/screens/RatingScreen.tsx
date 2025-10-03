@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Alert, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Alert, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { Modal, Platform, ToastAndroid } from 'react-native';
 import { useMarket } from '../contexts/MarketContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Text } from '../components/ui/text';
@@ -27,14 +28,35 @@ export default function RatingScreen() {
   const [mobilePayCode, setMobilePayCode] = useState('');
   const [comments, setComments] = useState('');
   const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const [showFullScreen, setShowFullScreen] = useState(false);
   const [showCamera, setShowCamera] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { uploadProgress, uploadPhoto, resetUpload } = usePhotoUpload();
 
   const handleImageTaken = async (uri: string) => {
-    setPhotoUri(uri);
     console.log('Photo taken:', uri);
+    if (!user) {
+      Alert.alert(t('common.error'), t('form.loginRequired'));
+      return;
+    }
+    setPhotoUri(uri);
+    // Immediately upload with progress spinner
+    try {
+      const result = await uploadPhoto(uri, user.id);
+      if (result.success && result.processedUrl) {
+        setPhotoUri(result.processedUrl);
+        // Show toast on Android or alert on iOS
+        const msg = t('rating.uploadSuccessToast');
+        if (Platform.OS === 'android') {
+          ToastAndroid.show(msg, ToastAndroid.SHORT);
+        } else {
+          Alert.alert(msg);
+        }
+      }
+    } catch (err) {
+      console.error('Upload error:', err);
+    }
   };
 
   const handleSubmit = async () => {
@@ -206,9 +228,45 @@ export default function RatingScreen() {
                   )}
                 </View>
                 {photoUri && (
-                  <Text className="text-sm text-green-600 mt-2">
-                    ✓ {t('rating.photoAttached')}
-                  </Text>
+                  <View className="mt-4 w-full">
+                    <TouchableOpacity onPress={() => setShowFullScreen(true)}>
+                      <View style={{ position: 'relative' }}>
+                        <Image
+                          source={{ uri: photoUri }}
+                          style={{ width: '100%', aspectRatio: 16/9, borderRadius: 8 }}
+                        />
+                        {(uploadProgress.isUploading || uploadProgress.isProcessing) && (
+                          <View style={{
+                            position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+                            justifyContent: 'center', alignItems: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.3)'
+                          }}>
+                            <ActivityIndicator size="large" color="#fff" />
+                          </View>
+                        )}
+                      </View>
+                    </TouchableOpacity>
+                    {/* Progress or processed status */}
+                    {uploadProgress.progress > 0 && uploadProgress.progress < 100 && (
+                      <Text className="text-xs text-gray-500 mt-2">
+                        {uploadProgress.progress}%
+                      </Text>
+                    )}
+                    {uploadProgress.progress === 100 && (
+                      <Text className="text-xs text-gray-500 mt-2">
+                        {t('rating.imageProcessed')}
+                      </Text>
+                    )}
+                    {/* Fullscreen modal */}
+                    <Modal visible={showFullScreen} transparent={true} onRequestClose={() => setShowFullScreen(false)}>
+                      <TouchableOpacity style={{ flex: 1, backgroundColor: 'black' }} onPress={() => setShowFullScreen(false)}>
+                        <Image
+                          source={{ uri: photoUri }}
+                          style={{ flex: 1, resizeMode: 'contain' }}
+                        />
+                      </TouchableOpacity>
+                    </Modal>
+                  </View>
                 )}
               </View>
 
@@ -240,8 +298,6 @@ export default function RatingScreen() {
                   style={{ height: 80, textAlignVertical: 'top' }}
                 />
               </View>
-
-             
 
               {/* Submit Button */}
               <TouchableOpacity
