@@ -48,23 +48,28 @@ jobs:
 
       - name: Register new Task Definition
         run: |
+          cat <<EOF > task-def.json
+          [
+            {
+              "name": "loppestars-task-definition",
+              "image": "${ECR_URI}:${IMAGE_TAG}",
+              "memory": 512,
+              "cpu": 256,
+              "essential": true,
+              "portMappings": [{"containerPort": 8080, "hostPort": 8080}],
+              "environment": [
+                {"name": "SUPABASE_URL", "value": "${{ secrets.SUPABASE_URL }}"},
+                {"name": "SUPABASE_SERVICE_ROLE_KEY", "value": "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"},
+                {"name": "SUPABASE_ANON_KEY", "value": "${{ secrets.SUPABASE_ANON_KEY }}"},
+                {"name": "SOURCE_BUCKET", "value": "${SOURCE_BUCKET}"},
+                {"name": "STORAGE_BUCKET", "value": "${STORAGE_BUCKET}"}
+              ]
+            }
+          ]
+          EOF
           aws ecs register-task-definition \
             --family loppestars \
-            --container-definitions '[{ \
-                "name":"loppestars-task-definition", \
-                "image":"'${ECR_URI}:${IMAGE_TAG}'", \
-                "memory":512, \
-                "cpu":256, \
-                "essential":true, \
-                "portMappings":[{"containerPort":8080,"hostPort":8080}], \
-                "environment":[ \
-                  {"name":"SUPABASE_URL","value":"'${{ secrets.SUPABASE_URL }}'"}, \
-                  {"name":"SUPABASE_SERVICE_ROLE_KEY","value":"'${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}'"}, \
-                  {"name":"SUPABASE_ANON_KEY","value":"'${{ secrets.SUPABASE_ANON_KEY }}'"}, \
-                  {"name":"SOURCE_BUCKET","value":"'${SOURCE_BUCKET}'"}, \
-                  {"name":"STORAGE_BUCKET","value":"'${STORAGE_BUCKET}'"} \
-                ] \
-              }]' \
+            --container-definitions file://task-def.json \
             --region ${AWS_REGION}
 
       - name: Update ECS Service
