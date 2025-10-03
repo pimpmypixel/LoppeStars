@@ -19,8 +19,6 @@ export default function HomeScreen() {
 
   return (
     <Layout style={styles.container} level="1">
-      <AppHeader title="Loppestars" />
-
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.contentContainer}>
           {/* Hero Section with Gradient */}
@@ -161,7 +159,7 @@ const styles = StyleSheet.create({
   heroSection: {
     alignItems: 'center',
     marginBottom: 32,
-    paddingTop: 16,
+    paddingTop: 60,
   },
   welcomeTitle: {
     textAlign: 'center',

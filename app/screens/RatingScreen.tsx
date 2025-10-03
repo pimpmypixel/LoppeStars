@@ -6,6 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { Text, Button, Input, Label, Card, CardContent, CardHeader, CardTitle } from '../components/ui-kitten';
 import { Layout, Icon } from '@ui-kitten/components';
 import AuthGuard from '../components/AuthGuard';
+import AppHeader from '../components/AppHeader';
 import RatingSlider from '../components/RatingSlider';
 import CameraModal from '../components/CameraModal';
 import PhotoUploadProgress from '../components/PhotoUploadProgress';
@@ -138,6 +139,7 @@ export default function RatingScreen() {
   return (
     <AuthGuard>
       <Layout style={styles.container} level="1">
+        <AppHeader title={t('rating.title')} />
         <ScrollView style={styles.scrollView}>
           <View style={styles.content}>
             {/* Selected Market Display */}
@@ -343,7 +345,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    paddingTop: 16,
   },
   marketCard: {
     backgroundColor: '#292524',

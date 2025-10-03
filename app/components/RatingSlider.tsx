@@ -55,7 +55,7 @@ export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }
             accessibilityState={{ selected: star <= value }}
           >
             <Star
-              size={26}
+              size={28}
               color={star <= value ? ratingConfig.color : '#94a3b8'}
               fill={star <= value ? ratingConfig.color : 'transparent'}
             />
@@ -95,19 +95,15 @@ const styles = StyleSheet.create({
   },
   starsContainer: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
+    flexWrap: 'nowrap',
     justifyContent: 'center',
-    gap: 12,
+    gap: 4,
   },
   starButton: {
-    height: 48,
-    width: 48,
+    height: 36,
+    width: 36,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 24,
-    borderWidth: 1,
-    borderColor: '#e5e7eb',
-    backgroundColor: '#ffffff',
   },
   minMaxRow: {
     flexDirection: 'row',

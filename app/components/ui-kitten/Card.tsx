@@ -71,14 +71,15 @@ export function CardFooter({ children, style }: CardFooterProps) {
 const styles = StyleSheet.create({
   card: {
     marginVertical: 8,
-    borderRadius: 16,
-    shadowColor: '#000',
+    borderRadius: 20,
+    shadowColor: '#FF9500',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.15,
     shadowRadius: 12,
     elevation: 4,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'rgba(255, 149, 0, 0.15)',
+    backgroundColor: '#292524',
   },
   header: {
     marginBottom: 12,
@@ -87,6 +88,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 18,
     letterSpacing: 0.3,
+    color: '#FFFFFF',
   },
   content: {
     paddingVertical: 4,

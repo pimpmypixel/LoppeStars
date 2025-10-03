@@ -44,7 +44,7 @@ export default function MoreScreen() {
     ];
 
     return (
-        <Layout style={styles.container} level="2" key={refreshKey}>
+        <Layout style={styles.container} level="1" key={refreshKey}>
             <AppHeader title={t('more.more')} />
 
             <ScrollView style={styles.scrollView}>
@@ -94,6 +94,7 @@ export default function MoreScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        backgroundColor: '#1C1917',
     },
     scrollView: {
         flex: 1,
@@ -112,40 +113,47 @@ const styles = StyleSheet.create({
         height: 56,
         paddingHorizontal: 16,
         borderBottomWidth: 1,
-        borderBottomColor: '#e5e7eb',
+        borderBottomColor: 'rgba(255, 149, 0, 0.1)',
     },
     menuText: {
         textAlign: 'left',
         flex: 1,
         fontSize: 16,
+        color: '#FFFFFF',
+        fontWeight: '500',
     },
     chevron: {
-        color: '#6b7280',
+        color: '#FF9500',
         fontSize: 24,
+        fontWeight: '600',
     },
     separator: {
         height: 1,
-        backgroundColor: '#e5e7eb',
+        backgroundColor: 'rgba(255, 149, 0, 0.1)',
         marginHorizontal: 16,
     },
     logoutButton: {
-        height: 48,
-        borderWidth: 1,
-        borderColor: '#ef4444',
-        backgroundColor: '#ffffff',
+        height: 56,
+        borderWidth: 2,
+        borderColor: 'rgba(239, 68, 68, 0.3)',
+        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        borderRadius: 16,
+        marginTop: 12,
     },
     logoutContent: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: 8,
+        gap: 10,
     },
     logoutText: {
-        color: '#ef4444',
-        fontWeight: '600',
+        color: '#EF4444',
+        fontWeight: '700',
+        fontSize: 16,
+        letterSpacing: 0.3,
     },
     emailText: {
-        color: '#fca5a5',
+        color: '#A8A29E',
         fontSize: 12,
     },
 });
