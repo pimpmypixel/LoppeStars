@@ -1,12 +1,10 @@
 import React, { useState, useRef } from 'react';
-import { View, Alert, Image, Modal, useWindowDimensions, ActivityIndicator } from 'react-native';
+import { View, Alert, Image, Modal, useWindowDimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { getInfoAsync, readAsStringAsync } from 'expo-file-system/legacy';
 import { useTranslation } from '../utils/localization';
-import { Button } from './ui/button';
-import { Text } from './ui/text';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent, CardHeader, CardTitle, Text } from './ui-kitten';
 import { Camera, ImageIcon, RefreshCcw, X } from 'lucide-react-native';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -58,12 +56,12 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
               </CardDescription>
             </CardHeader>
             <CardContent className="gap-3">
-              <Button className="w-full h-12" onPress={requestPermission} {...({} as any)}>
+              <TouchableOpacity className="w-full h-12" onPress={requestPermission} {...({} as any)}>
                 <Text className="font-medium">
                   {t('permissions.camera.grant')}
                 </Text>
-              </Button>
-              <Button
+              </TouchableOpacity>
+              <TouchableOpacity
                 variant="ghost"
                 className="w-full h-12"
                 onPress={onClose}
@@ -72,7 +70,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                 <Text className="text-muted-foreground font-medium">
                   {t('common.cancel')}
                 </Text>
-              </Button>
+              </TouchableOpacity>
             </CardContent>
           </Card>
         </View>
@@ -255,29 +253,29 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
               }`}
               {...({} as any)}
             >
-              <Button
+              <TouchableOpacity
                 variant="outline"
                 className={`border-white/40 ${orientation === 'landscape' ? 'flex-1 h-12' : 'flex-1 h-12'}`}
                 onPress={resetImage}
                 {...({} as any)}
               >
                 <Text className="text-white font-medium">{t('camera.retake')}</Text>
-              </Button>
-              <Button
+              </TouchableOpacity>
+              <TouchableOpacity
                 className={`bg-green-600 hover:bg-green-700 ${orientation === 'landscape' ? 'flex-1 h-12' : 'flex-1 h-12'}`}
                 onPress={handleSave}
                 {...({} as any)}
               >
                 <Text className="text-white font-medium">{t('camera.usePhoto')}</Text>
-              </Button>
-              <Button
+              </TouchableOpacity>
+              <TouchableOpacity
                 variant="ghost"
                 className={`text-white ${orientation === 'landscape' ? 'flex-1 h-12' : 'flex-1 h-12'}`}
                 onPress={handleClose}
                 {...({} as any)}
               >
                 <Text className="text-white font-medium">{t('camera.cancel')}</Text>
-              </Button>
+              </TouchableOpacity>
             </View>
           </View>
         ) : (
@@ -288,14 +286,14 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
               }`}
               {...({} as any)}
             >
-              <Button
+              <TouchableOpacity
                 variant="ghost"
                 className="h-12 w-12 rounded-full bg-white/10"
                 onPress={handleClose}
                 {...({} as any)}
               >
                 <X size={24} color="#ffffff" />
-              </Button>
+              </TouchableOpacity>
               <Text className={`text-white text-xl font-bold ${
                 orientation === 'landscape' ? 'text-lg my-2' : 'text-lg'
               }`}>
@@ -345,7 +343,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
               }`}
               {...({} as any)}
             >
-              <Button
+              <TouchableOpacity
                 variant="ghost"
                 className={`bg-white/10 rounded-full ${orientation === 'landscape' ? 'h-14 w-14' : 'h-16 px-6'}`}
                 onPress={pickImageFromLibrary}
@@ -357,17 +355,17 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                     <Text className="text-white font-medium text-xs">{t('camera.fromLibrary')}</Text>
                   )}
                 </View>
-              </Button>
+              </TouchableOpacity>
               
-              <Button
+              <TouchableOpacity
                 className="h-20 w-20 rounded-full border-4 border-white/40 bg-white/20"
                 onPress={takePicture}
                 {...({} as any)}
               >
                 <Camera size={32} color="#ffffff" />
-              </Button>
+              </TouchableOpacity>
               
-              <Button
+              <TouchableOpacity
                 variant="ghost"
                 className={`bg-white/10 rounded-full ${orientation === 'landscape' ? 'h-14 w-14' : 'h-16 px-6'}`}
                 onPress={toggleCameraFacing}
@@ -379,7 +377,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                     <Text className="text-white font-medium text-xs">{t('camera.flip')}</Text>
                   )}
                 </View>
-              </Button>
+              </TouchableOpacity>
             </View>
           </>
         )}
