@@ -168,17 +168,18 @@ export default function MarketsScreen() {
 
   return (
     <AuthGuard>
-      <Layout style={styles.container} level="2">
+      <Layout style={styles.container} level="1">
         <AppHeader title={t('markets.title')} />
 
         <View style={styles.content}>
           {/* Search Bar */}
           <View style={styles.searchContainer}>
             <View style={styles.searchBar}>
-              <Ionicons name="search-outline" size={20} color="#666" />
+              <Ionicons name="search-outline" size={20} color="#8F9BB3" />
               <TextInput
                 style={styles.searchInput}
                 placeholder={t('markets.searchPlaceholder')}
+                placeholderTextColor="#8F9BB3"
                 onChangeText={debouncedSearch}
               />
             </View>
@@ -218,38 +219,43 @@ export default function MarketsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#1C1917',
   },
   content: {
     flex: 1,
   },
   searchContainer: {
     paddingHorizontal: 20,
-    paddingVertical: 12,
-    backgroundColor: '#ffffff',
+    paddingVertical: 16,
+    backgroundColor: '#292524',
     borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    borderBottomColor: 'rgba(255, 149, 0, 0.15)',
   },
   searchBar: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f3f4f6',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    backgroundColor: '#1C1917',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.2)',
   },
   searchInput: {
     flex: 1,
-    marginLeft: 8,
+    marginLeft: 12,
     fontSize: 16,
+    color: '#FFFFFF',
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#1C1917',
   },
   loadingText: {
     fontSize: 18,
-    color: '#6b7280',
+    color: '#8F9BB3',
   },
   listContent: {
     padding: 20,
@@ -262,7 +268,7 @@ const styles = StyleSheet.create({
   },
   emptyText: {
     fontSize: 18,
-    color: '#6b7280',
+    color: '#8F9BB3',
     marginTop: 16,
     textAlign: 'center',
   },

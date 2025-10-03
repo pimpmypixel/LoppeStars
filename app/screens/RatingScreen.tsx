@@ -4,9 +4,8 @@ import { Modal, Platform, ToastAndroid } from 'react-native';
 import { useMarket } from '../contexts/MarketContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Text, Button, Input, Label, Card, CardContent, CardHeader, CardTitle } from '../components/ui-kitten';
-import { Layout } from '@ui-kitten/components';
+import { Layout, Icon } from '@ui-kitten/components';
 import AuthGuard from '../components/AuthGuard';
-import { Ionicons } from '@expo/vector-icons';
 import RatingSlider from '../components/RatingSlider';
 import CameraModal from '../components/CameraModal';
 import PhotoUploadProgress from '../components/PhotoUploadProgress';
@@ -138,7 +137,7 @@ export default function RatingScreen() {
 
   return (
     <AuthGuard>
-      <Layout style={styles.container} level="2">
+      <Layout style={styles.container} level="1">
         <ScrollView style={styles.scrollView}>
           <View style={styles.content}>
             {/* Selected Market Display */}
@@ -146,7 +145,7 @@ export default function RatingScreen() {
               <Card style={styles.marketCard}>
                 <CardContent style={styles.marketCardContent}>
                   <View style={styles.marketRow}>
-                    <Ionicons name="storefront" size={20} color="#3b82f6" />
+                    <Icon name="shopping-bag" style={styles.marketIcon} fill="#FF9500" />
                     <Text style={styles.marketText}>
                       {t('rating.selectedMarket')}: {selectedMarket.name}
                     </Text>
@@ -162,7 +161,7 @@ export default function RatingScreen() {
               <Card style={styles.marketCard}>
                 <CardContent style={styles.marketCardContent}>
                   <View style={styles.marketRow}>
-                    <Ionicons name="storefront" size={20} color="#3b82f6" />
+                    <Icon name="shopping-bag" style={styles.marketIcon} fill="#FF9500" />
                     <Text style={styles.marketText}>
                       {t('rating.noMarketSelected')}
                     </Text>
@@ -211,7 +210,7 @@ export default function RatingScreen() {
                       onPress={() => setShowCamera(true)}
                     >
                       <View style={styles.buttonContent}>
-                        <Ionicons name="camera" size={20} color="#374151" />
+                        <Icon name="camera" style={styles.buttonIcon} fill="#FF9500" />
                         <Text style={styles.buttonText}>{t('rating.takePhoto')}</Text>
                       </View>
                     </Button>
@@ -221,7 +220,7 @@ export default function RatingScreen() {
                         style={styles.deleteButton}
                         onPress={() => setPhotoUri(null)}
                       >
-                        <Ionicons name="trash" size={20} color="#ef4444" />
+                        <Icon name="trash-2" style={styles.deleteIcon} fill="#EF4444" />
                       </Button>
                     )}
                   </View>
@@ -338,6 +337,7 @@ export default function RatingScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#1C1917',
   },
   scrollView: {
     flex: 1,
@@ -346,72 +346,115 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   marketCard: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#bfdbfe',
-    marginBottom: 20,
+    backgroundColor: '#292524',
+    borderColor: 'rgba(255, 149, 0, 0.2)',
+    marginBottom: 24,
+    borderRadius: 20,
+    shadowColor: '#FF9500',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 6,
   },
   marketCardContent: {
-    padding: 16,
+    padding: 20,
   },
   marketRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    gap: 12,
+  },
+  marketIcon: {
+    width: 24,
+    height: 24,
   },
   marketText: {
-    color: '#1e40af',
-    fontWeight: '500',
-    marginLeft: 8,
-    fontSize: 15,
+    color: '#FFFFFF',
+    fontWeight: '600',
+    fontSize: 16,
+    flex: 1,
   },
   marketCity: {
-    color: '#2563eb',
+    color: '#A8A29E',
     fontSize: 14,
-    marginTop: 4,
-    marginLeft: 28,
+    marginTop: 6,
+    marginLeft: 36,
   },
   formCard: {
     marginBottom: 20,
+    backgroundColor: '#292524',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.15)',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 4,
   },
   formContent: {
-    gap: 20,
-    paddingTop: 8,
+    gap: 24,
+    paddingTop: 12,
   },
   fieldContainer: {
     marginBottom: 4,
   },
   input: {
-    marginTop: 4,
+    marginTop: 8,
+    backgroundColor: '#1C1917',
+    borderColor: 'rgba(255, 149, 0, 0.2)',
+    borderRadius: 14,
   },
   photoButtonRow: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 8,
+    marginTop: 12,
   },
   photoButton: {
     flex: 1,
+    borderColor: 'rgba(255, 149, 0, 0.3)',
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 149, 0, 0.1)',
   },
   deleteButton: {
-    width: 48,
+    width: 56,
+    borderColor: 'rgba(239, 68, 68, 0.3)',
+    borderRadius: 14,
+    backgroundColor: 'rgba(239, 68, 68, 0.1)',
   },
   buttonContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    gap: 10,
+  },
+  buttonIcon: {
+    width: 22,
+    height: 22,
+  },
+  deleteIcon: {
+    width: 22,
+    height: 22,
   },
   buttonText: {
-    fontSize: 14,
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#FF9500',
   },
   photoPreviewContainer: {
-    marginTop: 16,
+    marginTop: 20,
     width: '100%',
   },
   imageContainer: {
     position: 'relative',
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 149, 0, 0.3)',
   },
   previewImage: {
     width: '100%',
     aspectRatio: 16 / 9,
-    borderRadius: 8,
   },
   uploadOverlay: {
     position: 'absolute',
@@ -421,16 +464,17 @@ const styles = StyleSheet.create({
     bottom: 0,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.3)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   progressText: {
-    fontSize: 12,
-    color: '#6b7280',
-    marginTop: 8,
+    fontSize: 13,
+    color: '#A8A29E',
+    marginTop: 10,
+    fontWeight: '500',
   },
   fullscreenModal: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: '#1C1917',
   },
   fullscreenImage: {
     flex: 1,
@@ -438,34 +482,43 @@ const styles = StyleSheet.create({
   },
   ratingValue: {
     textAlign: 'center',
-    marginTop: 8,
+    marginTop: 12,
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#FF9500',
   },
   textArea: {
-    height: 80,
-    paddingTop: 12,
-    marginTop: 4,
+    height: 100,
+    paddingTop: 14,
+    marginTop: 8,
+    backgroundColor: '#1C1917',
+    borderColor: 'rgba(255, 149, 0, 0.2)',
+    borderRadius: 14,
+    textAlignVertical: 'top',
   },
   submitButton: {
-    marginTop: 20,
-    height: 56,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 8,
+    marginTop: 28,
+    height: 64,
+    borderRadius: 16,
+    shadowColor: '#FF9500',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 10,
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
   },
   gradientButton: {
     flex: 1,
-    borderRadius: 12,
+    borderRadius: 16,
   },
   submitButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontWeight: '800',
     fontSize: 18,
+    letterSpacing: 1,
+    textTransform: 'uppercase',
     zIndex: 1,
   },
 });

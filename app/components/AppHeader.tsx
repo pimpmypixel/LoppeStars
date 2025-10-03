@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text } from './ui-kitten';
+import { Icon } from '@ui-kitten/components';
 import Logo from './Logo';
 import { AppHeaderProps } from '../types/components/AppHeader';
 import { useSelectedMarket } from '../stores/appStore';
-import { Ionicons } from '@expo/vector-icons';
 
 export default function AppHeader({ title }: AppHeaderProps) {
   const { selectedMarket } = useSelectedMarket();
@@ -21,7 +21,7 @@ export default function AppHeader({ title }: AppHeaderProps) {
           </Text>
           {selectedMarket && (
             <View style={styles.marketRow}>
-              <Ionicons name="storefront" size={14} color="#8F9BB3" />
+              <Icon name="shopping-bag-outline" style={styles.marketIcon} fill="#FF9500" />
               <Text variant="muted" style={styles.marketText}>
                 {selectedMarket.name}
               </Text>
@@ -36,17 +36,16 @@ export default function AppHeader({ title }: AppHeaderProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#16213E',
+    backgroundColor: '#292524',
     paddingTop: 56,
-    paddingBottom: 20,
+    paddingBottom: 24,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
+    borderBottomWidth: 0,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 12,
+    elevation: 8,
   },
   content: {
     flexDirection: 'row',
@@ -63,23 +62,31 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontWeight: '700',
-    letterSpacing: 0.5,
-    fontSize: 20,
+    fontWeight: '800',
+    letterSpacing: 0.8,
+    fontSize: 22,
     color: '#FFFFFF',
+    textTransform: 'uppercase',
   },
   marketRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 6,
-    backgroundColor: 'rgba(51, 102, 255, 0.1)',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
+    marginTop: 8,
+    backgroundColor: 'rgba(255, 149, 0, 0.15)',
+    paddingHorizontal: 14,
+    paddingVertical: 6,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.3)',
+  },
+  marketIcon: {
+    width: 16,
+    height: 16,
   },
   marketText: {
     fontSize: 13,
-    marginLeft: 6,
-    color: '#8F9BB3',
+    marginLeft: 8,
+    color: '#D4D4D8',
+    fontWeight: '600',
   },
 });

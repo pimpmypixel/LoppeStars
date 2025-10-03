@@ -38,7 +38,7 @@ export default function HomeScreen() {
           {selectedMarket && (
             <Card style={styles.selectedMarketCard}>
               <LinearGradient
-                colors={['#3366FF', '#5A8BFF']}
+                colors={['#FF9500', '#FFCA28']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.gradientCard}
@@ -86,7 +86,7 @@ export default function HomeScreen() {
             <Card style={styles.featureCard}>
               <View style={styles.featureIconContainer}>
                 <LinearGradient
-                  colors={['#3366FF', '#5A8BFF']}
+                  colors={['#FF9500', '#FFCA28']}
                   style={styles.iconGradient}
                 >
                   <Star size={28} color="#FFFFFF" />
@@ -149,7 +149,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1A1A2E',
+    backgroundColor: '#1C1917',
   },
   scrollView: {
     flex: 1,
@@ -230,12 +230,12 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#16213E',
+    backgroundColor: '#292524',
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'rgba(255, 149, 0, 0.2)',
   },
   statNumber: {
     marginTop: 8,
@@ -250,9 +250,9 @@ const styles = StyleSheet.create({
   },
   featureCard: {
     marginVertical: 8,
-    backgroundColor: '#16213E',
+    backgroundColor: '#292524',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'rgba(255, 149, 0, 0.15)',
   },
   featureIconContainer: {
     alignSelf: 'flex-start',

@@ -95,12 +95,14 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
   return (
     <Pressable 
       onPress={handlePress} 
-      android_ripple={{ color: 'rgba(0,0,0,0.1)' }} 
+      android_ripple={{ color: 'rgba(51, 102, 255, 0.3)' }} 
       style={styles.container}
     >
       {isSelected ? (
         <LinearGradient 
-          colors={['#d1fae5', '#6ee7b7']} 
+          colors={['#FF9500', '#FFCA28']} 
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
           style={styles.gradientWrapper}
         >
           <Card style={styles.selectedCard}>
@@ -156,13 +158,13 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
               {/* Location and date info */}
               <View style={styles.infoRow}>
                 <View style={styles.locationInfo}>
-                  <Ionicons name="location-outline" size={14} color="#16a34a" />
+                  <Ionicons name="location-outline" size={16} color="rgba(255, 255, 255, 0.9)" />
                   <Text style={styles.locationTextSelected} numberOfLines={1}>
                     {market.address}{market.address && market.city ? ', ' : ''}{market.city}
                   </Text>
                 </View>
                 <View style={styles.dateInfo}>
-                  <Ionicons name="calendar-outline" size={14} color="#16a34a" />
+                  <Ionicons name="calendar-outline" size={16} color="rgba(255, 255, 255, 0.9)" />
                   <Text style={styles.dateTextSelected}>{formatDate()}</Text>
                 </View>
               </View>
@@ -170,11 +172,11 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
               {/* Action buttons */}
               <View style={styles.buttonsRow}>
                 <TouchableOpacity style={styles.hereButtonSelected} onPress={handleMarkHere}>
-                  <Ionicons name="checkmark-circle-outline" size={16} color="white" />
-                  <Text style={styles.hereButtonText}>{t('markets.here')}</Text>
+                  <Ionicons name="checkmark-circle-outline" size={18} color="#3366FF" />
+                  <Text style={styles.hereButtonTextSelected}>{t('markets.here')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.favoriteButtonSelected} onPress={handleAddFavorite}>
-                  <Ionicons name="heart-outline" size={16} color="#16a34a" />
+                  <Ionicons name="heart-outline" size={18} color="rgba(255, 255, 255, 0.9)" />
                   <Text style={styles.favoriteButtonTextSelected}>{t('markets.addFavorite')}</Text>
                 </TouchableOpacity>
               </View>
@@ -229,13 +231,13 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
             {/* Location and date info */}
             <View style={styles.infoRow}>
               <View style={styles.locationInfo}>
-                <Ionicons name="location-outline" size={14} color="#666" />
+                <Ionicons name="location-outline" size={16} color="#8F9BB3" />
                 <Text style={styles.locationText} numberOfLines={1}>
                   {market.address}{market.address && market.city ? ', ' : ''}{market.city}
                 </Text>
               </View>
               <View style={styles.dateInfo}>
-                <Ionicons name="calendar-outline" size={14} color="#666" />
+                <Ionicons name="calendar-outline" size={16} color="#8F9BB3" />
                 <Text style={styles.dateText}>{formatDate()}</Text>
               </View>
             </View>
@@ -243,11 +245,11 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
             {/* Action buttons */}
             <View style={styles.buttonsRow}>
               <TouchableOpacity style={styles.hereButton} onPress={handleMarkHere}>
-                <Ionicons name="checkmark-circle-outline" size={16} color="white" />
+                <Ionicons name="checkmark-circle-outline" size={18} color="white" />
                 <Text style={styles.hereButtonText}>{t('markets.here')}</Text>
               </TouchableOpacity>
               <TouchableOpacity style={styles.favoriteButton} onPress={handleAddFavorite}>
-                <Ionicons name="heart-outline" size={16} color="#374151" />
+                <Ionicons name="heart-outline" size={18} color="#8F9BB3" />
                 <Text style={styles.favoriteButtonText}>{t('markets.addFavorite')}</Text>
               </TouchableOpacity>
             </View>
@@ -260,30 +262,37 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
 
 const styles = StyleSheet.create({
   container: {
-    marginVertical: 8,
-    marginHorizontal: 16,
+    marginVertical: 10,
+    marginHorizontal: 0,
   },
   gradientWrapper: {
-    borderRadius: 12,
-    padding: 1,
+    borderRadius: 20,
+    padding: 2,
+    shadowColor: '#FF9500',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 8,
   },
   card: {
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-    borderRadius: 8,
-    backgroundColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+    borderRadius: 20,
+    backgroundColor: '#292524',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.15)',
   },
   selectedCard: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 8,
-    borderRadius: 12,
-    backgroundColor: '#FFFFFF',
+    shadowColor: '#FF9500',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.5,
+    shadowRadius: 16,
+    elevation: 10,
+    borderRadius: 20,
+    backgroundColor: '#292524',
   },
   header: {
     flexDirection: 'row',
@@ -300,64 +309,67 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   nameText: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
     flex: 1,
     marginRight: 8,
-    color: '#111827',
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
   },
   nameTextSelected: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '700',
     flex: 1,
     marginRight: 8,
-    color: '#166534',
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
   },
   selectedBadge: {
-    backgroundColor: '#22c55e',
-    borderRadius: 12,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    backgroundColor: '#10B981',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
     marginLeft: 8,
   },
   selectedBadgeText: {
     color: '#FFFFFF',
     fontSize: 12,
-    fontWeight: 'bold',
+    fontWeight: '700',
+    letterSpacing: 0.5,
   },
   cityText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '500',
-    marginTop: 4,
-    color: '#4b5563',
+    marginTop: 6,
+    color: '#8F9BB3',
   },
   cityTextSelected: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '500',
-    marginTop: 4,
-    color: '#15803d',
+    marginTop: 6,
+    color: 'rgba(255, 255, 255, 0.8)',
   },
   distanceBadge: {
-    backgroundColor: '#eff6ff',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    backgroundColor: 'rgba(51, 102, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   distanceBadgeSelected: {
-    backgroundColor: '#d1fae5',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   distanceText: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#2563eb',
+    fontWeight: '700',
+    color: '#3366FF',
   },
   distanceTextSelected: {
     fontSize: 14,
-    fontWeight: '500',
-    color: '#15803d',
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   tagsRow: {
     flexDirection: 'row',
@@ -366,81 +378,88 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   markedHereBadge: {
-    backgroundColor: '#d1fae5',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    backgroundColor: 'rgba(16, 185, 129, 0.25)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
   },
   markedHereBadgeText: {
-    fontSize: 12,
-    color: '#166534',
-    fontWeight: 'bold',
+    fontSize: 13,
+    color: '#10B981',
+    fontWeight: '700',
+    letterSpacing: 0.3,
   },
   activeTag: {
-    backgroundColor: '#f0fdf4',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    backgroundColor: 'rgba(16, 185, 129, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
   },
   activeTagSelected: {
-    backgroundColor: '#bbf7d0',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
   },
   activeTagText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#15803d',
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#10B981',
+    letterSpacing: 0.3,
   },
   activeTagTextSelected: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#14532d',
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    letterSpacing: 0.3,
   },
   categoryTag: {
-    backgroundColor: '#fff7ed',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    backgroundColor: 'rgba(255, 195, 0, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
   },
   categoryTagSelected: {
-    backgroundColor: '#fed7aa',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
   },
   categoryTagText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#c2410c',
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFC300',
+    letterSpacing: 0.3,
   },
   categoryTagTextSelected: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#7c2d12',
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.9)',
+    letterSpacing: 0.3,
   },
   cityTag: {
-    backgroundColor: '#f9fafb',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    backgroundColor: 'rgba(143, 155, 179, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
   },
   cityTagSelected: {
-    backgroundColor: '#e5e7eb',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
   },
   cityTagText: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#374151',
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#8F9BB3',
+    letterSpacing: 0.3,
   },
   cityTagTextSelected: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: '#111827',
+    fontSize: 13,
+    fontWeight: '700',
+    color: 'rgba(255, 255, 255, 0.8)',
+    letterSpacing: 0.3,
   },
   infoRow: {
     flexDirection: 'row',
@@ -462,19 +481,23 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 14,
-    color: '#4b5563',
+    color: '#8F9BB3',
+    fontWeight: '500',
   },
   locationTextSelected: {
     fontSize: 14,
-    color: '#15803d',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '500',
   },
   dateText: {
     fontSize: 14,
-    color: '#4b5563',
+    color: '#8F9BB3',
+    fontWeight: '500',
   },
   dateTextSelected: {
     fontSize: 14,
-    color: '#15803d',
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '500',
   },
   buttonsRow: {
     flexDirection: 'row',
@@ -482,64 +505,84 @@ const styles = StyleSheet.create({
   },
   hereButton: {
     flex: 1,
-    backgroundColor: '#22c55e',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    backgroundColor: '#10B981',
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   hereButtonSelected: {
     flex: 1,
-    backgroundColor: '#16a34a',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#FFFFFF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   hereButtonText: {
     color: '#FFFFFF',
-    fontWeight: '500',
-    fontSize: 14,
-    marginLeft: 4,
+    fontWeight: '700',
+    fontSize: 15,
+    marginLeft: 6,
+    letterSpacing: 0.3,
+  },
+  hereButtonTextSelected: {
+    color: '#3366FF',
+    fontWeight: '700',
+    fontSize: 15,
+    marginLeft: 6,
+    letterSpacing: 0.3,
   },
   favoriteButton: {
     flex: 1,
-    backgroundColor: '#f3f4f6',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   favoriteButtonSelected: {
     flex: 1,
-    backgroundColor: '#d1fae5',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     borderWidth: 1,
-    borderColor: '#86efac',
-    borderRadius: 8,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   favoriteButtonText: {
-    color: '#374151',
-    fontWeight: '500',
-    fontSize: 14,
-    marginLeft: 4,
+    color: '#8F9BB3',
+    fontWeight: '700',
+    fontSize: 15,
+    marginLeft: 6,
+    letterSpacing: 0.3,
   },
   favoriteButtonTextSelected: {
-    color: '#166534',
-    fontWeight: '500',
-    fontSize: 14,
-    marginLeft: 4,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '700',
+    fontSize: 15,
+    marginLeft: 6,
+    letterSpacing: 0.3,
   },
 });

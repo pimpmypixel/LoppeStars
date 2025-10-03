@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@ui-kitten/components';
 import { useTranslation } from '../utils/localization';
 import { useLanguage } from '../stores/appStore';
 
@@ -26,36 +26,41 @@ export default function AppNavigator() {
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ focused, color, size }) => {
-            let iconName: keyof typeof Ionicons.glyphMap;
+            let iconName: string;
             let iconColor = color;
 
             if (route.name === 'Home') {
               iconName = focused ? 'home' : 'home-outline';
-              iconColor = focused ? '#3b82f6' : '#93c5fd'; // Blue
+              iconColor = focused ? '#FF9500' : '#A78BFA';
             } else if (route.name === 'Markets') {
-              iconName = focused ? 'storefront' : 'storefront-outline';
-              iconColor = focused ? '#10b981' : '#6ee7b7'; // Green
+              iconName = focused ? 'shopping-bag' : 'shopping-bag-outline';
+              iconColor = focused ? '#FFCA28' : '#FCD34D';
             } else if (route.name === 'Rating') {
               iconName = focused ? 'star' : 'star-outline';
-              iconColor = focused ? '#f59e0b' : '#fcd34d'; // Orange/Yellow
+              iconColor = focused ? '#FF9500' : '#FBBF24';
             } else if (route.name === 'More') {
-              iconName = focused ? 'ellipsis-horizontal-circle' : 'ellipsis-horizontal-circle-outline';
-              iconColor = focused ? '#8b5cf6' : '#c4b5fd'; // Purple
+              iconName = focused ? 'menu' : 'menu-outline';
+              iconColor = focused ? '#FF9500' : '#A78BFA';
             } else {
-              iconName = 'ellipse';
+              iconName = 'radio-button-on-outline';
             }
 
-            return <Ionicons name={iconName} size={focused ? 36 : 32} color={iconColor} />;
+            return <Icon name={iconName} style={{ width: focused ? 30 : 26, height: focused ? 30 : 26 }} fill={iconColor} />;
           },
           tabBarActiveTintColor: THEME[theme].primary,
           tabBarInactiveTintColor: THEME[theme].mutedForeground,
           tabBarStyle: {
-            paddingBottom: 8,
-            paddingTop: 8,
-            height: 100,
-            backgroundColor: THEME[theme].card,
-            borderTopColor: THEME[theme].border,
+            paddingBottom: 12,
+            paddingTop: 12,
+            height: 90,
+            backgroundColor: '#292524',
+            borderTopColor: 'rgba(255, 149, 0, 0.15)',
             borderTopWidth: 2,
+            shadowColor: '#FF9500',
+            shadowOffset: { width: 0, height: -4 },
+            shadowOpacity: 0.15,
+            shadowRadius: 16,
+            elevation: 8,
           },
           tabBarLabelStyle: {
             fontSize: 12,
