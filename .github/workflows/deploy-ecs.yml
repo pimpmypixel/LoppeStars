@@ -51,6 +51,8 @@ jobs:
           cat <<EOF > task-def.json
           [
             {
+              "requiresCompatibilities": ["FARGATE"],
+              "networkMode": "awsvpc",
               "name": "loppestars-task-definition",
               "image": "${ECR_URI}:${IMAGE_TAG}",
               "memory": 512,
@@ -70,6 +72,7 @@ jobs:
           aws ecs register-task-definition \
             --family loppestars \
             --container-definitions file://task-def.json \
+            --requires-compatibilities FARGATE \
             --region ${AWS_REGION}
 
       - name: Update ECS Service
