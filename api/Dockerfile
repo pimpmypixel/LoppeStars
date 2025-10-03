@@ -33,10 +33,10 @@ https://raw.githubusercontent.com/opencv/opencv/master/samples/dnn/face_detector
  && wget -O /models/res10_300x300_ssd_iter_140000.caffemodel \
 https://raw.githubusercontent.com/opencv/opencv_3rdparty/dnn_samples_face_detector_20170830/res10_300x300_ssd_iter_140000.caffemodel
 
-COPY main.py .
-COPY scraper_cron.py .
-COPY scrapy.cfg .
-COPY scrapy_project/* ./scrapy_project/
+COPY api/main.py ./main.py
+COPY api/scraper_cron.py ./scraper_cron.py
+COPY api/scrapy.cfg ./scrapy.cfg
+COPY api/scrapy_project ./scrapy_project
 
 # Create log directory
 RUN mkdir -p /app/logs
