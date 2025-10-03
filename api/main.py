@@ -54,6 +54,7 @@ class MarketResponse(BaseModel):
     is_outdoor: bool
     special_features: Optional[str]
     source_url: Optional[str]
+    loppemarkeder_nu: Optional[dict]  # Raw metadata from loppemarkeder.nu
     scraped_at: datetime
     distance: Optional[float] = None  # Calculated distance in km
 
@@ -252,6 +253,8 @@ async def trigger_scraper():
 
 
 @app.get("/")
+async def root():
+    return {"message": "Welcome to the Loppestars API"}
 @app.get("/health")
 async def health():
     return {"status": "healthy", "service": "loppestars"}

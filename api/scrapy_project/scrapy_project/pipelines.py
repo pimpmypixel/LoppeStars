@@ -17,14 +17,28 @@ class SupabasePipeline:
             # Convert item to dict
             market_data = dict(item)
 
-            # Convert date strings back to date objects for database
-            if 'start_date' in market_data and market_data['start_date']:
-                market_data['start_date'] = market_data['start_date']
-            if 'end_date' in market_data and market_data['end_date']:
-                market_data['end_date'] = market_data['end_date']
-
             # Add scraped timestamp
             market_data['scraped_at'] = datetime.utcnow().isoformat()
+
+            # Build raw metadata entry for this spider
+            raw_meta = market_data.copy()
+            # Remove fields that match table columns to avoid conflict
+            for col in ['start_date','end_date','scraped_at']:
+                raw_meta.pop(col, None)
+
+            # Fetch existing metadata JSONB
+            existing = self.supabase.table('markets')\
+                .select('loppemarkeder_nu')\
+                .eq('external_id', market_data.get('external_id'))\
+                .single().execute()
+            old_meta = {}
+            if existing.data and existing.data.get('loppemarkeder_nu'):
+                old_meta = existing.data['loppemarkeder_nu']
+
+            # Merge new metadata under spider.name key
+            merged_meta = old_meta.copy()
+            merged_meta[spider.name] = raw_meta
+            market_data['loppemarkeder_nu'] = merged_meta
 
             # Upsert the market data
             result = self.supabase.table('markets').upsert(

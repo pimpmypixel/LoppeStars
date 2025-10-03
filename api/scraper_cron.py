@@ -25,25 +25,39 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 def run_scraper():
-    """Run the Scrapy spider"""
+    """Run the Scrapy spider(s)"""
     try:
         logger.info("Starting fleamarket scraper...")
 
         # Change to the scrapy project directory
         scrapy_dir = os.path.join(os.path.dirname(__file__), 'scrapy_project')
 
-        # Run scrapy crawl command
-        result = subprocess.run([
-            'scrapy', 'crawl', 'fleamarket'
-        ], cwd=scrapy_dir, capture_output=True, text=True, timeout=3600)  # 1 hour timeout
+        # Get list of available spiders
+        list_proc = subprocess.run(
+            ['scrapy', 'list'], cwd=scrapy_dir, capture_output=True, text=True, timeout=60
+        )
+        if list_proc.returncode != 0:
+            logger.error(f"Failed to list spiders: {list_proc.stderr}")
+            return
+        spiders = [name.strip() for name in list_proc.stdout.splitlines() if name.strip()]
 
-        if result.returncode == 0:
-            logger.info("Scraper completed successfully")
-            logger.info(f"Output: {result.stdout}")
-        else:
-            logger.error(f"Scraper failed with return code {result.returncode}")
-            logger.error(f"Error output: {result.stderr}")
-            logger.error(f"Standard output: {result.stdout}")
+        if not spiders:
+            logger.warning("No spiders found to run")
+            return
+
+        # Run each spider
+        for spider in spiders:
+            logger.info(f"Running spider: {spider}")
+            result = subprocess.run(
+                ['scrapy', 'crawl', spider], cwd=scrapy_dir,
+                capture_output=True, text=True, timeout=3600
+            )
+            if result.returncode == 0:
+                logger.info(f"Spider '{spider}' completed successfully")
+                logger.info(f"Output: {result.stdout}")
+            else:
+                logger.error(f"Spider '{spider}' failed with return code {result.returncode}")
+                logger.error(f"Error output: {result.stderr}")
 
     except subprocess.TimeoutExpired:
         logger.error("Scraper timed out after 1 hour")

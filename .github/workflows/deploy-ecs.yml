@@ -1,0 +1,77 @@
+name: Build and Deploy to ECS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to ECS
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      AWS_REGION: eu-central-1
+      ECR_URI: 035338517878.dkr.ecr.eu-central-1.amazonaws.com/cdk-hnb659fds-container-assets-035338517878-eu-central-1
+      SOURCE_BUCKET: stall-photos
+      STORAGE_BUCKET: stall-photos-processed
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t ${ECR_URI}:latest \
+            --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
+            --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
+            --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
+            --build-arg SOURCE_BUCKET=${SOURCE_BUCKET} \
+            --build-arg STORAGE_BUCKET=${STORAGE_BUCKET} \
+            -f api/Dockerfile .
+
+      - name: Push image to ECR
+        run: |
+          docker push ${ECR_URI}:latest
+
+      - name: Register new Task Definition
+        run: |
+          aws ecs register-task-definition \
+            --family loppestars \
+            --container-definitions '[{ \
+                "name":"loppestars-task-definition", \
+                "image":"'${ECR_URI}:latest'", \
+                "memory":512, \
+                "cpu":256, \
+                "essential":true, \
+                "portMappings":[{"containerPort":8080,"hostPort":8080}], \
+                "environment":[ \
+                  {"name":"SUPABASE_URL","value":"'${{ secrets.SUPABASE_URL }}'"}, \
+                  {"name":"SUPABASE_SERVICE_ROLE_KEY","value":"'${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}'"}, \
+                  {"name":"SUPABASE_ANON_KEY","value":"'${{ secrets.SUPABASE_ANON_KEY }}'"}, \
+                  {"name":"SOURCE_BUCKET","value":"'${SOURCE_BUCKET}'"}, \
+                  {"name":"STORAGE_BUCKET","value":"'${STORAGE_BUCKET}'"} \
+                ] \
+              }]' \
+            --region ${AWS_REGION}
+
+      - name: Update ECS Service
+        run: |
+          CLUSTER=$(aws ecs list-clusters --query "clusterArns[]" --output text | awk -F/ '{print $NF}')
+          SERVICE=$(aws ecs list-services --cluster $CLUSTER --query "serviceArns[]" --output text | awk -F/ '{print $NF}')
+          aws ecs update-service \
+            --cluster $CLUSTER \
+            --service $SERVICE \
+            --force-new-deployment \
+            --region ${AWS_REGION}
