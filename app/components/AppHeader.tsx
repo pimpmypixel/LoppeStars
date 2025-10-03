@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { Text } from './ui-kitten';
+import { View, StyleSheet, Text } from 'react-native';
 import { Icon } from '@ui-kitten/components';
 import Logo from './Logo';
 import { AppHeaderProps } from '../types/components/AppHeader';
@@ -16,13 +15,13 @@ export default function AppHeader({ title }: AppHeaderProps) {
           <Logo size="small" />
         </View>
         <View style={styles.centerColumn}>
-          <Text variant="h4" style={styles.title}>
+          <Text style={styles.title}>
             {title}
           </Text>
           {selectedMarket && (
             <View style={styles.marketRow}>
-              <Icon name="shopping-bag-outline" style={styles.marketIcon} fill="#FF9500" />
-              <Text variant="muted" style={styles.marketText}>
+              <Icon name="shopping-bag" style={styles.marketIcon} fill="#FF9500" />
+              <Text style={styles.marketText}>
                 {selectedMarket.name}
               </Text>
             </View>
@@ -36,16 +35,21 @@ export default function AppHeader({ title }: AppHeaderProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#292524',
+    backgroundColor: '#1C1917',
     paddingTop: 56,
-    paddingBottom: 24,
+    paddingBottom: 20,
     paddingHorizontal: 20,
-    borderBottomWidth: 0,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 12,
-    elevation: 8,
+    borderBottomWidth: 2,
+    borderBottomColor: 'rgba(255, 149, 0, 0.2)',
+    shadowColor: '#FF9500',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+    // Force override any theme-based styling
+    borderTopWidth: 0,
+    borderLeftWidth: 0,
+    borderRightWidth: 0,
   },
   content: {
     flexDirection: 'row',

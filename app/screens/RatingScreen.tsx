@@ -138,40 +138,10 @@ export default function RatingScreen() {
 
   return (
     <AuthGuard>
-      <Layout style={styles.container} level="1">
+      <View style={styles.container}>
         <AppHeader title={t('rating.title')} />
         <ScrollView style={styles.scrollView}>
           <View style={styles.content}>
-            {/* Selected Market Display */}
-            {selectedMarket && selectedMarket.name ? (
-              <Card style={styles.marketCard}>
-                <CardContent style={styles.marketCardContent}>
-                  <View style={styles.marketRow}>
-                    <Icon name="shopping-bag" style={styles.marketIcon} fill="#FF9500" />
-                    <Text style={styles.marketText}>
-                      {t('rating.selectedMarket')}: {selectedMarket.name}
-                    </Text>
-                  </View>
-                  {selectedMarket.city && (
-                    <Text style={styles.marketCity}>
-                      {selectedMarket.city}
-                    </Text>
-                  )}
-                </CardContent>
-              </Card>
-            ) : (
-              <Card style={styles.marketCard}>
-                <CardContent style={styles.marketCardContent}>
-                  <View style={styles.marketRow}>
-                    <Icon name="shopping-bag" style={styles.marketIcon} fill="#FF9500" />
-                    <Text style={styles.marketText}>
-                      {t('rating.noMarketSelected')}
-                    </Text>
-                  </View>
-                </CardContent>
-              </Card>
-            )}
-
             {/* Rating Form */}
             <Card style={styles.formCard}>
               <CardHeader>
@@ -191,7 +161,7 @@ export default function RatingScreen() {
                 </View>
 
                 {/* MobilePay Code */}
-                <View style={styles.fieldContainer}>
+                <View style={{ ...styles.fieldContainer, marginBottom: 10, width: '50%' }}>
                   <Label>{t('form.mobilePayPhone')}</Label>
                   <Input
                     placeholder={t('form.mobilePayPhonePlaceholder')}
@@ -265,20 +235,6 @@ export default function RatingScreen() {
                   )}
                 </View>
 
-                {/* Rating Stars */}
-                <View style={styles.fieldContainer}>
-                  <Label>{t('rating.rating')}</Label>
-                  <RatingSlider
-                    value={rating}
-                    onValueChange={setRating}
-                    min={1}
-                    max={10}
-                  />
-                  <Text variant="muted" style={styles.ratingValue}>
-                    {rating}/10
-                  </Text>
-                </View>
-
                 {/* Comments */}
                 <View style={styles.fieldContainer}>
                   <Label>{t('rating.comments')} ({t('common.optional')})</Label>
@@ -291,6 +247,21 @@ export default function RatingScreen() {
                     style={styles.textArea}
                   />
                 </View>
+
+                {/* Rating Stars */}
+                <View style={styles.fieldContainer}>
+                  <Label>{t('rating.rating')}</Label>
+                  <RatingSlider
+                    value={rating}
+                    onValueChange={setRating}
+                    min={1}
+                    max={10}
+                  />
+                  {/* <Text variant="muted" style={styles.ratingValue}>
+                    {rating}/10
+                  </Text> */}
+                </View>
+
 
                 {/* Submit Button */}
                 <TouchableOpacity
@@ -315,7 +286,7 @@ export default function RatingScreen() {
             </Card>
           </View>
         </ScrollView>
-      </Layout>
+      </View>
 
       {/* Camera Modal */}
       <CameraModal
@@ -348,41 +319,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingBottom: 20,
     paddingTop: 16,
-  },
-  marketCard: {
-    backgroundColor: '#292524',
-    borderColor: 'rgba(255, 149, 0, 0.2)',
-    marginBottom: 24,
-    borderRadius: 20,
-    shadowColor: '#FF9500',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 6,
-  },
-  marketCardContent: {
-    padding: 20,
-  },
-  marketRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  marketIcon: {
-    width: 24,
-    height: 24,
-  },
-  marketText: {
-    color: '#FFFFFF',
-    fontWeight: '600',
-    fontSize: 16,
-    flex: 1,
-  },
-  marketCity: {
-    color: '#A8A29E',
-    fontSize: 14,
-    marginTop: 6,
-    marginLeft: 36,
   },
   formCard: {
     marginBottom: 20,

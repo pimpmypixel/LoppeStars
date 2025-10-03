@@ -181,6 +181,7 @@
     "startRating": "Gå til kameraet for at bedømme din første bod!"
   },
   "rating": {
+    "title": "Bedøm bod",
     "selectedMarket": "Valgt Marked",
     "noMarketSelected": "Intet Marked Valgt",
     "rateStall": "Bedøm en Bod",
@@ -198,6 +199,8 @@
     "errorNoMarket": "Vælg venligst et marked først",
     "errorNoStallName": "Indtast venligst et bod navn",
     "errorPhotoUpload": "Kunne ikke uploade foto",
-    "errorSubmit": "Kunne ikke sende bedømmelse"
+    "errorSubmit": "Kunne ikke sende bedømmelse",
+    "imageProcessed": "Billede behandlet",
+    "uploadSuccessToast": "Foto uploadet succesfuldt"
   }
 }

@@ -4,11 +4,10 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../utils/supabase';
 import { useTranslation } from '../utils/localization';
-import { Layout } from '@ui-kitten/components';
+import { Layout, Icon } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import LanguageSelector from '../components/LanguageSelector';
 import { Button, Text, Card, CardContent } from '../components/ui-kitten';
-import { Lock } from 'lucide-react-native';
 
 export default function MoreScreen() {
     const navigation = useNavigation();
@@ -76,7 +75,7 @@ export default function MoreScreen() {
                         onPress={handleLogout}
                     >
                         <View style={styles.logoutContent}>
-                            <Lock size={18} color="#ef4444" />
+                            <Icon name="lock" style={styles.logoutIcon} fill="#ef4444" />
                             <Text style={styles.logoutText}>{t('auth.signOut')}</Text>
                             {user?.email && (
                                 <Text variant="muted" style={styles.emailText}>
@@ -155,5 +154,9 @@ const styles = StyleSheet.create({
     emailText: {
         color: '#A8A29E',
         fontSize: 12,
+    },
+    logoutIcon: {
+        width: 18,
+        height: 18,
     },
 });

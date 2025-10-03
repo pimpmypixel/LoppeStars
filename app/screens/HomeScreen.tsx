@@ -1,12 +1,11 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from '../utils/localization';
-import { Layout, Text as UIKittenText } from '@ui-kitten/components';
+import { Layout, Text as UIKittenText, Icon } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import Logo from '../components/Logo';
 import { Text } from '../components/ui-kitten';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui-kitten/Card';
-import { Star, Camera, Heart, MapPin, Sparkles, TrendingUp } from 'lucide-react-native';
 import { useSelectedMarket } from '../stores/appStore';
 import { Button } from '../components/ui-kitten';
 import { useNavigation } from '@react-navigation/native';
@@ -42,7 +41,7 @@ export default function HomeScreen() {
                 style={styles.gradientCard}
               >
                 <View style={styles.marketCardContent}>
-                  <MapPin size={28} color="#FFFFFF" />
+                  <Icon name="pin" style={styles.iconLarge} fill="#FFFFFF" />
                   <UIKittenText category="h6" style={styles.marketLabel}>
                     Current Market
                   </UIKittenText>
@@ -68,12 +67,12 @@ export default function HomeScreen() {
           {/* Stats Section */}
           <View style={styles.statsContainer}>
             <View style={styles.statCard}>
-              <Sparkles size={24} color="#3366FF" />
+              <Icon name="star" style={styles.iconMedium} fill="#3366FF" />
               <UIKittenText category="h5" style={styles.statNumber}>1,234</UIKittenText>
               <UIKittenText category="c1" appearance="hint">Ratings</UIKittenText>
             </View>
             <View style={styles.statCard}>
-              <TrendingUp size={24} color="#10B981" />
+              <Icon name="trending-up" style={styles.iconMedium} fill="#10B981" />
               <UIKittenText category="h5" style={styles.statNumber}>89</UIKittenText>
               <UIKittenText category="c1" appearance="hint">Markets</UIKittenText>
             </View>
@@ -87,7 +86,7 @@ export default function HomeScreen() {
                   colors={['#FF9500', '#FFCA28']}
                   style={styles.iconGradient}
                 >
-                  <Star size={28} color="#FFFFFF" />
+                  <Icon name="star" style={styles.iconLarge} fill="#FFFFFF" />
                 </LinearGradient>
               </View>
               <CardHeader>
@@ -106,7 +105,7 @@ export default function HomeScreen() {
                   colors={['#10B981', '#34D399']}
                   style={styles.iconGradient}
                 >
-                  <Camera size={28} color="#FFFFFF" />
+                  <Icon name="camera" style={styles.iconLarge} fill="#FFFFFF" />
                 </LinearGradient>
               </View>
               <CardHeader>
@@ -125,7 +124,7 @@ export default function HomeScreen() {
                   colors={['#FF3D2E', '#FF6F61']}
                   style={styles.iconGradient}
                 >
-                  <Heart size={28} color="#FFFFFF" />
+                  <Icon name="heart" style={styles.iconLarge} fill="#FFFFFF" />
                 </LinearGradient>
               </View>
               <CardHeader>
@@ -273,5 +272,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 20,
     color: '#8F9BB3',
+  },
+  iconLarge: {
+    width: 28,
+    height: 28,
+  },
+  iconMedium: {
+    width: 24,
+    height: 24,
   },
 });

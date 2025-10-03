@@ -20,18 +20,7 @@ export default function RatingNavigator() {
         name="RatingMain" 
         component={RatingScreen}
         options={{
-          headerShown: true,
-          title: t('navigation.rateStall'),
-          headerStyle: {
-            backgroundColor: '#f5f5f5',
-            elevation: 0,
-            shadowOpacity: 0,
-          },
-          headerTintColor: '#374151',
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 18,
-          },
+          headerShown: false,
         }}
       />
     </Stack.Navigator>

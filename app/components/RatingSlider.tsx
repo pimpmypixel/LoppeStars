@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Pressable, View, StyleSheet } from 'react-native';
-import { Frown, Laugh, Meh, Smile, Sparkles, Star } from 'lucide-react-native';
+import { Icon } from '@ui-kitten/components';
 import { useTranslation } from '../utils/localization';
 import { Text } from './ui-kitten';
 
@@ -15,18 +15,18 @@ export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }
   const { t } = useTranslation();
   const ratingConfig = useMemo(() => {
     if (value <= 2) {
-      return { color: '#ef4444', labelKey: 'formRating.terrible', Icon: Frown };
+      return { color: '#ef4444', labelKey: 'formRating.terrible', iconName: 'smiling-face-outline' };
     }
     if (value <= 4) {
-      return { color: '#f97316', labelKey: 'formRating.poor', Icon: Meh };
+      return { color: '#f97316', labelKey: 'formRating.poor', iconName: 'smiling-face-outline' };
     }
     if (value <= 6) {
-      return { color: '#eab308', labelKey: 'formRating.average', Icon: Smile };
+      return { color: '#eab308', labelKey: 'formRating.average', iconName: 'smiling-face' };
     }
     if (value <= 8) {
-      return { color: '#22c55e', labelKey: 'formRating.great', Icon: Laugh };
+      return { color: '#22c55e', labelKey: 'formRating.great', iconName: 'smiling-face' };
     }
-    return { color: '#0ea5e9', labelKey: 'formRating.amazing', Icon: Sparkles };
+    return { color: '#FF9500', labelKey: 'formRating.amazing', iconName: 'star' };
   }, [value]);
 
   const stars = useMemo(() => Array.from({ length: max }, (_, index) => index + 1), [max]);
@@ -35,7 +35,7 @@ export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }
     <View style={styles.container}>
       <View style={styles.ratingDisplay}>
         <View style={styles.ratingRow}>
-          <ratingConfig.Icon size={28} color={ratingConfig.color} />
+          <Icon name={ratingConfig.iconName} style={styles.ratingIcon} fill={ratingConfig.color} />
           <Text style={{ ...styles.ratingValue, color: ratingConfig.color }}>
             {value}/10
           </Text>
@@ -54,10 +54,10 @@ export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }
             accessibilityRole="button"
             accessibilityState={{ selected: star <= value }}
           >
-            <Star
-              size={28}
-              color={star <= value ? ratingConfig.color : '#94a3b8'}
-              fill={star <= value ? ratingConfig.color : 'transparent'}
+            <Icon
+              name={star <= value ? 'star' : 'star-outline'}
+              style={styles.starIcon}
+              fill={star <= value ? ratingConfig.color : '#94a3b8'}
             />
           </Pressable>
         ))}
@@ -93,17 +93,25 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  ratingIcon: {
+    width: 28,
+    height: 28,
+  },
   starsContainer: {
     flexDirection: 'row',
     flexWrap: 'nowrap',
     justifyContent: 'center',
-    gap: 4,
+    gap: 0,
   },
   starButton: {
-    height: 36,
-    width: 36,
+    height: 30,
+    width: 32,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  starIcon: {
+    width: 20,
+    height: 20,
   },
   minMaxRow: {
     flexDirection: 'row',

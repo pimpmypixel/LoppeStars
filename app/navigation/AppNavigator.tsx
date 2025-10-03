@@ -97,6 +97,7 @@ export default function AppNavigator() {
           component={RatingNavigator}
           options={{
             tabBarLabel: t('navigation.rateStall'),
+            headerShown: false,
           }}
         />
         <Tab.Screen

@@ -181,6 +181,7 @@
     "startRating": "Go to camera to rate your first stall!"
   },
   "rating": {
+    "title": "Rate Stall",
     "selectedMarket": "Selected Market",
     "noMarketSelected": "No Market Selected",
     "rateStall": "Rate a Stall",
@@ -198,6 +199,8 @@
     "errorNoMarket": "Please select a market first",
     "errorNoStallName": "Please enter a stall name",
     "errorPhotoUpload": "Failed to upload photo",
-    "errorSubmit": "Failed to submit rating"
+    "errorSubmit": "Failed to submit rating",
+    "imageProcessed": "Image processed",
+    "uploadSuccessToast": "Photo uploaded successfully"
   }
 }
