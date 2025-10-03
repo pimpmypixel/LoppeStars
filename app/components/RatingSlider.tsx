@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Pressable, View } from 'react-native';
+import { Pressable, View, StyleSheet } from 'react-native';
 import { Frown, Laugh, Meh, Smile, Sparkles, Star } from 'lucide-react-native';
 import { useTranslation } from '../utils/localization';
 import { Text } from './ui-kitten';
@@ -32,28 +32,27 @@ export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }
   const stars = useMemo(() => Array.from({ length: max }, (_, index) => index + 1), [max]);
 
   return (
-    <View className="gap-4 py-5" {...({} as any)}>
-      <View className="items-center gap-2" {...({} as any)}>
-        <View className="flex-row items-center gap-2" {...({} as any)}>
+    <View style={styles.container}>
+      <View style={styles.ratingDisplay}>
+        <View style={styles.ratingRow}>
           <ratingConfig.Icon size={28} color={ratingConfig.color} />
-          <Text className="text-2xl font-bold" style={{ color: ratingConfig.color }}>
+          <Text style={{ ...styles.ratingValue, color: ratingConfig.color }}>
             {value}/10
           </Text>
         </View>
-        <Text className="text-base font-semibold" style={{ color: ratingConfig.color }}>
+        <Text style={{ ...styles.ratingLabel, color: ratingConfig.color }}>
           {t(ratingConfig.labelKey)}
         </Text>
       </View>
 
-      <View className="flex-row flex-wrap justify-center gap-3" {...({} as any)}>
+      <View style={styles.starsContainer}>
         {stars.map((star) => (
           <Pressable
             key={star}
-            className="h-12 w-12 items-center justify-center rounded-full border border-border bg-background"
+            style={styles.starButton}
             onPress={() => onValueChange(star)}
             accessibilityRole="button"
             accessibilityState={{ selected: star <= value }}
-            {...({} as any)}
           >
             <Star
               size={26}
@@ -64,10 +63,59 @@ export default function RatingSlider({ value, onValueChange, min = 1, max = 10 }
         ))}
       </View>
 
-      <View className="flex-row justify-between px-3" {...({} as any)}>
-        <Text className="text-sm font-medium text-muted-foreground">{min}</Text>
-        <Text className="text-sm font-medium text-muted-foreground">{max}</Text>
+      <View style={styles.minMaxRow}>
+        <Text variant="muted" style={styles.minMaxText}>{min}</Text>
+        <Text variant="muted" style={styles.minMaxText}>{max}</Text>
       </View>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    gap: 16,
+    paddingVertical: 20,
+  },
+  ratingDisplay: {
+    alignItems: 'center',
+    gap: 8,
+  },
+  ratingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  ratingValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  ratingLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  starsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  starButton: {
+    height: 48,
+    width: 48,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    backgroundColor: '#ffffff',
+  },
+  minMaxRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 12,
+  },
+  minMaxText: {
+    fontSize: 14,
+    fontWeight: '500',
+  },
+});

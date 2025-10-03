@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Modal, ActivityIndicator } from 'react-native';
+import { View, Modal, ActivityIndicator, StyleSheet } from 'react-native';
 import { useTranslation } from '../utils/localization';
 import { Card, CardContent } from './ui-kitten';
 import { Text } from './ui-kitten';
@@ -32,35 +32,35 @@ export default function PhotoUploadProgress({
 
   return (
     <Modal visible={visible} transparent animationType="fade">
-      <View className="flex-1 items-center justify-center bg-black/70" {...({} as any)}>
-        <Card className="w-72">
-          <CardContent className="items-center gap-4 py-6">
+      <View style={styles.overlay}>
+        <Card style={styles.card}>
+          <CardContent style={styles.cardContent}>
             <ActivityIndicator
               size="large"
               color={getProgressColor()}
             />
 
-            <Text className="text-center text-base font-semibold">
+            <Text style={styles.statusText}>
               {getStatusText()}
             </Text>
 
-            <View className="w-full items-center" {...({} as any)}>
-              <View className="w-full h-2 bg-muted rounded-full overflow-hidden" {...({} as any)}>
+            <View style={styles.progressContainer}>
+              <View style={styles.progressBar}>
                 <View
-                  className="h-full rounded-full"
                   style={{
+                    ...styles.progressFill,
                     width: `${Math.max(0, Math.min(100, progress))}%`,
                     backgroundColor: getProgressColor(),
                   }}
                 />
               </View>
-              <Text variant="muted" className="mt-2 text-sm font-medium">
+              <Text variant="muted" style={styles.progressText}>
                 {Math.round(progress)}%
               </Text>
             </View>
 
             {error && (
-              <Text className="text-destructive text-sm text-center">
+              <Text style={styles.errorText}>
                 {error}
               </Text>
             )}
@@ -70,3 +70,50 @@ export default function PhotoUploadProgress({
     </Modal>
   );
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  card: {
+    width: 288,
+  },
+  cardContent: {
+    alignItems: 'center',
+    gap: 16,
+    paddingVertical: 24,
+  },
+  statusText: {
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  progressContainer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  progressBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: '#e5e7eb',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 4,
+  },
+  progressText: {
+    marginTop: 8,
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  errorText: {
+    color: '#ff3b30',
+    fontSize: 14,
+    textAlign: 'center',
+  },
+});

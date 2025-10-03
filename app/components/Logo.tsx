@@ -1,23 +1,28 @@
 import React from 'react';
-import { Image, View } from 'react-native';
-import { cn } from '../lib/utils';
+import { Image, View, StyleSheet } from 'react-native';
 import { LogoProps } from '../types/components/Logo';
 
 export default function Logo({ size = 'medium', style }: LogoProps) {
-  const sizeClasses: Record<Required<LogoProps>['size'], string> = {
-    small: 'h-10 w-10',
-    medium: 'h-20 w-20',
-    large: 'h-32 w-32',
+  const sizeMap = {
+    small: { width: 40, height: 40 },
+    medium: { width: 80, height: 80 },
+    large: { width: 128, height: 128 },
   };
 
   return (
-    <View className="items-center justify-center" {...({} as any)}>
+    <View style={styles.container}>
       <Image
         source={require('../assets/logo.png')}
-        className={cn('object-contain', sizeClasses[size])}
         resizeMode="contain"
-        style={style}
+        style={[sizeMap[size], style]}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

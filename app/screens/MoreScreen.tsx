@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Alert } from 'react-native';
+import { View, ScrollView, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../utils/supabase';
 import { useTranslation } from '../utils/localization';
+import { Layout } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import LanguageSelector from '../components/LanguageSelector';
-import { Button } from '../components/ui/button';
-import { Text } from '../components/ui/text';
-import { Card, CardContent } from '../components/ui/card';
+import { Button, Text, Card, CardContent } from '../components/ui-kitten';
 import { Lock } from 'lucide-react-native';
 
 export default function MoreScreen() {
@@ -45,52 +44,108 @@ export default function MoreScreen() {
     ];
 
     return (
-        <View className="flex-1 bg-[#f5f5f5]" key={refreshKey} {...({} as any)}>
+        <Layout style={styles.container} level="2" key={refreshKey}>
             <AppHeader title={t('more.more')} />
 
-            <ScrollView className="flex-1" {...({} as any)}>
-                <View className="p-5 gap-5" {...({} as any)}>
+            <ScrollView style={styles.scrollView}>
+                <View style={styles.content}>
                     <LanguageSelector onLanguageChange={handleLanguageChange} />
 
                     <Card>
-                        <CardContent className="p-0">
+                        <CardContent style={styles.menuCard}>
                             {menuItems.map((item, index) => (
-                                <View key={index} {...({} as any)}>
-                                    <Button
-                                        variant="ghost"
-                                        className="flex-row justify-between items-center h-14 px-4 rounded-none border-b border-border"
+                                <View key={index}>
+                                    <TouchableOpacity
+                                        style={styles.menuItem}
                                         onPress={item.onPress}
-                                        {...({} as any)}
                                     >
-                                        <Text className="text-left flex-1">{item.title}</Text>
-                                        <Text className="text-muted-foreground">›</Text>
-                                    </Button>
+                                        <Text style={styles.menuText}>{item.title}</Text>
+                                        <Text style={styles.chevron}>›</Text>
+                                    </TouchableOpacity>
                                     {index < menuItems.length - 1 && (
-                                        <View className="h-px bg-border mx-4" {...({} as any)} />
+                                        <View style={styles.separator} />
                                     )}
                                 </View>
                             ))}
-
                         </CardContent>
                     </Card>
 
                     <Button
                         variant="destructive"
-                        className="flex-row outline border-red-500 bg-white items-center justify-center gap-2 h-12"
+                        style={styles.logoutButton}
                         onPress={handleLogout}
-                        {...({} as any)}
                     >
-                        <Lock size={18} color="#f00" />
-                        <Text className="text-red-500 font-semibold">{t('auth.signOut')}</Text>
-                        {user?.email && (
-                            <Text variant="muted" className="text-red-200 text-xs">
-                                {user.email}
-                            </Text>
-                        )}
+                        <View style={styles.logoutContent}>
+                            <Lock size={18} color="#ef4444" />
+                            <Text style={styles.logoutText}>{t('auth.signOut')}</Text>
+                            {user?.email && (
+                                <Text variant="muted" style={styles.emailText}>
+                                    {user.email}
+                                </Text>
+                            )}
+                        </View>
                     </Button>
-
                 </View>
             </ScrollView>
-        </View>
+        </Layout>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+    },
+    scrollView: {
+        flex: 1,
+    },
+    content: {
+        padding: 20,
+        gap: 20,
+    },
+    menuCard: {
+        padding: 0,
+    },
+    menuItem: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 56,
+        paddingHorizontal: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#e5e7eb',
+    },
+    menuText: {
+        textAlign: 'left',
+        flex: 1,
+        fontSize: 16,
+    },
+    chevron: {
+        color: '#6b7280',
+        fontSize: 24,
+    },
+    separator: {
+        height: 1,
+        backgroundColor: '#e5e7eb',
+        marginHorizontal: 16,
+    },
+    logoutButton: {
+        height: 48,
+        borderWidth: 1,
+        borderColor: '#ef4444',
+        backgroundColor: '#ffffff',
+    },
+    logoutContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 8,
+    },
+    logoutText: {
+        color: '#ef4444',
+        fontWeight: '600',
+    },
+    emailText: {
+        color: '#fca5a5',
+        fontSize: 12,
+    },
+});

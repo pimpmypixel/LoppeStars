@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useColorScheme, Appearance, Platform } from 'react-native';
 import { DarkTheme, DefaultTheme, type Theme } from '@react-navigation/native';
-import { colorScheme } from 'nativewind';
 import { ThemeContextType, ThemeProviderProps } from '../types/contexts/ThemeContext';
 
 export const THEME = {
@@ -110,8 +109,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   }, []);
 
   useEffect(() => {
-    colorScheme.set(theme);
-
+    // Apply theme to web if needed
     if (Platform.OS === 'web') {
       const root = document.documentElement;
       if (theme === 'dark') {

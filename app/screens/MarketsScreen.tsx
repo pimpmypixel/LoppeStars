@@ -5,6 +5,7 @@ import {
   Alert,
   RefreshControl,
   FlatList,
+  StyleSheet,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,6 +14,7 @@ import { useTranslation } from '../utils/localization';
 import { supabase } from '../utils/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useMarket } from '../contexts/MarketContext';
+import { Layout } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import AuthGuard from '../components/AuthGuard';
 import MarketItem from '../components/MarketItem';
@@ -166,51 +168,102 @@ export default function MarketsScreen() {
 
   return (
     <AuthGuard>
-      <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
+      <Layout style={styles.container} level="2">
         <AppHeader title={t('markets.title')} />
 
-        <View className="flex-1" {...({} as any)}>
+        <View style={styles.content}>
           {/* Search Bar */}
-          <View className="px-5 py-3 bg-white border-b border-gray-200" {...({} as any)}>
-            <View className="flex-row items-center bg-gray-100 rounded-lg px-3 py-2" {...({} as any)}>
+          <View style={styles.searchContainer}>
+            <View style={styles.searchBar}>
               <Ionicons name="search-outline" size={20} color="#666" />
               <TextInput
-                className="flex-1 ml-2 text-base"
+                style={styles.searchInput}
                 placeholder={t('markets.searchPlaceholder')}
                 onChangeText={debouncedSearch}
-                {...({} as any)}
               />
             </View>
           </View>
 
           {/* Markets List */}
           {isLoading ? (
-            <View className="flex-1 justify-center items-center" {...({} as any)}>
-              <Text className="text-lg text-muted-foreground">{t('common.loading')}</Text>
+            <View style={styles.loadingContainer}>
+              <Text style={styles.loadingText}>{t('common.loading')}</Text>
             </View>
           ) : (
-              <FlatList
-                data={filteredMarkets}
-                extraData={selectedMarket}
-                renderItem={renderMarketItem}
-                keyExtractor={(item) => item.id}
-                contentContainerStyle={{ padding: 20 }}
-                refreshControl={
-                  <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                }
-                ListEmptyComponent={
-                  <View className="flex-1 justify-center items-center py-16" {...({} as any)}>
-                    <Ionicons name="storefront-outline" size={48} color="#ccc" />
-                    <Text className="text-lg text-muted-foreground mt-4 text-center">
-                      {t('markets.noMarkets')}
-                    </Text>
-                  </View>
-                }
-                {...({} as any)}
+            <FlatList
+              data={filteredMarkets}
+              extraData={selectedMarket}
+              renderItem={renderMarketItem}
+              keyExtractor={(item) => item.id}
+              contentContainerStyle={styles.listContent}
+              refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+              }
+              ListEmptyComponent={
+                <View style={styles.emptyContainer}>
+                  <Ionicons name="storefront-outline" size={48} color="#ccc" />
+                  <Text style={styles.emptyText}>
+                    {t('markets.noMarkets')}
+                  </Text>
+                </View>
+              }
             />
           )}
         </View>
-      </View>
+      </Layout>
     </AuthGuard>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  content: {
+    flex: 1,
+  },
+  searchContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    backgroundColor: '#ffffff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#f3f4f6',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+  },
+  searchInput: {
+    flex: 1,
+    marginLeft: 8,
+    fontSize: 16,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#6b7280',
+  },
+  listContent: {
+    padding: 20,
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 64,
+  },
+  emptyText: {
+    fontSize: 18,
+    color: '#6b7280',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+});
