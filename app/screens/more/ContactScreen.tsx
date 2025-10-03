@@ -1,11 +1,10 @@
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { View, ScrollView, Linking } from 'react-native';
+import { View, ScrollView, Linking, TouchableOpacity } from 'react-native';
 import { useTranslation } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
-import { Button } from '../../components/ui/button';
-import { Text } from '../../components/ui/text';
+import { Text } from '../../components/ui-kitten';
 
 export default function ContactScreen() {
   const navigation = useNavigation();
@@ -19,15 +18,13 @@ export default function ContactScreen() {
     <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
       <AppHeader title={t('more.contact')} />
 
-      <Button
-        variant="ghost"
-        className="flex-row items-center mx-5 mt-3 mb-2"
+      <TouchableOpacity
+        style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20, marginTop: 12, marginBottom: 8 }}
         onPress={() => navigation.goBack()}
-        {...({} as any)}
       >
         <Ionicons name="arrow-back" size={24} color="#007AFF" />
         <Text className="ml-2 text-primary">{t('common.back')}</Text>
-      </Button>
+      </TouchableOpacity>
 
       <ScrollView className="flex-1" {...({} as any)}>
         <View className="p-5" {...({} as any)}>
@@ -46,50 +43,42 @@ export default function ContactScreen() {
 
           <View className="bg-white rounded-lg p-4 mb-3 border border-gray-200" {...({} as any)}>
             <Text className="text-sm text-gray-500 mb-1">Generel Support</Text>
-            <Button
-              variant="ghost"
-              className="p-0 h-auto justify-start"
+            <TouchableOpacity
+              style={{ padding: 0, justifyContent: 'flex-start' }}
               onPress={() => handleEmailPress('support@loppestars.com')}
-              {...({} as any)}
             >
               <Text className="text-blue-500 font-medium">support@loppestars.com</Text>
-            </Button>
+            </TouchableOpacity>
           </View>
 
           <View className="bg-white rounded-lg p-4 mb-3 border border-gray-200" {...({} as any)}>
             <Text className="text-sm text-gray-500 mb-1">Feedback & Forslag</Text>
-            <Button
-              variant="ghost"
-              className="p-0 h-auto justify-start"
+            <TouchableOpacity
+              style={{ padding: 0, justifyContent: 'flex-start' }}
               onPress={() => handleEmailPress('feedback@loppestars.com')}
-              {...({} as any)}
             >
               <Text className="text-blue-500 font-medium">feedback@loppestars.com</Text>
-            </Button>
+            </TouchableOpacity>
           </View>
 
           <View className="bg-white rounded-lg p-4 mb-3 border border-gray-200" {...({} as any)}>
             <Text className="text-sm text-gray-500 mb-1">Privatlivsproblemer</Text>
-            <Button
-              variant="ghost"
-              className="p-0 h-auto justify-start"
+            <TouchableOpacity
+              style={{ padding: 0, justifyContent: 'flex-start' }}
               onPress={() => handleEmailPress('privacy@loppestars.com')}
-              {...({} as any)}
             >
               <Text className="text-blue-500 font-medium">privacy@loppestars.com</Text>
-            </Button>
+            </TouchableOpacity>
           </View>
 
           <View className="bg-white rounded-lg p-4 mb-6 border border-gray-200" {...({} as any)}>
             <Text className="text-sm text-gray-500 mb-1">Forretningsforespørgsler</Text>
-            <Button
-              variant="ghost"
-              className="p-0 h-auto justify-start"
+            <TouchableOpacity
+              style={{ padding: 0, justifyContent: 'flex-start' }}
               onPress={() => handleEmailPress('business@loppestars.com')}
-              {...({} as any)}
             >
               <Text className="text-blue-500 font-medium">business@loppestars.com</Text>
-            </Button>
+            </TouchableOpacity>
           </View>
 
           <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">

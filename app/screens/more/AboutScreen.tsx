@@ -1,11 +1,10 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { View, ScrollView, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
-import { Button } from '../../components/ui/button';
-import { Text } from '../../components/ui/text';
+import { Text } from '../../components/ui-kitten';
 
 export default function AboutScreen() {
   const navigation = useNavigation();
@@ -15,15 +14,13 @@ export default function AboutScreen() {
     <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
       <AppHeader title={t('more.about')} />
 
-      <Button
-        variant="ghost"
-        className="flex-row items-center mx-5 mt-3 mb-2"
+      <TouchableOpacity
+        style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20, marginTop: 12, marginBottom: 8 }}
         onPress={() => navigation.goBack()}
-        {...({} as any)}
       >
         <Ionicons name="arrow-back" size={24} color="#007AFF" />
         <Text className="ml-2 text-primary">{t('common.back')}</Text>
-      </Button>
+      </TouchableOpacity>
 
       <ScrollView className="flex-1" {...({} as any)}>
         <View className="p-5" {...({} as any)}>

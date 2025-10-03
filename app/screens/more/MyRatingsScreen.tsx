@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Image, RefreshControl } from 'react-native';
+import { View, ScrollView, Image, RefreshControl, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../../utils/supabase';
 import { useTranslation } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
 import AppFooter from '../../components/AppFooter';
-import { Button } from '../../components/ui/button';
-import { Text } from '../../components/ui/text';
-import { Card, CardContent, CardHeader, CardTitle } from '../../components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, Text } from '../../components/ui-kitten';
 import { Frown, Laugh, Meh, Smile, Sparkles, Star } from 'lucide-react-native';
 
 interface Rating {
@@ -111,15 +109,13 @@ export default function MyRatingsScreen() {
     <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
       <AppHeader title={t('myRatings.title')} />
 
-      <Button
-        variant="ghost"
-        className="flex-row items-center mx-5 mt-3 mb-2"
+      <TouchableOpacity
+        style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20, marginTop: 12, marginBottom: 8 }}
         onPress={() => navigation.goBack()}
-        {...({} as any)}
       >
         <Ionicons name="arrow-back" size={24} color="#007AFF" />
         <Text className="ml-2 text-primary">{t('common.back')}</Text>
-      </Button>
+      </TouchableOpacity>
 
       <ScrollView
         className="flex-1"

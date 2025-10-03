@@ -1,14 +1,11 @@
 import React from 'react';
-import { View, ScrollView, TouchableOpacity, Alert, Text as RNText } from 'react-native';
+import { View, ScrollView, TouchableOpacity, Text as RNText } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../utils/localization';
 import { useAuth } from '../contexts/AuthContext';
 import { useMarket } from '../contexts/MarketContext';
-import { Button } from '../components/ui/button';
-import { Text } from '../components/ui/text';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, Text } from '../components/ui-kitten';
 import { reset } from '../utils/navigation';
 import { Market } from '../types/common/market';
 
@@ -69,12 +66,12 @@ export default function MarketDetailsScreen() {
           {/* Main Info Card */}
           <Card className="mb-4 bg-white shadow-sm" {...({} as any)}>
             <CardHeader {...({} as any)}>
-              <CardTitle className="text-xl">{market.name}</CardTitle>
+              <CardTitle>{market.name}</CardTitle>
               {market.city && (
-                <CardDescription className="text-base">
+                <Text style={{ fontSize: 16, color: '#666' }}>
                   {market.city}
                   {market.municipality && `, ${market.municipality}`}
-                </CardDescription>
+                </Text>
               )}
             </CardHeader>
             <CardContent {...({} as any)}>
