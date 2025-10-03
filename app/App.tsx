@@ -43,10 +43,10 @@ function AppContent() {
   }, []);
 
   return (
-    <ApplicationProvider {...eva} theme={theme === 'dark' ? darkTheme : lightTheme}>
-      <View style={{ flex: 1 }}>
+    <ApplicationProvider {...eva} theme={theme === 'dark' ? { ...eva.dark, ...require('./theme/custom-theme.json') } : { ...eva.light, ...require('./theme/custom-theme.json') }}>
+      <View style={{ flex: 1, backgroundColor: theme === 'dark' ? '#1A1A2E' : '#FFFFFF' }}>
         <AuthWrapper />
-        <StatusBar style="auto" />
+        <StatusBar style={theme === 'dark' ? 'light' : 'dark'} />
       </View>
     </ApplicationProvider>
   );

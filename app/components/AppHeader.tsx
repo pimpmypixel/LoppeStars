@@ -21,7 +21,7 @@ export default function AppHeader({ title }: AppHeaderProps) {
           </Text>
           {selectedMarket && (
             <View style={styles.marketRow}>
-              <Ionicons name="storefront" size={14} color="#6b7280" />
+              <Ionicons name="storefront" size={14} color="#8F9BB3" />
               <Text variant="muted" style={styles.marketText}>
                 {selectedMarket.name}
               </Text>
@@ -36,17 +36,17 @@ export default function AppHeader({ title }: AppHeaderProps) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'transparent',
+    backgroundColor: '#16213E',
     paddingTop: 56,
     paddingBottom: 20,
     paddingHorizontal: 20,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(229, 231, 235, 0.5)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.08)',
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.15,
+    shadowRadius: 8,
+    elevation: 4,
   },
   content: {
     flexDirection: 'row',
@@ -63,16 +63,23 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontWeight: '600',
-    letterSpacing: -0.5,
+    fontWeight: '700',
+    letterSpacing: 0.5,
+    fontSize: 20,
+    color: '#FFFFFF',
   },
   marketRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 4,
+    marginTop: 6,
+    backgroundColor: 'rgba(51, 102, 255, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 4,
+    borderRadius: 12,
   },
   marketText: {
-    fontSize: 14,
-    marginLeft: 4,
+    fontSize: 13,
+    marginLeft: 6,
+    color: '#8F9BB3',
   },
 });

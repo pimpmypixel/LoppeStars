@@ -1,15 +1,16 @@
 import React from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
 import { useTranslation } from '../utils/localization';
-import { Layout } from '@ui-kitten/components';
+import { Layout, Text as UIKittenText } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import Logo from '../components/Logo';
 import { Text } from '../components/ui-kitten';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui-kitten/Card';
-import { Star, Camera, Heart, MapPin } from 'lucide-react-native';
+import { Star, Camera, Heart, MapPin, Sparkles, TrendingUp } from 'lucide-react-native';
 import { useSelectedMarket } from '../stores/appStore';
 import { Button } from '../components/ui-kitten';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function HomeScreen() {
   const { selectedMarket } = useSelectedMarket();
@@ -17,50 +18,81 @@ export default function HomeScreen() {
   const { t } = useTranslation();
 
   return (
-    <Layout style={styles.container} level="2">
+    <Layout style={styles.container} level="1">
       <AppHeader title="Loppestars" />
 
-      <ScrollView style={styles.scrollView}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.contentContainer}>
-          <Logo size="large" />
-          <Text variant="h1" style={styles.welcomeTitle}>
-            {t('home.welcome')}
-          </Text>
-          <Text variant="lead" style={styles.subtitle}>
-            {t('home.subtitle')}
-          </Text>
+          {/* Hero Section with Gradient */}
+          <View style={styles.heroSection}>
+            <Logo size="large" />
+            <UIKittenText category="h1" style={styles.welcomeTitle}>
+              {t('home.welcome')}
+            </UIKittenText>
+            <UIKittenText category="s1" appearance="hint" style={styles.subtitle}>
+              {t('home.subtitle')}
+            </UIKittenText>
+          </View>
 
           {/* Selected Market Display */}
           {selectedMarket && (
             <Card style={styles.selectedMarketCard}>
-              <CardHeader style={styles.cardHeaderCentered}>
-                <MapPin size={24} color="#f97316" />
-                <CardTitle style={styles.cardTitleCentered}>Current Market</CardTitle>
-              </CardHeader>
-              <CardContent style={styles.cardContentCentered}>
-                <Text style={styles.marketName}>
-                  {selectedMarket.name}
-                </Text>
-                {selectedMarket.city && (
-                  <Text variant="muted" style={styles.marketCity}>
-                    {selectedMarket.city}
-                  </Text>
-                )}
-                <Button
-                  style={styles.rateButton}
-                  onPress={() => navigation.navigate('Rating' as never)}
-                >
-                  <Text>Rate a Stall</Text>
-                </Button>
-              </CardContent>
+              <LinearGradient
+                colors={['#3366FF', '#5A8BFF']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.gradientCard}
+              >
+                <View style={styles.marketCardContent}>
+                  <MapPin size={28} color="#FFFFFF" />
+                  <UIKittenText category="h6" style={styles.marketLabel}>
+                    Current Market
+                  </UIKittenText>
+                  <UIKittenText category="h4" style={styles.marketName}>
+                    {selectedMarket.name}
+                  </UIKittenText>
+                  {selectedMarket.city && (
+                    <UIKittenText category="s1" style={styles.marketCity}>
+                      {selectedMarket.city}
+                    </UIKittenText>
+                  )}
+                  <Button
+                    style={styles.rateButton}
+                    onPress={() => navigation.navigate('Rating' as never)}
+                  >
+                    Rate a Stall Now
+                  </Button>
+                </View>
+              </LinearGradient>
             </Card>
           )}
 
+          {/* Stats Section */}
+          <View style={styles.statsContainer}>
+            <View style={styles.statCard}>
+              <Sparkles size={24} color="#3366FF" />
+              <UIKittenText category="h5" style={styles.statNumber}>1,234</UIKittenText>
+              <UIKittenText category="c1" appearance="hint">Ratings</UIKittenText>
+            </View>
+            <View style={styles.statCard}>
+              <TrendingUp size={24} color="#10B981" />
+              <UIKittenText category="h5" style={styles.statNumber}>89</UIKittenText>
+              <UIKittenText category="c1" appearance="hint">Markets</UIKittenText>
+            </View>
+          </View>
+
           {/* Feature Cards */}
           <View style={styles.featureCards}>
-            <Card style={{...styles.featureCard, ...styles.blueCard}}>
-              <CardHeader style={styles.cardHeaderCentered}>
-                <Star size={32} color="#3b82f6" />
+            <Card style={styles.featureCard}>
+              <View style={styles.featureIconContainer}>
+                <LinearGradient
+                  colors={['#3366FF', '#5A8BFF']}
+                  style={styles.iconGradient}
+                >
+                  <Star size={28} color="#FFFFFF" />
+                </LinearGradient>
+              </View>
+              <CardHeader>
                 <CardTitle style={styles.featureTitle}>{t('home.rateFinds')}</CardTitle>
               </CardHeader>
               <CardContent>
@@ -70,9 +102,16 @@ export default function HomeScreen() {
               </CardContent>
             </Card>
 
-            <Card style={{...styles.featureCard, ...styles.greenCard}}>
-              <CardHeader style={styles.cardHeaderCentered}>
-                <Camera size={32} color="#10b981" />
+            <Card style={styles.featureCard}>
+              <View style={styles.featureIconContainer}>
+                <LinearGradient
+                  colors={['#10B981', '#34D399']}
+                  style={styles.iconGradient}
+                >
+                  <Camera size={28} color="#FFFFFF" />
+                </LinearGradient>
+              </View>
+              <CardHeader>
                 <CardTitle style={styles.featureTitle}>{t('home.captureMemories')}</CardTitle>
               </CardHeader>
               <CardContent>
@@ -82,9 +121,16 @@ export default function HomeScreen() {
               </CardContent>
             </Card>
 
-            <Card style={{...styles.featureCard, ...styles.pinkCard}}>
-              <CardHeader style={styles.cardHeaderCentered}>
-                <Heart size={32} color="#ef4444" />
+            <Card style={styles.featureCard}>
+              <View style={styles.featureIconContainer}>
+                <LinearGradient
+                  colors={['#FF3D2E', '#FF6F61']}
+                  style={styles.iconGradient}
+                >
+                  <Heart size={28} color="#FFFFFF" />
+                </LinearGradient>
+              </View>
+              <CardHeader>
                 <CardTitle style={styles.featureTitle}>{t('home.funForEveryone')}</CardTitle>
               </CardHeader>
               <CardContent>
@@ -103,82 +149,131 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#1A1A2E',
   },
   scrollView: {
     flex: 1,
   },
   contentContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
     paddingHorizontal: 20,
-    paddingVertical: 32,
+    paddingVertical: 24,
+  },
+  heroSection: {
+    alignItems: 'center',
+    marginBottom: 32,
+    paddingTop: 16,
   },
   welcomeTitle: {
     textAlign: 'center',
-    marginTop: 20,
-    marginBottom: 16,
+    marginTop: 24,
+    marginBottom: 12,
+    fontSize: 32,
+    fontWeight: '800',
+    color: '#FFFFFF',
   },
   subtitle: {
     textAlign: 'center',
-    marginBottom: 32,
+    fontSize: 16,
+    color: '#8F9BB3',
   },
   selectedMarketCard: {
     width: '100%',
-    maxWidth: 384,
-    backgroundColor: '#fff5ed',
-    borderColor: '#fed7aa',
     marginBottom: 24,
+    borderRadius: 20,
+    overflow: 'hidden',
+    elevation: 8,
+    shadowColor: '#3366FF',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
   },
-  cardHeaderCentered: {
+  gradientCard: {
+    padding: 24,
+    borderRadius: 20,
+  },
+  marketCardContent: {
     alignItems: 'center',
-    paddingBottom: 8,
   },
-  cardTitleCentered: {
-    fontSize: 18,
-    textAlign: 'center',
-  },
-  cardContentCentered: {
-    alignItems: 'center',
+  marketLabel: {
+    marginTop: 12,
+    marginBottom: 8,
+    color: '#FFFFFF',
+    opacity: 0.9,
+    fontSize: 14,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
   },
   marketName: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 24,
+    fontWeight: '700',
     textAlign: 'center',
-    marginBottom: 4,
+    marginBottom: 6,
+    color: '#FFFFFF',
   },
   marketCity: {
     textAlign: 'center',
-    marginBottom: 12,
+    marginBottom: 20,
+    color: '#FFFFFF',
+    opacity: 0.8,
   },
   rateButton: {
     width: '100%',
+    backgroundColor: '#FFFFFF',
+    borderRadius: 12,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    width: '100%',
+    marginBottom: 32,
+    gap: 16,
+  },
+  statCard: {
+    flex: 1,
+    backgroundColor: '#16213E',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  statNumber: {
+    marginTop: 8,
+    marginBottom: 4,
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
   },
   featureCards: {
     width: '100%',
-    maxWidth: 384,
     gap: 16,
   },
   featureCard: {
     marginVertical: 8,
+    backgroundColor: '#16213E',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.05)',
   },
-  blueCard: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#bfdbfe',
+  featureIconContainer: {
+    alignSelf: 'flex-start',
+    marginBottom: 12,
   },
-  greenCard: {
-    backgroundColor: '#ecfdf5',
-    borderColor: '#a7f3d0',
-  },
-  pinkCard: {
-    backgroundColor: '#fef2f2',
-    borderColor: '#fecaca',
+  iconGradient: {
+    width: 56,
+    height: 56,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   featureTitle: {
-    fontSize: 18,
-    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: '700',
+    marginBottom: 8,
+    color: '#FFFFFF',
   },
   featureDescription: {
-    textAlign: 'center',
     fontSize: 14,
+    lineHeight: 20,
+    color: '#8F9BB3',
   },
 });

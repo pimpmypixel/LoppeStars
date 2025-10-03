@@ -61,7 +61,12 @@ export function Button({
 
 const styles = StyleSheet.create({
   button: {
-    borderRadius: 10,
+    borderRadius: 12,
     marginVertical: 4,
+    shadowColor: '#3366FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 3,
   },
 });

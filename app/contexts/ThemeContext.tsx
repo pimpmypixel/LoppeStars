@@ -95,7 +95,8 @@ export function useTheme() {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const systemColorScheme = useColorScheme();
-  const [theme, setTheme] = useState<'light' | 'dark'>(systemColorScheme || 'light');
+  // Default to dark theme for modern look
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
 
   useEffect(() => {
     // Listen for system theme changes
