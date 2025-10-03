@@ -15,6 +15,7 @@ jobs:
       ECR_URI: 035338517878.dkr.ecr.eu-central-1.amazonaws.com/cdk-hnb659fds-container-assets-035338517878-eu-central-1
       SOURCE_BUCKET: stall-photos
       STORAGE_BUCKET: stall-photos-processed
+      IMAGE_TAG: ${{ github.sha }}
 
     steps:
       - name: Checkout repo
@@ -33,7 +34,7 @@ jobs:
       - name: Build Docker image
         run: |
           docker build \
-            -t ${ECR_URI}:latest \
+            -t ${ECR_URI}:${IMAGE_TAG} \
             --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
@@ -43,7 +44,7 @@ jobs:
 
       - name: Push image to ECR
         run: |
-          docker push ${ECR_URI}:latest
+          docker push ${ECR_URI}:${IMAGE_TAG}
 
       - name: Register new Task Definition
         run: |
@@ -51,7 +52,7 @@ jobs:
             --family loppestars \
             --container-definitions '[{ \
                 "name":"loppestars-task-definition", \
-                "image":"'${ECR_URI}:latest'", \
+                "image":"'${ECR_URI}:${IMAGE_TAG}'", \
                 "memory":512, \
                 "cpu":256, \
                 "essential":true, \
@@ -74,4 +75,5 @@ jobs:
             --cluster $CLUSTER \
             --service $SERVICE \
             --force-new-deployment \
-            --region ${AWS_REGION}
+            --region ${AWS_REGION} \
+            --task-definition $(aws ecs describe-task-definition --task-definition loppestars --query 'taskDefinition.taskDefinitionArn' --output text | sed "s/:latest/:${IMAGE_TAG}/")
