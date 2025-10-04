@@ -62,7 +62,7 @@ jobs:
             "executionRoleArn": "arn:aws:iam::035338517878:role/ecsTaskExecutionRole",
             "containerDefinitions": [
               {
-                "name": "loppestars-container",
+                "name": "web",
                 "image": "${ECR_URI}:${IMAGE_TAG}",
                 "cpu": 256,
                 "memory": 512,
