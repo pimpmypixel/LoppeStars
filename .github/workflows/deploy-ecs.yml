@@ -37,7 +37,6 @@ jobs:
         run: |
           docker build \
             -t ${ECR_URI}:${IMAGE_TAG} \
-            -t ${ECR_URI}:latest \
             --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
@@ -48,8 +47,7 @@ jobs:
       - name: Push image to ECR
         run: |
           docker push ${ECR_URI}:${IMAGE_TAG}
-          docker push ${ECR_URI}:latest
-          echo "✅ Pushed image with tags: ${IMAGE_TAG} and latest"
+          echo "✅ Pushed image with tag: ${IMAGE_TAG}"
 
       - name: Register new Task Definition
         id: register-task-def
