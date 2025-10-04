@@ -109,22 +109,22 @@ jobs:
           
           CLUSTER=$(aws ecs list-clusters \
             --region ${AWS_REGION} \
-            --query "clusterArns[?contains(@, 'loppestars')]" \
+            --query "clusterArns[0]" \
             --output text | awk -F/ '{print $NF}')
           
-          if [ -z "$CLUSTER" ]; then
-            echo "❌ ERROR: Could not find loppestars cluster"
+          if [ -z "$CLUSTER" ] || [ "$CLUSTER" = "None" ]; then
+            echo "❌ ERROR: Could not find ECS cluster"
             exit 1
           fi
           
           SERVICE=$(aws ecs list-services \
             --cluster $CLUSTER \
             --region ${AWS_REGION} \
-            --query "serviceArns[?contains(@, 'loppestars')]" \
+            --query "serviceArns[0]" \
             --output text | awk -F/ '{print $NF}')
           
-          if [ -z "$SERVICE" ]; then
-            echo "❌ ERROR: Could not find loppestars service"
+          if [ -z "$SERVICE" ] || [ "$SERVICE" = "None" ]; then
+            echo "❌ ERROR: Could not find ECS service in cluster $CLUSTER"
             exit 1
           fi
           
@@ -148,13 +148,13 @@ jobs:
           
           CLUSTER=$(aws ecs list-clusters \
             --region ${AWS_REGION} \
-            --query "clusterArns[?contains(@, 'loppestars')]" \
+            --query "clusterArns[0]" \
             --output text | awk -F/ '{print $NF}')
           
           SERVICE=$(aws ecs list-services \
             --cluster $CLUSTER \
             --region ${AWS_REGION} \
-            --query "serviceArns[?contains(@, 'loppestars')]" \
+            --query "serviceArns[0]" \
             --output text | awk -F/ '{print $NF}')
           
           aws ecs wait services-stable \
@@ -170,13 +170,13 @@ jobs:
           
           CLUSTER=$(aws ecs list-clusters \
             --region ${AWS_REGION} \
-            --query "clusterArns[?contains(@, 'loppestars')]" \
+            --query "clusterArns[0]" \
             --output text | awk -F/ '{print $NF}')
           
           SERVICE=$(aws ecs list-services \
             --cluster $CLUSTER \
             --region ${AWS_REGION} \
-            --query "serviceArns[?contains(@, 'loppestars')]" \
+            --query "serviceArns[0]" \
             --output text | awk -F/ '{print $NF}')
           
           TASK_ARN=$(aws ecs list-tasks \
