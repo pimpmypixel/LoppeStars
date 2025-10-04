@@ -1,7 +1,9 @@
 import React from 'react';
+import { View, TouchableOpacity, StyleSheet } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Icon } from '@ui-kitten/components';
+import { Text } from '../components/ui-kitten';
 import { useTranslation } from '../utils/localization';
 import { useLanguage } from '../stores/appStore';
 
@@ -14,6 +16,77 @@ import { navigationRef } from '../utils/navigation';
 
 const Tab = createBottomTabNavigator();
 
+function CustomTabBar({ state, descriptors, navigation }: any) {
+  return (
+    <View style={styles.tabBarContainer}>
+      {state.routes.map((route: any, index: number) => {
+        const { options } = descriptors[route.key];
+        const label = options.tabBarLabel !== undefined
+          ? options.tabBarLabel
+          : options.title !== undefined
+          ? options.title
+          : route.name;
+
+        const isFocused = state.index === index;
+
+        let iconName: string;
+        if (route.name === 'Home') {
+          iconName = 'home-outline';
+        } else if (route.name === 'Markets') {
+          iconName = 'shopping-bag-outline';
+        } else if (route.name === 'Rating') {
+          iconName = 'star-outline';
+        } else if (route.name === 'More') {
+          iconName = 'menu-outline';
+        } else {
+          iconName = 'radio-button-on-outline';
+        }
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <TouchableOpacity
+            key={route.key}
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            style={styles.tabButton}
+            activeOpacity={0.7}
+          >
+            <View style={[
+              styles.iconContainer,
+              isFocused && styles.iconContainerActive
+            ]}>
+              <Icon
+                name={iconName}
+                style={styles.tabIcon}
+                fill={isFocused ? '#1C1917' : '#A8A29E'}
+              />
+            </View>
+            <Text style={
+              isFocused ? styles.tabLabelActive : styles.tabLabel
+            }>
+              {label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
+
 export default function AppNavigator() {
   const { theme } = useTheme();
   const { language } = useLanguage(); // Force re-render when language changes
@@ -24,72 +97,23 @@ export default function AppNavigator() {
   return (
     <NavigationContainer ref={navigationRef} theme={NAV_THEME[theme]}>
       <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
-            let iconName: string;
-            let iconColor = color;
-
-            if (route.name === 'Home') {
-              iconName = focused ? 'home' : 'home-outline';
-              iconColor = focused ? '#FF9500' : '#A78BFA';
-            } else if (route.name === 'Markets') {
-              iconName = focused ? 'shopping-bag' : 'shopping-bag-outline';
-              iconColor = focused ? '#FFCA28' : '#FCD34D';
-            } else if (route.name === 'Rating') {
-              iconName = focused ? 'star' : 'star-outline';
-              iconColor = focused ? '#FF9500' : '#FBBF24';
-            } else if (route.name === 'More') {
-              iconName = focused ? 'menu' : 'menu-outline';
-              iconColor = focused ? '#FF9500' : '#A78BFA';
-            } else {
-              iconName = 'radio-button-on-outline';
-            }
-
-            return <Icon name={iconName} style={{ width: focused ? 30 : 26, height: focused ? 30 : 26 }} fill={iconColor} />;
-          },
-          tabBarActiveTintColor: THEME[theme].primary,
-          tabBarInactiveTintColor: THEME[theme].mutedForeground,
-          tabBarStyle: {
-            paddingBottom: 12,
-            paddingTop: 12,
-            height: 90,
-            backgroundColor: '#292524',
-            borderTopColor: 'rgba(255, 149, 0, 0.15)',
-            borderTopWidth: 2,
-            shadowColor: '#FF9500',
-            shadowOffset: { width: 0, height: -4 },
-            shadowOpacity: 0.15,
-            shadowRadius: 16,
-            elevation: 8,
-          },
-          tabBarLabelStyle: {
-            fontSize: 12,
-            fontWeight: '600',
-            marginTop: 4,
-          },
-          headerStyle: {
-            backgroundColor: THEME[theme].primary,
-          },
-          headerTintColor: THEME[theme].primaryForeground,
-          headerTitleStyle: {
-            fontWeight: 'bold',
-          },
-        })}
+        tabBar={props => <CustomTabBar {...props} />}
+        screenOptions={{
+          headerShown: false,
+        }}
       >
         <Tab.Screen
           name="Home"
           component={HomeScreen}
           options={{
-            title: t('navigation.home'),
-            headerShown: false,
+            tabBarLabel: t('navigation.home'),
           }}
         />
         <Tab.Screen
           name="Markets"
           component={MarketsNavigator}
           options={{
-            title: t('navigation.markets'),
-            headerShown: false,
+            tabBarLabel: t('navigation.markets'),
           }}
         />
         <Tab.Screen
@@ -97,18 +121,77 @@ export default function AppNavigator() {
           component={RatingNavigator}
           options={{
             tabBarLabel: t('navigation.rateStall'),
-            headerShown: false,
           }}
         />
         <Tab.Screen
           name="More"
           component={MoreNavigator}
           options={{
-            title: t('navigation.more'),
-            headerShown: false,
+            tabBarLabel: t('navigation.more'),
           }}
         />
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  tabBarContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#292524',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 149, 0, 0.15)',
+    paddingTop: 12,
+    paddingBottom: 24,
+    paddingHorizontal: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  iconContainer: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: 'rgba(168, 162, 158, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: 'transparent',
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+    elevation: 0,
+  },
+  iconContainerActive: {
+    backgroundColor: '#FF9500',
+    borderColor: '#FF9500',
+    shadowColor: '#FF9500',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 6,
+  },
+  tabIcon: {
+    width: 24,
+    height: 24,
+  },
+  tabLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#A8A29E',
+    marginTop: 2,
+  },
+  tabLabelActive: {
+    color: '#FF9500',
+    fontWeight: '700',
+  },
+});

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Image, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Image, RefreshControl, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { Icon } from '@ui-kitten/components';
 import { supabase } from '../../utils/supabase';
 import { useTranslation } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
 import AppFooter from '../../components/AppFooter';
 import { Card, CardContent, CardHeader, CardTitle, Text } from '../../components/ui-kitten';
-import { Frown, Laugh, Meh, Smile, Sparkles, Star } from 'lucide-react-native';
 
 interface Rating {
   id: string;
@@ -91,108 +90,103 @@ export default function MyRatingsScreen() {
   };
 
   const getRatingColor = (rating: number) => {
-    if (rating <= 3) return '#ff3b30'; // Red
-    if (rating <= 6) return '#ff9500'; // Orange
-    if (rating <= 8) return '#ffcc00'; // Yellow
-    return '#34c759'; // Green
+    if (rating <= 3) return '#ef4444'; // Red
+    if (rating <= 6) return '#f97316'; // Orange  
+    if (rating <= 8) return '#eab308'; // Yellow
+    return '#22c55e'; // Green
   };
 
-  const getRatingIcon = (rating: number) => {
-    if (rating <= 2) return Frown;
-    if (rating <= 4) return Meh;
-    if (rating <= 6) return Smile;
-    if (rating <= 8) return Laugh;
-    return Sparkles;
+  const getRatingIconName = (rating: number) => {
+    if (rating <= 2) return 'smiling-face-outline';
+    if (rating <= 4) return 'smiling-face-outline';
+    if (rating <= 6) return 'smiling-face';
+    if (rating <= 8) return 'smiling-face';
+    return 'star';
   };
 
   return (
-    <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
+    <View style={styles.container}>
       <AppHeader title={t('myRatings.title')} />
 
       <TouchableOpacity
-        style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20, marginTop: 12, marginBottom: 8 }}
+        style={styles.backButton}
         onPress={() => navigation.goBack()}
       >
-        <Ionicons name="arrow-back" size={24} color="#007AFF" />
-        <Text className="ml-2 text-primary">{t('common.back')}</Text>
+        <Icon name="arrow-back" style={styles.backIcon} fill="#FF9500" />
+        <Text style={styles.backText}>{t('common.back')}</Text>
       </TouchableOpacity>
 
       <ScrollView
-        className="flex-1"
+        style={styles.scrollView}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
-        {...({} as any)}
       >
         {loading ? (
-          <View className="flex-1 justify-center items-center pt-24" {...({} as any)}>
+          <View style={styles.centerContainer}>
             <Text variant="lead">{t('common.loading')}</Text>
           </View>
         ) : ratings.length === 0 ? (
-          <View className="flex-1 justify-center items-center pt-24 px-5" {...({} as any)}>
-            <Text className="text-lg font-semibold text-center mb-2">{t('myRatings.noRatings')}</Text>
-            <Text variant="lead" className="text-center">{t('myRatings.startRating')}</Text>
+          <View style={styles.centerContainer}>
+            <Text style={styles.noRatingsTitle}>{t('myRatings.noRatings')}</Text>
+            <Text variant="lead" style={styles.noRatingsText}>{t('myRatings.startRating')}</Text>
           </View>
         ) : (
-          <View className="p-5 gap-4" {...({} as any)}>
+          <View style={styles.content}>
             {ratings.map((rating) => (
-              <Card key={rating.id}>
+              <Card key={rating.id} style={styles.card}>
                 <CardHeader>
-                  <View className="flex-row justify-between items-center" {...({} as any)}>
-                    <CardTitle className="flex-1">{rating.stall_name}</CardTitle>
-                    <View className="bg-muted px-3 py-1 rounded-full" {...({} as any)}>
-                      {(() => {
-                        const Icon = getRatingIcon(rating.rating);
-                        const color = getRatingColor(rating.rating);
-                        return (
-                          <View className="flex-row items-center gap-2" {...({} as any)}>
-                            <Icon size={18} color={color} />
-                            <View className="flex-row items-center gap-1" {...({} as any)}>
-                              {Array.from({ length: rating.rating }, (_, index) => (
-                                <Star
-                                  key={index}
-                                  size={14}
-                                  color={color}
-                                  fill={color}
-                                />
-                              ))}
-                            </View>
-                            <Text
-                              className="text-sm font-semibold"
-                              style={{ color }}
-                            >
-                              {rating.rating}/10
-                            </Text>
-                          </View>
-                        );
-                      })()}
+                  <View style={styles.headerRow}>
+                    <CardTitle style={styles.cardTitle}>{rating.stall_name}</CardTitle>
+                    <View style={styles.ratingBadge}>
+                      <View style={styles.ratingContent}>
+                        <Icon 
+                          name={getRatingIconName(rating.rating)} 
+                          style={styles.ratingIcon} 
+                          fill={getRatingColor(rating.rating)} 
+                        />
+                        <View style={styles.starsRow}>
+                          {Array.from({ length: rating.rating }, (_, index) => (
+                            <Icon
+                              key={index}
+                              name="star"
+                              style={styles.starIcon}
+                              fill={getRatingColor(rating.rating)}
+                            />
+                          ))}
+                        </View>
+                        <Text
+                          style={StyleSheet.flatten([styles.ratingText, { color: getRatingColor(rating.rating) }])}
+                        >
+                          {rating.rating}/10
+                        </Text>
+                      </View>
                     </View>
                   </View>
                 </CardHeader>
 
-                <CardContent className="gap-3">
+                <CardContent style={styles.cardContent}>
                   {rating.photo_url && (
                     <Image
                       source={{ uri: rating.photo_url }}
-                      className="w-full h-48 rounded-lg"
+                      style={styles.photo}
                       resizeMode="cover"
-                      {...({} as any)}
                     />
                   )}
 
-                  <View className="gap-2" {...({} as any)}>
-                    <View className="flex-row items-center gap-2" {...({} as any)}>
-                      <Ionicons name="card-outline" size={16} color="#666" />
-                        <Text variant="muted">{t('form.mobilePayPhone')}: {rating.mobilepay_phone}</Text>
+                  <View style={styles.detailsContainer}>
+                    <View style={styles.detailRow}>
+                      <Icon name="credit-card-outline" style={styles.detailIcon} fill="#A8A29E" />
+                      <Text style={styles.detailText}>{t('form.mobilePayPhone')}: {rating.mobilepay_phone}</Text>
                     </View>
-                    <View className="flex-row items-center gap-2" {...({} as any)}>
-                      <Ionicons name="time-outline" size={16} color="#666" />
-                      <Text variant="muted">{formatDate(rating.created_at)}</Text>
+                    <View style={styles.detailRow}>
+                      <Icon name="clock-outline" style={styles.detailIcon} fill="#A8A29E" />
+                      <Text style={styles.detailText}>{formatDate(rating.created_at)}</Text>
                     </View>
                     {rating.location_latitude && rating.location_longitude && (
-                      <View className="flex-row items-center gap-2" {...({} as any)}>
-                        <Ionicons name="location-outline" size={16} color="#666" />
-                        <Text variant="muted">
+                      <View style={styles.detailRow}>
+                        <Icon name="pin-outline" style={styles.detailIcon} fill="#A8A29E" />
+                        <Text style={styles.detailText}>
                           {rating.location_latitude.toFixed(4)}, {rating.location_longitude.toFixed(4)}
                         </Text>
                       </View>
@@ -209,3 +203,127 @@ export default function MyRatingsScreen() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1C1917',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginTop: 12,
+    marginBottom: 8,
+  },
+  backIcon: {
+    width: 24,
+    height: 24,
+  },
+  backText: {
+    marginLeft: 8,
+    color: '#FF9500',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingTop: 96,
+    paddingHorizontal: 20,
+  },
+  noRatingsTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginBottom: 8,
+    color: '#FFFFFF',
+  },
+  noRatingsText: {
+    textAlign: 'center',
+    color: '#A8A29E',
+  },
+  content: {
+    padding: 20,
+    gap: 16,
+  },
+  card: {
+    backgroundColor: '#292524',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.15)',
+    borderRadius: 20,
+    marginBottom: 8,
+  },
+  headerRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardTitle: {
+    flex: 1,
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+  ratingBadge: {
+    backgroundColor: 'rgba(255, 149, 0, 0.1)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.3)',
+  },
+  ratingContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  ratingIcon: {
+    width: 18,
+    height: 18,
+  },
+  starsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 2,
+  },
+  starIcon: {
+    width: 14,
+    height: 14,
+  },
+  ratingText: {
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  cardContent: {
+    gap: 12,
+    paddingTop: 8,
+  },
+  photo: {
+    width: '100%',
+    height: 192,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 149, 0, 0.3)',
+  },
+  detailsContainer: {
+    gap: 8,
+  },
+  detailRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  detailIcon: {
+    width: 16,
+    height: 16,
+  },
+  detailText: {
+    color: '#A8A29E',
+    fontSize: 14,
+  },
+});

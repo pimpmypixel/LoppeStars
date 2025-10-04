@@ -1,79 +1,84 @@
 import React from 'react';
-import { View, ScrollView, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet } from 'react-native';
 import { useTranslation } from '../../utils/localization';
-import AppHeader from '../../components/AppHeader';
-import AppFooter from '../../components/AppFooter';
-import { Text } from '../../components/ui-kitten';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import { Text, Card, CardContent } from '../../components/ui-kitten';
 
 export default function PrivacyScreen() {
-  const navigation = useNavigation();
   const { t } = useTranslation();
 
   return (
-    <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
-      <AppHeader title={t('more.privacy')} />
+    <ScreenWrapper title={t('more.privacy')} showBackButton={true} showFooter={true}>
+      <Card style={styles.card}>
+        <CardContent style={styles.cardContent}>
+          <Text style={styles.title}>Privatlivspolitik</Text>
 
-      <TouchableOpacity
-        style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20, marginTop: 12, marginBottom: 8 }}
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="arrow-back" size={24} color="#007AFF" />
-        <Text className="ml-2 text-primary">{t('common.back')}</Text>
-      </TouchableOpacity>
-
-      <ScrollView className="flex-1" {...({} as any)}>
-        <View className="p-5" {...({} as any)}>
-          <Text className="text-center text-2xl font-bold text-gray-800 mb-5">
-            Privatlivspolitik
-          </Text>
-
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Oplysninger vi indsamler
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.sectionTitle}>Oplysninger vi indsamler</Text>
+          <Text style={styles.paragraph}>
             Vi indsamler oplysninger, som du giver direkte til os, f.eks. når du opretter en konto,
             bedømmer en bod eller kontakter os. Dette inkluderer din e-mailadresse, billeder du uploader,
             og bedømmelser du indsender.
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Hvordan vi bruger dine oplysninger
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.sectionTitle}>Hvordan vi bruger dine oplysninger</Text>
+          <Text style={styles.paragraph}>
             Vi bruger de oplysninger, vi indsamler til at levere, vedligeholde og forbedre vores tjenester,
             behandle transaktioner, sende dig tekniske meddelelser og svare på dine kommentarer og spørgsmål.
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Deling af oplysninger
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.sectionTitle}>Deling af oplysninger</Text>
+          <Text style={styles.paragraph}>
             Vi sælger, handler eller overfører på anden måde ikke dine personlige oplysninger til tredjeparter
             uden dit samtykke, undtagen som beskrevet i denne politik. Dine bedømmelser og billeder kan
             være synlige for andre brugere af appen.
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Datasikkerhed
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.sectionTitle}>Datasikkerhed</Text>
+          <Text style={styles.paragraph}>
             Vi implementerer passende sikkerhedsforanstaltninger for at beskytte dine personlige oplysninger mod
             uautoriseret adgang, ændring, offentliggørelse eller ødelæggelse.
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Kontakt os
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 text-left">
+          <Text style={styles.sectionTitle}>Kontakt os</Text>
+          <Text style={styles.paragraph}>
             Hvis du har spørgsmål til denne privatlivspolitik, kan du kontakte os på
             privacy@loppestars.com
           </Text>
-        </View>
-      </ScrollView>
-
-      <AppFooter />
-    </View>
+        </CardContent>
+      </Card>
+    </ScreenWrapper>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: '#292524',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.15)',
+    borderRadius: 20,
+  },
+  cardContent: {
+    padding: 20,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginTop: 20,
+    marginBottom: 12,
+  },
+  paragraph: {
+    fontSize: 16,
+    color: '#D4D4D8',
+    lineHeight: 24,
+    marginBottom: 8,
+    textAlign: 'left',
+  },
+});

@@ -1,0 +1,308 @@
+{
+    "info": {
+        "_postman_id": "loppestars-api-collection",
+        "name": "Loppestars API Collection",
+        "description": "A Postman collection to test all endpoints of the Loppestars FastAPI application. Set the `baseUrl` variable to your API base URL (e.g., http://localhost:8000). Note: Endpoints like /process and /markets require Supabase setup with data and credentials. The /scraper/trigger assumes the scraper script is available in the environment.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:8080",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "Root Endpoint",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        ""
+                    ]
+                },
+                "description": "Tests the root endpoint, which returns a welcome message."
+            },
+            "response": []
+        },
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/health",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "health"
+                    ]
+                },
+                "description": "Tests the health check endpoint, which returns the service status."
+            },
+            "response": []
+        },
+        {
+            "name": "Process Image (Blur Faces)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "pm.test(\"Success is true\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.success).to.eql(true);",
+                            "});",
+                            "pm.test(\"Faces detected is a number\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.facesDetected).to.be.a('number');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"imagePath\": \"test-image.jpg\",\n    \"userId\": \"test-user-123\",\n    \"blurStrength\": 31,\n    \"downscale_for_detection\": 800\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/process",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "process"
+                    ]
+                },
+                "description": "Tests face detection and blurring in an image. Requires a valid imagePath in the SOURCE_BUCKET. Expects success, processed URL, and faces count."
+            },
+            "response": []
+        },
+        {
+            "name": "Get Today's Markets (No Location)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "pm.test(\"Response is an array\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.be.an('array');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/markets/today?limit=10",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "markets",
+                        "today"
+                    ],
+                    "query": [
+                        {
+                            "key": "limit",
+                            "value": "10"
+                        }
+                    ]
+                },
+                "description": "Tests fetching markets for today without location params. Sorts by start_date. Requires data in Supabase 'markets' table."
+            },
+            "response": []
+        },
+        {
+            "name": "Get Today's Markets (With Location)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "pm.test(\"Response is an array\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.be.an('array');",
+                            "});",
+                            "pm.test(\"Markets have distance\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    jsonData.forEach(function(market) {",
+                            "        pm.expect(market.distance).to.not.be.undefined;",
+                            "    });",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/markets/today?latitude=59.9139&longitude=10.7522&limit=10",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "markets",
+                        "today"
+                    ],
+                    "query": [
+                        {
+                            "key": "latitude",
+                            "value": "59.9139"
+                        },
+                        {
+                            "key": "longitude",
+                            "value": "10.7522"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10"
+                        }
+                    ]
+                },
+                "description": "Tests fetching today's markets with location for distance calculation and sorting. Example coords: Oslo, Norway."
+            },
+            "response": []
+        },
+        {
+            "name": "Get Nearby Markets",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "pm.test(\"Response is an array\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.be.an('array');",
+                            "});",
+                            "pm.test(\"Markets within radius\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    jsonData.forEach(function(market) {",
+                            "        pm.expect(market.distance).to.be.at.most(50);",
+                            "    });",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/markets/nearby?latitude=59.9139&longitude=10.7522&radius_km=50&days_ahead=30&limit=10",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "markets",
+                        "nearby"
+                    ],
+                    "query": [
+                        {
+                            "key": "latitude",
+                            "value": "59.9139"
+                        },
+                        {
+                            "key": "longitude",
+                            "value": "10.7522"
+                        },
+                        {
+                            "key": "radius_km",
+                            "value": "50"
+                        },
+                        {
+                            "key": "days_ahead",
+                            "value": "30"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10"
+                        }
+                    ]
+                },
+                "description": "Tests fetching nearby markets within radius and days ahead. Sorts by distance. Requires markets with lat/lon in Supabase."
+            },
+            "response": []
+        },
+        {
+            "name": "Trigger Scraper",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "pm.test(\"Success is true\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.success).to.eql(true);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [],
+                "body": {
+                    "mode": "raw",
+                    "raw": ""
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/scraper/trigger",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "scraper",
+                        "trigger"
+                    ]
+                },
+                "description": "Tests manually triggering the market scraper via subprocess. Assumes /app/scraper_cron.py exists and environment is set up."
+            },
+            "response": []
+        }
+    ]
+}

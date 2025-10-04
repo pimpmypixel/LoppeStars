@@ -50,7 +50,14 @@
     "searchPlaceholder": "Search markets...",
     "noMarkets": "No markets found",
     "loadError": "Could not load markets",
-    "details": "Market Details",
+    "details": "Details",
+    "here": "Here",
+    "favorite": "Favorite",
+    "markedHere": "I'm Here",
+    "selected": "Selected",
+    "markedHereToast": "Market marked as here!",
+    "addFavorite": "Add to Favorites",
+    "addFavoriteToast": "Market added to favorites!",
     "location": "Location",
     "dateTime": "Date & Time",
   "category": "Category",
@@ -67,14 +74,16 @@
     "organizer": "Organizer",
     "away": "away",
   "rateStall": "Rate a Stall",
-  "selected": "SELECTED",
   "active": "Active",
-
   "dateUnavailable": "Date unavailable",
-    "here": "We're here",
-    "markedHere": "You have marked that you are at",
-    "addFavorite": "Add Favorite",
-    "addedToFavorites": "added to favorites"
+    "checkInHere": "Check In Here",
+    "checkedIn": "Checked In",
+    "openingHours": "Opening Hours",
+    "averageRating": "Average Rating",
+    "stallRatings": "Stall Ratings",
+    "noRatings": "No ratings yet",
+    "reviews": "reviews",
+    "viewOnMap": "View on Map"
   },
   "marketDetails": {
     "navigationError": "Could not navigate to rating screen. Please try again."

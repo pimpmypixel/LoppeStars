@@ -60,4 +60,3 @@ EXPOSE 8080
 
 # Start both the web service and cron daemon
 CMD ["sh", "-c", "cron && uvicorn main:app --host 0.0.0.0 --port 8080 --workers 1"]
-

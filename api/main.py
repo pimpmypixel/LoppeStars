@@ -1,9 +1,10 @@
 from fastapi import FastAPI, HTTPException, Query
 from pydantic import BaseModel
-import os, cv2, numpy as np, requests, time
+import os, numpy as np, requests, time
 from datetime import date, datetime
 from typing import List, Optional
 from supabase import create_client, Client
+from face_processor import get_face_processor
 
 app = FastAPI()
 
@@ -12,18 +13,19 @@ SUPABASE_SERVICE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 SOURCE_BUCKET = os.environ.get("SOURCE_BUCKET", "stall-photos")
 STORAGE_BUCKET = os.environ.get("STORAGE_BUCKET", "stall-photos-processed")
 
-PROTO_PATH = "/models/deploy.prototxt"
-MODEL_PATH = "/models/res10_300x300_ssd_iter_140000.caffemodel"
-net = cv2.dnn.readNetFromCaffe(PROTO_PATH, MODEL_PATH)
-
 # Initialize Supabase client for market queries
 supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
+
+# Initialize face processor (singleton pattern)
+face_processor = get_face_processor()
 
 class ProcessRequest(BaseModel):
     imagePath: str
     userId: str
+    mode: str = "pixelate"  # "pixelate" or "blur"
+    pixelateSize: int = 15
     blurStrength: int = 31
-    downscale_for_detection: int = 800
+    downscaleForDetection: int = 800
 
 class MarketResponse(BaseModel):
     id: str
@@ -74,35 +76,6 @@ def supabase_upload(image_bytes: bytes, dest_path: str):
         raise RuntimeError(f"Upload failed: {r.status_code} {r.text}")
     return f"{SUPABASE_URL}/storage/v1/object/public/{STORAGE_BUCKET}/{dest_path}"
 
-def detect_faces(img: np.ndarray, max_dim: int=800):
-    h, w = img.shape[:2]
-    scale = min(1.0, max_dim / float(max(h, w)))
-    small = cv2.resize(img, (int(w*scale), int(h*scale))) if scale < 1 else img.copy()
-    blob = cv2.dnn.blobFromImage(cv2.resize(small, (300, 300)), 1.0,
-                                 (300, 300), (104.0, 177.0, 123.0))
-    net.setInput(blob)
-    detections = net.forward()
-    boxes = []
-    for i in range(detections.shape[2]):
-        conf = detections[0, 0, i, 2]
-        if conf > 0.5:
-            box = detections[0, 0, i, 3:7] * np.array([small.shape[1], small.shape[0],
-small.shape[1], small.shape[0]])
-            (x1, y1, x2, y2) = box.astype("int")
-            if scale < 1:
-                x1, y1, x2, y2 = int(x1/scale), int(y1/scale), int(x2/scale), int(y2/scale)
-            boxes.append((x1, y1, x2, y2))
-    return boxes
-
-def blur_faces(img: np.ndarray, boxes, k: int):
-    out = img.copy()
-    if k % 2 == 0: k += 1
-    for (x1, y1, x2, y2) in boxes:
-        roi = out[y1:y2, x1:x2]
-        blurred = cv2.GaussianBlur(roi, (k, k), 0)
-        out[y1:y2, x1:x2] = blurred
-    return out
-
 def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     """Calculate distance between two points using Haversine formula"""
     from math import radians, cos, sin, asin, sqrt
@@ -120,22 +93,33 @@ def calculate_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
 
 @app.post("/process")
 async def process(req: ProcessRequest):
+    """
+    Process an image to anonymize faces.
+    Supports both pixelation and blur modes.
+    """
     try:
+        # Download image from Supabase
         img_bytes = supabase_download(req.imagePath)
-        arr = np.frombuffer(img_bytes, np.uint8)
-        img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
-        if img is None:
-            raise HTTPException(400, "Invalid image")
-
-        boxes = detect_faces(img, req.downscale_for_detection)
-        processed = blur_faces(img, boxes, req.blurStrength) if boxes else img
-        ok, encoded = cv2.imencode(".jpg", processed, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
-        if not ok: raise HTTPException(500, "Encoding failed")
-
+        
+        # Process image with face processor
+        processed_bytes, faces_detected = face_processor.process_image(
+            image_bytes=img_bytes,
+            mode=req.mode,
+            pixelate_size=req.pixelateSize,
+            blur_strength=req.blurStrength,
+            max_dimension=req.downscaleForDetection
+        )
+        
+        # Upload processed image
         dest_path = f"{req.userId}/{int(time.time()*1000)}-processed.jpg"
-        url = supabase_upload(encoded.tobytes(), dest_path)
+        url = supabase_upload(processed_bytes, dest_path)
 
-        return {"success": True, "processedImageUrl": url, "facesDetected": len(boxes)}
+        return {
+            "success": True,
+            "processedImageUrl": url,
+            "facesDetected": faces_detected,
+            "mode": req.mode
+        }
 
     except Exception as e:
         raise HTTPException(500, str(e))

@@ -1,14 +1,11 @@
 import React from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
-import { View, ScrollView, Linking, TouchableOpacity } from 'react-native';
+import { StyleSheet, Linking, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '../../utils/localization';
-import AppHeader from '../../components/AppHeader';
-import AppFooter from '../../components/AppFooter';
-import { Text } from '../../components/ui-kitten';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import { Text, Card, CardContent } from '../../components/ui-kitten';
 
 export default function OrganiserScreen() {
-  const navigation = useNavigation();
   const { t } = useTranslation();
 
   const handleEmailPress = () => {
@@ -16,32 +13,18 @@ export default function OrganiserScreen() {
   };
 
   return (
-    <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
-      <AppHeader title={t('more.organiser')} />
+    <ScreenWrapper title={t('more.organiser')} showBackButton={true} showFooter={true}>
+      <Card style={styles.card}>
+        <CardContent style={styles.cardContent}>
+          <Text style={styles.title}>For Loppemarkedsarrangører</Text>
 
-      <TouchableOpacity
-        style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20, marginTop: 12, marginBottom: 8 }}
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="arrow-back" size={24} color="#007AFF" />
-        <Text className="ml-2 text-primary">{t('common.back')}</Text>
-      </TouchableOpacity>
-
-      <ScrollView className="flex-1" {...({} as any)}>
-        <View className="p-5" {...({} as any)}>
-          <Text className="text-center text-2xl font-bold text-gray-800 mb-5">
-            For Loppemarkedsarrangører
-          </Text>
-
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.paragraph}>
             Arrangerer du et loppemarked? Loppestars kan hjælpe med at gøre dit event mere succesfuldt
             og engagerende for både sælgere og besøgende.
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Fordele for dit marked
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-2 text-left">
+          <Text style={styles.sectionTitle}>Fordele for dit marked</Text>
+          <Text style={styles.paragraph}>
             • Øget besøgsengagement og tilfredshed{'\n'}
             • Bedre feedbacksystem for sælgere{'\n'}
             • Promover kvalitetsboder{'\n'}
@@ -49,37 +32,83 @@ export default function OrganiserScreen() {
             • Digital betalingsintegration med MobilePay
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Sådan kommer du i gang
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.sectionTitle}>Sådan kommer du i gang</Text>
+          <Text style={styles.paragraph}>
             Vi tilbyder specielle funktioner for markedsarrangører, herunder:
           </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.paragraph}>
             • Tilpasset markedsbranding{'\n'}
             • Sælgerstyingsværktøjer{'\n'}
             • Analyser og rapportering{'\n'}
             • Event promoveringsfunktioner
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Priser
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.sectionTitle}>Priser</Text>
+          <Text style={styles.paragraph}>
             Vores arrangørværktøjer er tilgængelige til konkurrencedygtige priser. Kontakt os for et tilpasset
             tilbud baseret på dit markeds størrelse og behov.
           </Text>
 
-          <TouchableOpacity 
-            onPress={handleEmailPress} 
-            style={{ marginTop: 16, backgroundColor: '#007AFF', borderRadius: 8, paddingVertical: 12, paddingHorizontal: 24, alignItems: 'center' }}
-          >
-            <Text style={{ color: '#FFFFFF', fontWeight: '600' }}>Kontakt os for mere info</Text>
+          <TouchableOpacity onPress={handleEmailPress} style={styles.ctaButton}>
+            <LinearGradient
+              colors={['#FFD700', '#FFA500', '#FF8C00']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.gradient}
+            >
+              <Text style={styles.ctaText}>Kontakt os for mere info</Text>
+            </LinearGradient>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
-
-      <AppFooter />
-    </View>
+        </CardContent>
+      </Card>
+    </ScreenWrapper>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: '#292524',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.15)',
+    borderRadius: 20,
+  },
+  cardContent: {
+    padding: 20,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginTop: 20,
+    marginBottom: 12,
+  },
+  paragraph: {
+    fontSize: 16,
+    color: '#D4D4D8',
+    lineHeight: 24,
+    marginBottom: 8,
+    textAlign: 'left',
+  },
+  ctaButton: {
+    marginTop: 24,
+    borderRadius: 14,
+    overflow: 'hidden',
+  },
+  gradient: {
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+  },
+  ctaText: {
+    color: '#1C1917',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+});

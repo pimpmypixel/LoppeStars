@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../utils/localization';
 import { useAppStore } from '../stores/appStore';
+import { useAuth } from '../contexts/AuthContext';
+import { logEvent } from '../utils/eventLogger';
 import { Card, CardContent, Text } from './ui-kitten';
 import { Market } from '../types/common/market';
 
@@ -17,9 +19,11 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
   const navigation = useNavigation<any>();
   const selectedMarket = useAppStore((state) => state.selectedMarket);
   const setSelectedMarket = useAppStore((state) => state.setSelectedMarket);
+  const { user } = useAuth();
   const { t, language } = useTranslation();
 
   const isSelected = selectedMarket?.id === market.id;
+  const isMarkedHere = isSelected; // Only selected market is marked as "here"
 
   // Check if market is currently active
   const now = new Date();
@@ -43,8 +47,26 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
     navigation.navigate('MarketDetails', { market });
   };
 
-  const handleMarkHere = () => {
+  const handleMarkHere = async () => {
     console.log('User marked as being at:', market.name);
+    setSelectedMarket(market); // This will make it the only selected market
+    
+    // Log event
+    if (user?.id) {
+      await logEvent(
+        user.id,
+        'market_marked_here',
+        'market',
+        market.id,
+        {
+          market_name: market.name,
+          market_city: market.city,
+          market_address: market.address,
+          marked_at: new Date().toISOString(),
+        }
+      );
+    }
+    
     if (Platform.OS === 'android') {
       ToastAndroid.showWithGravity(
         t('markets.markedHereToast', { 
@@ -56,8 +78,24 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
     }
   };
 
-  const handleAddFavorite = () => {
+  const handleAddFavorite = async () => {
     console.log('Added to favorites:', market.name);
+    
+    // Log event
+    if (user?.id) {
+      await logEvent(
+        user.id,
+        'market_favorited',
+        'market',
+        market.id,
+        {
+          market_name: market.name,
+          market_city: market.city,
+          favorited_at: new Date().toISOString(),
+        }
+      );
+    }
+    
     if (Platform.OS === 'android') {
       ToastAndroid.showWithGravity(
         t('markets.addFavoriteToast', { 
@@ -184,7 +222,10 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
           </Card>
         </LinearGradient>
       ) : (
-        <Card style={styles.card}>
+        <Card style={{
+          ...styles.card,
+          ...(isMarkedHere ? styles.cardMarkedHere : {})
+        }}>
           <CardContent>
             {/* Header with name, city and distance */}
             <View style={styles.header}>
@@ -209,6 +250,11 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
 
             {/* Tags */}
             <View style={styles.tagsRow}>
+              {isMarkedHere && (
+                <View style={styles.markedHereBadge}>
+                  <Text style={styles.markedHereBadgeText}>✓ {t('markets.markedHere')}</Text>
+                </View>
+              )}
               {isActive && (
                 <View style={styles.activeTag}>
                   <Text style={styles.activeTagText}>
@@ -245,12 +291,16 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
             {/* Action buttons */}
             <View style={styles.buttonsRow}>
               <TouchableOpacity style={styles.hereButton} onPress={handleMarkHere}>
-                <Ionicons name="checkmark-circle-outline" size={18} color="white" />
+                <Ionicons name="checkmark-circle-outline" size={16} color="#10B981" />
                 <Text style={styles.hereButtonText}>{t('markets.here')}</Text>
               </TouchableOpacity>
+              <TouchableOpacity style={styles.detailsButton} onPress={handlePress}>
+                <Ionicons name="information-circle-outline" size={16} color="#FF9500" />
+                <Text style={styles.detailsButtonText}>{t('markets.details')}</Text>
+              </TouchableOpacity>
               <TouchableOpacity style={styles.favoriteButton} onPress={handleAddFavorite}>
-                <Ionicons name="heart-outline" size={18} color="#8F9BB3" />
-                <Text style={styles.favoriteButtonText}>{t('markets.addFavorite')}</Text>
+                <Ionicons name="heart-outline" size={16} color="#8F9BB3" />
+                <Text style={styles.favoriteButtonText}>{t('markets.favorite')}</Text>
               </TouchableOpacity>
             </View>
           </CardContent>
@@ -284,6 +334,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#292524',
     borderWidth: 1,
     borderColor: 'rgba(255, 149, 0, 0.15)',
+  },
+  cardMarkedHere: {
+    borderWidth: 2,
+    borderColor: '#10B981',
+    shadowColor: '#10B981',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 6,
   },
   selectedCard: {
     shadowColor: '#FF9500',
@@ -501,22 +560,33 @@ const styles = StyleSheet.create({
   },
   buttonsRow: {
     flexDirection: 'row',
-    gap: 8,
+    gap: 6,
   },
   hereButton: {
     flex: 1,
-    backgroundColor: '#10B981',
-    borderRadius: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    backgroundColor: 'transparent',
+    borderWidth: 1.5,
+    borderColor: '#10B981',
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#10B981',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
+    gap: 4,
+  },
+  detailsButton: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 149, 0, 0.1)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 149, 0, 0.3)',
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
   },
   hereButtonSelected: {
     flex: 1,
@@ -534,11 +604,14 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   hereButtonText: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-    fontSize: 15,
-    marginLeft: 6,
-    letterSpacing: 0.3,
+    color: '#10B981',
+    fontWeight: '600',
+    fontSize: 13,
+  },
+  detailsButtonText: {
+    color: '#FF9500',
+    fontWeight: '600',
+    fontSize: 13,
   },
   hereButtonTextSelected: {
     color: '#3366FF',
@@ -550,14 +623,15 @@ const styles = StyleSheet.create({
   favoriteButton: {
     flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderWidth: 1,
+    borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 14,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
+    borderRadius: 12,
+    paddingVertical: 8,
+    paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 4,
   },
   favoriteButtonSelected: {
     flex: 1,
@@ -573,10 +647,8 @@ const styles = StyleSheet.create({
   },
   favoriteButtonText: {
     color: '#8F9BB3',
-    fontWeight: '700',
-    fontSize: 15,
-    marginLeft: 6,
-    letterSpacing: 0.3,
+    fontWeight: '600',
+    fontSize: 13,
   },
   favoriteButtonTextSelected: {
     color: 'rgba(255, 255, 255, 0.9)',

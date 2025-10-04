@@ -48,7 +48,13 @@
           "photosPermission": "The app accesses your photos to let you share them."
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "react-native-maps",
+        {
+          "googleMapsApiKey": "YOUR_GOOGLE_MAPS_API_KEY"
+        }
+      ]
     ],
     "extra": {
       "eas": {

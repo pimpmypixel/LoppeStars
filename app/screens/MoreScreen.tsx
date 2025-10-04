@@ -69,21 +69,29 @@ export default function MoreScreen() {
                         </CardContent>
                     </Card>
 
-                    <Button
-                        variant="destructive"
-                        style={styles.logoutButton}
-                        onPress={handleLogout}
-                    >
-                        <View style={styles.logoutContent}>
-                            <Icon name="lock" style={styles.logoutIcon} fill="#ef4444" />
-                            <Text style={styles.logoutText}>{t('auth.signOut')}</Text>
-                            {user?.email && (
-                                <Text variant="muted" style={styles.emailText}>
-                                    {user.email}
-                                </Text>
-                            )}
-                        </View>
-                    </Button>
+                    <Card style={styles.logoutCard}>
+                        <CardContent style={styles.logoutCardContent}>
+                            <TouchableOpacity
+                                style={styles.logoutButton}
+                                onPress={handleLogout}
+                                activeOpacity={0.7}
+                            >
+                                <View style={styles.logoutContent}>
+                                    <View style={styles.logoutIconContainer}>
+                                        <Icon name="log-out-outline" style={styles.logoutIcon} fill="#FF9500" />
+                                    </View>
+                                    <View style={styles.logoutTextContainer}>
+                                        <Text style={styles.logoutText}>{t('auth.signOut')}</Text>
+                                        {user?.email && (
+                                            <Text style={styles.emailText}>
+                                                {user.email}
+                                            </Text>
+                                        )}
+                                    </View>
+                                </View>
+                            </TouchableOpacity>
+                        </CardContent>
+                    </Card>
                 </View>
             </ScrollView>
         </Layout>
@@ -131,32 +139,52 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(255, 149, 0, 0.1)',
         marginHorizontal: 16,
     },
-    logoutButton: {
-        height: 56,
-        borderWidth: 2,
-        borderColor: 'rgba(239, 68, 68, 0.3)',
-        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+    logoutCard: {
+        backgroundColor: '#292524',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 149, 0, 0.2)',
         borderRadius: 16,
         marginTop: 12,
+    },
+    logoutCardContent: {
+        padding: 0,
+    },
+    logoutButton: {
+        paddingVertical: 20,
+        paddingHorizontal: 20,
     },
     logoutContent: {
         flexDirection: 'row',
         alignItems: 'center',
+        gap: 16,
+    },
+    logoutIconContainer: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        backgroundColor: 'rgba(255, 149, 0, 0.15)',
+        borderWidth: 1,
+        borderColor: 'rgba(255, 149, 0, 0.3)',
         justifyContent: 'center',
-        gap: 10,
+        alignItems: 'center',
+    },
+    logoutTextContainer: {
+        flex: 1,
+        flexDirection: 'column',
+        gap: 4,
     },
     logoutText: {
-        color: '#EF4444',
-        fontWeight: '700',
-        fontSize: 16,
-        letterSpacing: 0.3,
+        color: '#FFFFFF',
+        fontWeight: '600',
+        fontSize: 17,
     },
     emailText: {
         color: '#A8A29E',
-        fontSize: 12,
+        fontSize: 13,
+        fontWeight: '400',
     },
     logoutIcon: {
-        width: 18,
-        height: 18,
+        width: 24,
+        height: 24,
     },
 });

@@ -2,13 +2,22 @@ package com.pimpmypixel.loppestars
 
 import android.os.Build
 import android.os.Bundle
+
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
 import com.facebook.react.defaults.DefaultReactActivityDelegate
+
 import expo.modules.ReactActivityDelegateWrapper
 
 class MainActivity : ReactActivity() {
+  override fun onCreate(savedInstanceState: Bundle?) {
+    // Set the theme to AppTheme BEFORE onCreate to support
+    // coloring the background, status bar, and navigation bar.
+    // This is required for expo-splash-screen.
+    setTheme(R.style.AppTheme);
+    super.onCreate(null)
+  }
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule
@@ -22,32 +31,31 @@ class MainActivity : ReactActivity() {
    */
   override fun createReactActivityDelegate(): ReactActivityDelegate {
     return ReactActivityDelegateWrapper(
-      this,
-      BuildConfig.IS_NEW_ARCHITECTURE_ENABLED,
-      DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
-    )
+          this,
+          BuildConfig.IS_NEW_ARCHITECTURE_ENABLED,
+          object : DefaultReactActivityDelegate(
+              this,
+              mainComponentName,
+              fabricEnabled
+          ){})
   }
 
   /**
-   * Align the back button behavior with Android S
-   * where moving root activities to background instead of finishing activities.
-   * @see <a href="https://developer.android.com/reference/android/app/Activity#onBackPressed()">onBackPressed</a>
-   */
+    * Align the back button behavior with Android S
+    * where moving root activities to background instead of finishing activities.
+    * @see <a href="https://developer.android.com/reference/android/app/Activity#onBackPressed()">onBackPressed</a>
+    */
   override fun invokeDefaultOnBackPressed() {
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
-      if (!moveTaskToBack(false)) {
-        // For non-root activities, use the default implementation to finish them.
-        super.invokeDefaultOnBackPressed()
+      if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.R) {
+          if (!moveTaskToBack(false)) {
+              // For non-root activities, use the default implementation to finish them.
+              super.invokeDefaultOnBackPressed()
+          }
+          return
       }
-      return
-    }
 
-    // Use the default back button implementation on Android S
-    // because it's doing more than [Activity.moveTaskToBack] in fact.
-    super.invokeDefaultOnBackPressed()
+      // Use the default back button implementation on Android S
+      // because it's doing more than [Activity.moveTaskToBack] in fact.
+      super.invokeDefaultOnBackPressed()
   }
-
-  // Remove or comment out the onCreate override if it exists
-  // The issue is caused by calling super.onCreate twice or
-  // initializing the ReactActivityDelegate multiple times
 }

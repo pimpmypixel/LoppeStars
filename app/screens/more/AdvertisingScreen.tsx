@@ -1,14 +1,11 @@
 import React from 'react';
-import { View, ScrollView, Linking, TouchableOpacity } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, Linking, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useTranslation } from '../../utils/localization';
-import AppHeader from '../../components/AppHeader';
-import AppFooter from '../../components/AppFooter';
-import { Text } from '../../components/ui-kitten';
+import ScreenWrapper from '../../components/ScreenWrapper';
+import { Text, Card, CardContent } from '../../components/ui-kitten';
 
 export default function AdvertisingScreen() {
-  const navigation = useNavigation();
   const { t } = useTranslation();
 
   const handleEmailPress = () => {
@@ -16,33 +13,19 @@ export default function AdvertisingScreen() {
   };
 
   return (
-    <View className="flex-1 bg-[#f5f5f5]" {...({} as any)}>
-      <AppHeader title={t('more.advertising')} />
+    <ScreenWrapper title={t('more.advertising')} showBackButton={true} showFooter={true}>
+      <Card style={styles.card}>
+        <CardContent style={styles.cardContent}>
+          <Text style={styles.title}>Reklamer med Loppestars</Text>
 
-      <TouchableOpacity
-        style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: 20, marginTop: 12, marginBottom: 8 }}
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="arrow-back" size={24} color="#007AFF" />
-        <Text className="ml-2 text-primary">{t('common.back')}</Text>
-      </TouchableOpacity>
-
-      <ScrollView className="flex-1" {...({} as any)}>
-        <View className="p-5" {...({} as any)}>
-          <Text className="text-center text-2xl font-bold text-gray-800 mb-5">
-            Reklamer med Loppestars
-          </Text>
-
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.paragraph}>
             Nå tusindvis af loppemarkedsentusiaster og vintage elskere gennem vores platform.
             Loppestars tilbyder målrettede reklammemuligheder for virksomheder, der stemmer overens med
             vores fællesskabsværdier.
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Reklammemuligheder
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-2 text-left">
+          <Text style={styles.sectionTitle}>Reklammemuligheder</Text>
+          <Text style={styles.paragraph}>
             • Sponserede bodfremmelser{'\n'}
             • Banner reklamer i appen{'\n'}
             • Fremhævede markedslistninger{'\n'}
@@ -50,19 +33,15 @@ export default function AdvertisingScreen() {
             • Event partnerskabsmuligheder
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Vores publikum
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.sectionTitle}>Vores publikum</Text>
+          <Text style={styles.paragraph}>
             Vores brugere brænder for bæredygtige indkøb, vintage fund, håndlavede håndværk,
             og støtte til lokale virksomheder. De søger aktivt unikke genstande og oplevelser
             på loppemarkeder rundt om i Danmark.
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Hvorfor reklamere hos os?
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.sectionTitle}>Hvorfor reklamere hos os?</Text>
+          <Text style={styles.paragraph}>
             • Meget engageret publikum{'\n'}
             • Lokationsbaseret målretning{'\n'}
             • Fokus på bæredygtige indkøb{'\n'}
@@ -70,24 +49,72 @@ export default function AdvertisingScreen() {
             • Gennemsigtige priser
           </Text>
 
-          <Text className="text-xl font-semibold text-gray-800 mt-6 mb-3">
-            Kom i gang
-          </Text>
-          <Text className="text-base text-gray-600 leading-6 mb-4 text-left">
+          <Text style={styles.sectionTitle}>Kom i gang</Text>
+          <Text style={styles.paragraph}>
             Kontakt vores reklamehold for at diskutere, hvordan vi kan hjælpe din virksomhed med at nå
             de rigtige kunder på det rigtige tidspunkt.
           </Text>
 
-          <TouchableOpacity 
-            onPress={handleEmailPress} 
-            style={{ marginTop: 16, backgroundColor: '#007AFF', borderRadius: 8, paddingVertical: 12, paddingHorizontal: 24, alignItems: 'center' }}
-          >
-            <Text style={{ color: '#FFFFFF', fontWeight: '600' }}>Få reklameinfo</Text>
+          <TouchableOpacity onPress={handleEmailPress} style={styles.ctaButton}>
+            <LinearGradient
+              colors={['#FFD700', '#FFA500', '#FF8C00']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.gradient}
+            >
+              <Text style={styles.ctaText}>Få reklameinfo</Text>
+            </LinearGradient>
           </TouchableOpacity>
-        </View>
-      </ScrollView>
-
-      <AppFooter />
-    </View>
+        </CardContent>
+      </Card>
+    </ScreenWrapper>
   );
 }
+
+const styles = StyleSheet.create({
+  card: {
+    backgroundColor: '#292524',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.15)',
+    borderRadius: 20,
+  },
+  cardContent: {
+    padding: 20,
+  },
+  title: {
+    textAlign: 'center',
+    fontSize: 24,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 20,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#FFFFFF',
+    marginTop: 20,
+    marginBottom: 12,
+  },
+  paragraph: {
+    fontSize: 16,
+    color: '#D4D4D8',
+    lineHeight: 24,
+    marginBottom: 8,
+    textAlign: 'left',
+  },
+  ctaButton: {
+    marginTop: 24,
+    borderRadius: 14,
+    overflow: 'hidden',
+  },
+  gradient: {
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    alignItems: 'center',
+  },
+  ctaText: {
+    color: '#1C1917',
+    fontSize: 18,
+    fontWeight: '700',
+  },
+});

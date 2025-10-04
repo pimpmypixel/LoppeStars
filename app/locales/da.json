@@ -50,7 +50,14 @@
     "searchPlaceholder": "Søg markeder...",
     "noMarkets": "Ingen markeder fundet",
     "loadError": "Kunne ikke indlæse markeder",
-    "details": "Markedsdetaljer",
+    "details": "Detaljer",
+    "here": "Her",
+    "favorite": "Favorit",
+    "markedHere": "Jeg er her",
+    "selected": "Valgt",
+    "markedHereToast": "Marked markeret som her!",
+    "addFavorite": "Tilføj til favoritter",
+    "addFavoriteToast": "Marked tilføjet til favoritter!",
     "location": "Placering",
     "dateTime": "Dato & Tid",
   "category": "Kategori",
@@ -67,14 +74,16 @@
     "organizer": "Arrangør",
     "away": "væk",
   "rateStall": "Bedøm en bod",
-  "selected": "VALGT",
   "active": "Aktiv",
-
   "dateUnavailable": "Dato ikke tilgængelig",
-    "here": "Vi er her",
-    "markedHere": "Du har markeret at du er ved",
-    "addFavorite": "Tilføj favorit",
-    "addedToFavorites": "tilføjet til favoritter"
+    "checkInHere": "Check Ind Her",
+    "checkedIn": "Checked Ind",
+    "openingHours": "Åbningstider",
+    "averageRating": "Gennemsnitlig Vurdering",
+    "stallRatings": "Standvurderinger",
+    "noRatings": "Ingen vurderinger endnu",
+    "reviews": "anmeldelser",
+    "viewOnMap": "Se på Kort"
   },
   "marketDetails": {
     "navigationError": "Kunne ikke navigere til bedømmelsesskærmen. Prøv igen."

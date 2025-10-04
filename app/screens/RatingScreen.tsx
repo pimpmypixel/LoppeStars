@@ -14,6 +14,7 @@ import { usePhotoUpload } from '../hooks/usePhotoUpload';
 import { useTranslation } from '../utils/localization';
 import { supabase } from '../utils/supabase';
 import { LinearGradient } from 'expo-linear-gradient';
+import { logEvent } from '../utils/eventLogger';
 
 export default function RatingScreen() {
   console.log('=== RATING SCREEN MOUNTED ===');
@@ -95,7 +96,7 @@ export default function RatingScreen() {
       // Submit rating to database
       console.log('Submitting rating...');
 
-      const { error } = await supabase
+      const { data: ratingData, error } = await supabase
         .from('ratings')
         .insert({
           user_id: user.id,
@@ -106,10 +107,47 @@ export default function RatingScreen() {
           comments: comments.trim() || null,
           photo_url: photoUrl,
           created_at: new Date().toISOString(),
-        });
+        })
+        .select('id')
+        .single();
 
       if (error) {
         throw error;
+      }
+
+      // Log stall_rated event
+      await logEvent(
+        user.id,
+        'stall_rated',
+        'rating',
+        ratingData.id,
+        {
+          market_id: selectedMarket.id,
+          market_name: selectedMarket.name,
+          stall_name: stallName.trim(),
+          rating_value: rating,
+          has_photo: !!photoUrl,
+          has_mobilepay: !!mobilePayCode.trim(),
+          has_comments: !!comments.trim(),
+          rated_at: new Date().toISOString(),
+        }
+      );
+
+      // Log photo_added event if photo was uploaded
+      if (photoUrl) {
+        await logEvent(
+          user.id,
+          'photo_added',
+          'photo',
+          ratingData.id,
+          {
+            market_id: selectedMarket.id,
+            market_name: selectedMarket.name,
+            stall_name: stallName.trim(),
+            photo_url: photoUrl,
+            added_at: new Date().toISOString(),
+          }
+        );
       }
 
       // Success
@@ -176,24 +214,24 @@ export default function RatingScreen() {
                 <View style={styles.fieldContainer}>
                   <Label>{t('rating.photo')} ({t('common.optional')})</Label>
                   <View style={styles.photoButtonRow}>
-                    <Button
-                      variant="outline"
+                    <TouchableOpacity
                       style={styles.photoButton}
                       onPress={() => setShowCamera(true)}
+                      activeOpacity={0.7}
                     >
-                      <View style={styles.buttonContent}>
+                      <View style={styles.photoIconContainer}>
                         <Icon name="camera" style={styles.buttonIcon} fill="#FF9500" />
-                        <Text style={styles.buttonText}>{t('rating.takePhoto')}</Text>
                       </View>
-                    </Button>
+                      <Text style={styles.buttonText}>{t('rating.takePhoto')}</Text>
+                    </TouchableOpacity>
                     {photoUri && (
-                      <Button
-                        variant="outline"
+                      <TouchableOpacity
                         style={styles.deleteButton}
                         onPress={() => setPhotoUri(null)}
+                        activeOpacity={0.7}
                       >
                         <Icon name="trash-2" style={styles.deleteIcon} fill="#EF4444" />
-                      </Button>
+                      </TouchableOpacity>
                     )}
                   </View>
                   {photoUri && (
@@ -352,21 +390,35 @@ const styles = StyleSheet.create({
   },
   photoButton: {
     flex: 1,
-    borderColor: 'rgba(255, 149, 0, 0.3)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.2)',
     borderRadius: 14,
-    backgroundColor: 'rgba(255, 149, 0, 0.1)',
+    backgroundColor: '#1C1917',
+  },
+  photoIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 149, 0, 0.15)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   deleteButton: {
     width: 56,
+    height: 56,
+    borderWidth: 1,
     borderColor: 'rgba(239, 68, 68, 0.3)',
     borderRadius: 14,
     backgroundColor: 'rgba(239, 68, 68, 0.1)',
-  },
-  buttonContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
+    alignItems: 'center',
   },
   buttonIcon: {
     width: 22,
@@ -379,7 +431,8 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#FF9500',
+    color: '#FFFFFF',
+    flex: 1,
   },
   photoPreviewContainer: {
     marginTop: 20,
