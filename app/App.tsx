@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import { MarketProvider } from './contexts/MarketContext';
+import { ConnectivityProvider } from './contexts/ConnectivityContext';
 import AuthWrapper from './components/AuthWrapper';
 import { useLanguageSync } from './utils/localization';
 import Config from 'react-native-config';
@@ -57,11 +58,13 @@ export default function App() {
     <>
       <IconRegistry icons={EvaIconsPack} />
       <ThemeProvider>
-        <AuthProvider>
-          <MarketProvider>
-            <AppContent />
-          </MarketProvider>
-        </AuthProvider>
+        <ConnectivityProvider>
+          <AuthProvider>
+            <MarketProvider>
+              <AppContent />
+            </MarketProvider>
+          </AuthProvider>
+        </ConnectivityProvider>
       </ThemeProvider>
     </>
   );

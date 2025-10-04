@@ -199,6 +199,69 @@ npm run ts:watch      # TypeScript watch mode
 - Patch-package used for dependency patches
 - All environment variables centralized in root `.env` file
 
+## Docker API & CI/CD
+
+### API Structure
+The API is located in the `api/` folder and includes:
+- `main.py` - FastAPI application with face processing endpoints
+- `face_processor.py` - Face detection and blurring logic using OpenCV
+- `scraper_cron.py` - Scheduled market data scraping
+- `scrapy_project/` - Scrapy spiders for market listings
+- `requirements.txt` - Python dependencies
+- `Dockerfile` (root level) - Container definition for ECS deployment
+
+### Deployment Pipeline
+**IMPORTANT**: When making changes to the Docker API (`api/` folder or root `Dockerfile`), always follow these steps:
+
+1. **Make Changes**: Edit API files, dependencies, or Dockerfile
+2. **Commit & Push**: Commit changes and push to `main` or `kitty` branch
+3. **Monitor GitHub Actions**: 
+   - Use `gh run list --limit 1 | cat` to check latest workflow status
+   - Use `gh run view <RUN_ID> --log | cat` to view detailed logs if failed
+   - Workflow file: `.github/workflows/deploy-ecs.yml`
+4. **Verify Deployment**:
+   - Ensure workflow completes successfully (✅ SUCCESS)
+   - Check ECS service is running new task with latest image digest
+   - Verify API endpoint functionality if needed
+
+**CLI Command Convention**: Always pipe AWS CLI and GitHub CLI (`gh`) commands to `cat` to prevent interactive prompts and ensure clean output:
+- ✅ Good: `gh run list --limit 1 | cat`
+- ✅ Good: `aws ecs list-clusters | cat`
+- ✅ Good: `gh run view <RUN_ID> --log | cat`
+- ❌ Bad: `gh run list` (may cause interactive pager issues)
+- ❌ Bad: `aws ecs describe-services` (may cause formatting issues)
+
+### GitHub Actions Workflow
+The automated deployment workflow (`.github/workflows/deploy-ecs.yml`):
+- **Triggers**: Push to `main` or `kitty` branches
+- **Steps**:
+  1. Checkout code
+  2. Configure AWS credentials
+  3. Login to Amazon ECR
+  4. Build Docker image with build args (Supabase credentials, bucket names)
+  5. Push image to ECR with commit SHA tag
+  6. Register new ECS task definition (family: `loppestars`, container: `web`)
+  7. Update ECS service with new task definition
+  8. Wait for deployment to stabilize
+  9. Verify deployment by comparing image digests
+
+### Common CI/CD Issues & Solutions
+1. **ECR Immutable Tag Error**: Only use commit SHA tags, never `latest`
+2. **Cluster/Service Discovery**: Use first available cluster/service (CDK-generated names)
+3. **Container Name Mismatch**: Task definition must use container name `web` (not `loppestars-container`)
+4. **Task Definition Format**: Ensure valid JSON with proper quotes, no trailing commas
+5. **Environment Variables**: Set as GitHub Secrets (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SUPABASE_ANON_KEY, AWS credentials)
+
+### AWS Infrastructure
+- **Region**: eu-central-1
+- **ECS Cluster**: LoppestarsEcsStack-ClusterEB0386A7-3Mzih57cTorn (Fargate)
+- **ECS Service**: LoppestarsEcsStack-Service9571FDD8-mtj8oW2z8iEu
+- **ECR Repository**: cdk-hnb659fds-container-assets-035338517878-eu-central-1
+- **Task Definition**: Family `loppestars`, Container `web`, Port 8080
+- **Resources**: 256 CPU, 512 MB memory
+- **Logging**: CloudWatch logs group `/ecs/loppestars`
+- **Execution Role**: arn:aws:iam::035338517878:role/ecsTaskExecutionRole
+
 ## Current State
 - Complete Google OAuth → Supabase authentication flow working
 - Bottom tab navigation with 4 functional screens (Home, Markets, Rating, More)
@@ -210,6 +273,10 @@ npm run ts:watch      # TypeScript watch mode
 - Supabase database integration with migrations and storage
 - Edge Functions for server-side processing
 - Comprehensive permission management
+- **Connectivity check system on app startup (database + API health verification)**
+- **Automated Docker API deployment via GitHub Actions to AWS ECS**
 - Ready for production deployment and feature extensions
 
 When implementing features, the foundation is solid with authentication, navigation, theming, and core functionality in place. Focus on extending the rating system, market management, and user experience enhancements.
+
+**When working on the API**: Always commit changes, push to trigger CI/CD, and monitor GitHub Actions to ensure successful deployment to ECS.

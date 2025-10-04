@@ -17,10 +17,13 @@ export default function MoreScreen() {
 
     const handleLogout = async () => {
         try {
+            console.log('🔓 Logout button pressed');
             await signOut();
+            console.log('✅ Logout successful - session cleared');
+            // AuthWrapper will automatically redirect to login screen
         } catch (error) {
+            console.error('❌ Logout error:', error);
             Alert.alert(t('common.error'), t('auth.signOutError'));
-            console.error('Sign out error:', error);
         }
     };
 

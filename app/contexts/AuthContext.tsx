@@ -44,9 +44,16 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut();
+      console.log('🔓 Signing out user...');
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error('❌ Supabase sign out error:', error);
+        throw error;
+      }
+      console.log('✅ Successfully signed out');
+      // Session state will be automatically updated by the onAuthStateChange listener
     } catch (error) {
-      console.error('Error signing out:', error);
+      console.error('❌ Error signing out:', error);
       throw error;
     }
   };

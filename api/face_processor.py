@@ -1,8 +1,3 @@
-"""
-Face processing module for anonymizing faces in images.
-Uses pixelateme library for face detection and pixelation.
-"""
-
 import cv2
 import numpy as np
 from typing import Tuple, Optional
