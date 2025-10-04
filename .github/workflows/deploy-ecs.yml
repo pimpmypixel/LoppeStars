@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - kitty
 
 jobs:
   deploy:
@@ -12,6 +13,7 @@ jobs:
     environment: production
     env:
       AWS_REGION: eu-central-1
+      ECR_REPOSITORY: cdk-hnb659fds-container-assets-035338517878-eu-central-1
       ECR_URI: 035338517878.dkr.ecr.eu-central-1.amazonaws.com/cdk-hnb659fds-container-assets-035338517878-eu-central-1
       SOURCE_BUCKET: stall-photos
       STORAGE_BUCKET: stall-photos-processed
@@ -35,53 +37,201 @@ jobs:
         run: |
           docker build \
             -t ${ECR_URI}:${IMAGE_TAG} \
+            -t ${ECR_URI}:latest \
             --build-arg SUPABASE_URL=${{ secrets.SUPABASE_URL }} \
             --build-arg SUPABASE_SERVICE_ROLE_KEY=${{ secrets.SUPABASE_SERVICE_ROLE_KEY }} \
             --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --build-arg SOURCE_BUCKET=${SOURCE_BUCKET} \
             --build-arg STORAGE_BUCKET=${STORAGE_BUCKET} \
-            -f api/Dockerfile .
+            -f Dockerfile .
 
       - name: Push image to ECR
         run: |
           docker push ${ECR_URI}:${IMAGE_TAG}
+          docker push ${ECR_URI}:latest
+          echo "✅ Pushed image with tags: ${IMAGE_TAG} and latest"
 
       - name: Register new Task Definition
+        id: register-task-def
         run: |
-          cat <<EOF > task-def.json
-          [
-            {
-              "requiresCompatibilities": ["FARGATE"],
-              "networkMode": "awsvpc",
-              "name": "loppestars-task-definition",
-              "image": "${ECR_URI}:${IMAGE_TAG}",
-              "memory": 512,
-              "cpu": 256,
-              "essential": true,
-              "portMappings": [{"containerPort": 8080, "hostPort": 8080}],
-              "environment": [
-                {"name": "SUPABASE_URL", "value": "${{ secrets.SUPABASE_URL }}"},
-                {"name": "SUPABASE_SERVICE_ROLE_KEY", "value": "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"},
-                {"name": "SUPABASE_ANON_KEY", "value": "${{ secrets.SUPABASE_ANON_KEY }}"},
-                {"name": "SOURCE_BUCKET", "value": "${SOURCE_BUCKET}"},
-                {"name": "STORAGE_BUCKET", "value": "${STORAGE_BUCKET}"}
-              ]
-            }
-          ]
+          cat <<EOF > task-definition.json
+          {
+            "family": "loppestars",
+            "requiresCompatibilities": ["FARGATE"],
+            "networkMode": "awsvpc",
+            "cpu": "256",
+            "memory": "512",
+            "executionRoleArn": "arn:aws:iam::035338517878:role/ecsTaskExecutionRole",
+            "containerDefinitions": [
+              {
+                "name": "loppestars-container",
+                "image": "${ECR_URI}:${IMAGE_TAG}",
+                "cpu": 256,
+                "memory": 512,
+                "essential": true,
+                "portMappings": [
+                  {
+                    "containerPort": 8080,
+                    "hostPort": 8080,
+                    "protocol": "tcp"
+                  }
+                ],
+                "environment": [
+                  {"name": "SUPABASE_URL", "value": "${{ secrets.SUPABASE_URL }}"},
+                  {"name": "SUPABASE_SERVICE_ROLE_KEY", "value": "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"},
+                  {"name": "SUPABASE_ANON_KEY", "value": "${{ secrets.SUPABASE_ANON_KEY }}"},
+                  {"name": "SOURCE_BUCKET", "value": "${SOURCE_BUCKET}"},
+                  {"name": "STORAGE_BUCKET", "value": "${STORAGE_BUCKET}"}
+                ],
+                "logConfiguration": {
+                  "logDriver": "awslogs",
+                  "options": {
+                    "awslogs-group": "/ecs/loppestars",
+                    "awslogs-region": "${AWS_REGION}",
+                    "awslogs-stream-prefix": "ecs"
+                  }
+                }
+              }
+            ]
+          }
           EOF
-          aws ecs register-task-definition \
-            --family loppestars \
-            --container-definitions file://task-def.json \
-            --requires-compatibilities FARGATE \
-            --region ${AWS_REGION}
+          
+          TASK_DEF_ARN=$(aws ecs register-task-definition \
+            --cli-input-json file://task-definition.json \
+            --region ${AWS_REGION} \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text)
+          
+          echo "task_definition_arn=${TASK_DEF_ARN}" >> $GITHUB_OUTPUT
+          echo "✅ Registered task definition: ${TASK_DEF_ARN}"
 
       - name: Update ECS Service
         run: |
-          CLUSTER=$(aws ecs list-clusters --query "clusterArns[]" --output text | awk -F/ '{print $NF}')
-          SERVICE=$(aws ecs list-services --cluster $CLUSTER --query "serviceArns[]" --output text | awk -F/ '{print $NF}')
+          echo "🚀 Updating ECS service..."
+          
+          CLUSTER=$(aws ecs list-clusters \
+            --region ${AWS_REGION} \
+            --query "clusterArns[?contains(@, 'loppestars')]" \
+            --output text | awk -F/ '{print $NF}')
+          
+          if [ -z "$CLUSTER" ]; then
+            echo "❌ ERROR: Could not find loppestars cluster"
+            exit 1
+          fi
+          
+          SERVICE=$(aws ecs list-services \
+            --cluster $CLUSTER \
+            --region ${AWS_REGION} \
+            --query "serviceArns[?contains(@, 'loppestars')]" \
+            --output text | awk -F/ '{print $NF}')
+          
+          if [ -z "$SERVICE" ]; then
+            echo "❌ ERROR: Could not find loppestars service"
+            exit 1
+          fi
+          
+          echo "📦 Cluster: $CLUSTER"
+          echo "🔧 Service: $SERVICE"
+          echo "��️  Task Definition: ${{ steps.register-task-def.outputs.task_definition_arn }}"
+          
           aws ecs update-service \
             --cluster $CLUSTER \
             --service $SERVICE \
+            --task-definition ${{ steps.register-task-def.outputs.task_definition_arn }} \
             --force-new-deployment \
             --region ${AWS_REGION} \
-            --task-definition $(aws ecs describe-task-definition --task-definition loppestars --query 'taskDefinition.taskDefinitionArn' --output text | sed "s/:latest/:${IMAGE_TAG}/")
+            --output json > /dev/null
+          
+          echo "✅ Service update initiated"
+
+      - name: Wait for Deployment
+        run: |
+          echo "⏳ Waiting for deployment to stabilize..."
+          
+          CLUSTER=$(aws ecs list-clusters \
+            --region ${AWS_REGION} \
+            --query "clusterArns[?contains(@, 'loppestars')]" \
+            --output text | awk -F/ '{print $NF}')
+          
+          SERVICE=$(aws ecs list-services \
+            --cluster $CLUSTER \
+            --region ${AWS_REGION} \
+            --query "serviceArns[?contains(@, 'loppestars')]" \
+            --output text | awk -F/ '{print $NF}')
+          
+          aws ecs wait services-stable \
+            --cluster $CLUSTER \
+            --services $SERVICE \
+            --region ${AWS_REGION}
+          
+          echo "✅ Deployment stable!"
+
+      - name: Verify Deployment
+        run: |
+          echo "🔍 Verifying deployment..."
+          
+          CLUSTER=$(aws ecs list-clusters \
+            --region ${AWS_REGION} \
+            --query "clusterArns[?contains(@, 'loppestars')]" \
+            --output text | awk -F/ '{print $NF}')
+          
+          SERVICE=$(aws ecs list-services \
+            --cluster $CLUSTER \
+            --region ${AWS_REGION} \
+            --query "serviceArns[?contains(@, 'loppestars')]" \
+            --output text | awk -F/ '{print $NF}')
+          
+          TASK_ARN=$(aws ecs list-tasks \
+            --cluster $CLUSTER \
+            --service-name $SERVICE \
+            --region ${AWS_REGION} \
+            --query 'taskArns[0]' \
+            --output text)
+          
+          if [ -z "$TASK_ARN" ] || [ "$TASK_ARN" = "None" ]; then
+            echo "⚠️  WARNING: No running tasks found"
+            exit 1
+          fi
+          
+          RUNNING_IMAGE=$(aws ecs describe-tasks \
+            --cluster $CLUSTER \
+            --tasks $TASK_ARN \
+            --region ${AWS_REGION} \
+            --query 'tasks[0].containers[0].image' \
+            --output text)
+          
+          echo "🏃 Running image: ${RUNNING_IMAGE}"
+          
+          RUNNING_DIGEST=$(echo $RUNNING_IMAGE | grep -oE 'sha256:[a-f0-9]+' || echo "")
+          
+          LATEST_DIGEST=$(aws ecr describe-images \
+            --repository-name ${ECR_REPOSITORY} \
+            --image-ids imageTag=${IMAGE_TAG} \
+            --region ${AWS_REGION} \
+            --query 'imageDetails[0].imageDigest' \
+            --output text)
+          
+          echo "📦 Latest digest: ${LATEST_DIGEST}"
+          echo "�� Running digest: ${RUNNING_DIGEST}"
+          
+          if [ "$LATEST_DIGEST" = "$RUNNING_DIGEST" ]; then
+            echo ""
+            echo "============================================================"
+            echo "✅ SUCCESS: Latest changes are LIVE!"
+            echo "============================================================"
+            echo "Cluster: $CLUSTER"
+            echo "Service: $SERVICE"
+            echo "Task Definition: ${{ steps.register-task-def.outputs.task_definition_arn }}"
+            echo "Image: ${ECR_URI}:${IMAGE_TAG}"
+            echo "Digest: ${LATEST_DIGEST}"
+            echo "============================================================"
+          else
+            echo ""
+            echo "============================================================"
+            echo "⚠️  WARNING: Deployment may not be complete"
+            echo "============================================================"
+            echo "Expected digest: ${LATEST_DIGEST}"
+            echo "Running digest: ${RUNNING_DIGEST}"
+            echo "============================================================"
+            exit 1
+          fi
