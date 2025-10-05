@@ -61,12 +61,34 @@ class MarketResponse(BaseModel):
     distance: Optional[float] = None  # Calculated distance in km
 
 def supabase_download(image_path: str) -> bytes:
-    url = f"{SUPABASE_URL}/storage/v1/object/sign/{SOURCE_BUCKET}/{image_path}"
-    headers = {"apikey": SUPABASE_SERVICE_KEY, "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}"}
-    r = requests.get(url, headers=headers)
-    if r.status_code != 200:
-        raise RuntimeError(f"Download failed: {r.status_code} {r.text}")
-    return r.content
+    """Download image from Supabase Storage using signed URL"""
+    # Create a signed URL with 60 second expiry
+    sign_url = f"{SUPABASE_URL}/storage/v1/object/sign/{SOURCE_BUCKET}/{image_path}"
+    headers = {
+        "apikey": SUPABASE_SERVICE_KEY, 
+        "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+        "Content-Type": "application/json"
+    }
+    
+    # Request a signed URL
+    sign_response = requests.post(sign_url, headers=headers, json={"expiresIn": 60})
+    if sign_response.status_code != 200:
+        raise RuntimeError(f"Failed to create signed URL: {sign_response.status_code} {sign_response.text}")
+    
+    signed_data = sign_response.json()
+    signed_path = signed_data.get("signedURL")
+    
+    if not signed_path:
+        raise RuntimeError(f"No signed URL returned: {sign_response.text}")
+    
+    # Download using the signed URL (full URL with token)
+    download_url = f"{SUPABASE_URL}/storage/v1{signed_path}"
+    download_response = requests.get(download_url, headers={"apikey": SUPABASE_SERVICE_KEY})
+    
+    if download_response.status_code != 200:
+        raise RuntimeError(f"Download failed: {download_response.status_code} {download_response.text}")
+    
+    return download_response.content
 
 def supabase_upload(image_bytes: bytes, dest_path: str):
     url = f"{SUPABASE_URL}/storage/v1/object/{STORAGE_BUCKET}/{dest_path}"
