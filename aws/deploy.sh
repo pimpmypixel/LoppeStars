@@ -99,6 +99,20 @@ deploy_infrastructure() {
     log_info "Force deploy requested, updating stack..."
   fi
   
+  # Check if ACM certificate exists for domain
+  log_info "Checking for ACM certificate..."
+  local cert_arn=$($AWS_CLI acm list-certificates \
+    --region "$REGION" \
+    --query "CertificateSummaryList[?DomainName=='$DOMAIN'].CertificateArn" \
+    --output text 2>/dev/null || echo "")
+  
+  if [ -n "$cert_arn" ]; then
+    log_success "Found existing certificate: $cert_arn"
+  else
+    log_warning "No ACM certificate found, will create DNS-validated certificate"
+    log_info "You will need to add DNS validation records in Cloudflare"
+  fi
+  
   log_info "Deploying CloudFormation stack..."
   $AWS_CLI cloudformation deploy \
     --template-file "$SCRIPT_DIR/stack-template.yaml" \
@@ -110,7 +124,15 @@ deploy_infrastructure() {
       SupabaseUrl="$SUPABASE_URL" \
       SupabaseServiceRoleKey="$SUPABASE_SERVICE_ROLE_KEY" \
       SupabaseAnonKey="$SUPABASE_ANON_KEY" \
+      CertificateArn="$cert_arn" \
     --no-fail-on-empty-changeset
+  
+  # If certificate was created, show validation instructions
+  if [ -z "$cert_arn" ]; then
+    log_warning "Certificate validation required!"
+    log_info "Check AWS Certificate Manager console for DNS validation records"
+    log_info "Add the CNAME records to Cloudflare DNS"
+  fi
   
   log_success "Infrastructure deployed"
 }

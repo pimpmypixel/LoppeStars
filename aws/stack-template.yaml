@@ -2,10 +2,17 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'Loppestars ECS Fargate Stack with ALB'
 
 Parameters:
+  Domain:
+    Type: String
+    Default: 'loppestars.spoons.dk'
+    Description: Domain name for the application
   SupabaseUrl:
     Type: String
     NoEcho: true
   SupabaseServiceRoleKey:
+    Type: String
+    NoEcho: true
+  SupabaseAnonKey:
     Type: String
     NoEcho: true
   SourceBucket:
@@ -14,9 +21,10 @@ Parameters:
   StorageBucket:
     Type: String
     Default: 'stall-photos-processed'
-  DomainName:
+  CertificateArn:
     Type: String
-    Default: 'loppestars.spoons.dk'
+    Description: ARN of ACM certificate for HTTPS (optional, will create self-signed if not provided)
+    Default: ''
 
 Resources:
   # VPC
@@ -213,8 +221,36 @@ Resources:
             Port: '443'
             StatusCode: HTTP_301
 
-  # HTTPS Listener (manual certificate needed)
-  # Note: You'll need to manually create/import a certificate and add the HTTPS listener
+  # HTTPS Listener (redirect to HTTPS)
+  HTTPSListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !If
+          - HasCertificate
+          - !Ref CertificateArn
+          - !Ref SelfSignedCertificate
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+
+  # Self-signed certificate (fallback if no ACM cert provided)
+  SelfSignedCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Condition: NoCertificate
+    Properties:
+      DomainName: !Ref Domain
+      ValidationMethod: DNS
+      DomainValidationOptions:
+        - DomainName: !Ref Domain
+          ValidationDomain: !Ref Domain
+
+Conditions:
+  HasCertificate: !Not [!Equals [!Ref CertificateArn, '']]
+  NoCertificate: !Equals [!Ref CertificateArn, '']
 
 Outputs:
   LoadBalancerDNS:
