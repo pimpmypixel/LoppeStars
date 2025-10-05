@@ -59,7 +59,8 @@ jobs:
             "networkMode": "awsvpc",
             "cpu": "256",
             "memory": "512",
-            "executionRoleArn": "arn:aws:iam::035338517878:role/ecsTaskExecutionRole",
+            "executionRoleArn": "arn:aws:iam::035338517878:role/LoppestarsEcsStack-ServiceTaskDefExecutionRole919F7-gnhoBqLZhTql",
+            "taskRoleArn": "arn:aws:iam::035338517878:role/LoppestarsEcsStack-ServiceTaskDefTaskRole0CFE2F57-v3VAz81Cmm5R",
             "containerDefinitions": [
               {
                 "name": "web",
