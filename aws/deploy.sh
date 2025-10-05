@@ -299,8 +299,8 @@ deploy_service() {
     --query 'services[0].serviceName' \
     --output text 2>/dev/null || echo "NOT_FOUND")
   
-  if [[ "$service_exists" == "NOT_FOUND" ]]; then
-    log_info "Creating ECS service..."
+  if [[ "$service_exists" == "NOT_FOUND" ]] || [[ "$service_exists" == "None" ]] || [[ -z "$service_exists" ]]; then
+    log_info "Creating ECS service..." >&2
     $AWS_CLI ecs create-service \
       --cluster "$CLUSTER_NAME" \
       --service-name "$SERVICE_NAME" \
@@ -312,28 +312,28 @@ deploy_service() {
       --load-balancers "targetGroupArn=$target_group,containerName=web,containerPort=8080" \
       --health-check-grace-period-seconds 60 \
       --region "$REGION" >/dev/null
-    log_success "Service created"
+    log_success "Service created" >&2
   else
-    log_info "Updating ECS service..."
+    log_info "Updating ECS service..." >&2
     $AWS_CLI ecs update-service \
       --cluster "$CLUSTER_NAME" \
       --service "$SERVICE_NAME" \
       --task-definition "$task_def_arn" \
       --force-new-deployment \
       --region "$REGION" >/dev/null
-    log_success "Service updated"
+    log_success "Service updated" >&2
   fi
   
-  log_info "Waiting for service to stabilize..."
+  log_info "Waiting for service to stabilize..." >&2
   $AWS_CLI ecs wait services-stable \
     --cluster "$CLUSTER_NAME" \
     --services "$SERVICE_NAME" \
     --region "$REGION" || {
-      log_error "Service did not stabilize"
+      log_error "Service did not stabilize" >&2
       return 1
     }
   
-  log_success "Service is stable"
+  log_success "Service is stable" >&2
 }
 
 # Check API health
