@@ -1,4 +1,52 @@
-# Welcome to your CDK TypeScript project
+# Loppestars AWS Infrastructure
+
+## Deployment
+
+### Primary Method (Recommended)
+```bash
+cd aws
+./deploy.sh
+```
+
+This idempotent script handles:
+- ✅ CloudFormation infrastructure
+- ✅ Docker build & ECR push
+- ✅ ECS task definition & service
+- ✅ Cloudflare DNS updates
+- ✅ API health verification
+
+### Options
+```bash
+./deploy.sh           # Full deployment
+./deploy.sh --status  # Status check only
+./deploy.sh --force   # Force redeployment
+```
+
+### Alternative (Node.js)
+```bash
+node deploy-and-dns.js
+```
+
+## Files
+
+**Essential**:
+- `deploy.sh` - Master deployment script
+- `stack-template.yaml` - CloudFormation template
+- `deploy-and-dns.js` - Node.js alternative
+
+**CDK (optional, not actively used)**:
+- `cdk.json`, `bin/`, `lib/`, `test/` - CDK infrastructure code
+
+## Documentation
+
+See `/docs/MASTER_DEPLOY_SCRIPT.md` for complete usage guide.
+
+## Deprecated Scripts Removed
+
+9 old scripts consolidated into `deploy.sh`:
+- build-push.sh, check-status.sh, create-service.sh
+- deploy-direct.sh, deploy-full.sh, deploy-manual.sh
+- deploy-simple.sh, ensure-infrastructure.sh, rebuild-stack.shour CDK TypeScript project
 
 This is a blank project for CDK development with TypeScript.
 
