@@ -92,8 +92,12 @@ def supabase_download(image_path: str) -> bytes:
 
 def supabase_upload(image_bytes: bytes, dest_path: str):
     url = f"{SUPABASE_URL}/storage/v1/object/{STORAGE_BUCKET}/{dest_path}"
-    headers = {"apikey": SUPABASE_SERVICE_KEY, "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}"}
-    r = requests.put(url, headers=headers, data=image_bytes, params={"content-type": "image/jpeg"})
+    headers = {
+        "apikey": SUPABASE_SERVICE_KEY, 
+        "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
+        "Content-Type": "image/jpeg"
+    }
+    r = requests.put(url, headers=headers, data=image_bytes)
     if r.status_code not in (200, 201):
         raise RuntimeError(f"Upload failed: {r.status_code} {r.text}")
     return f"{SUPABASE_URL}/storage/v1/object/public/{STORAGE_BUCKET}/{dest_path}"
