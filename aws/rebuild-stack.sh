@@ -8,7 +8,7 @@ echo "🔍 Checking stack deletion status..."
 
 # Wait for stack to be deleted
 while true; do
-  STATUS=$(/usr/local/bin/aws cloudformation describe-stacks \
+  STATUS=$(${AWS_CLI:-/usr/local/bin/aws} cloudformation describe-stacks \
     --stack-name $STACK_NAME \
     --region $AWS_REGION \
     --query 'Stacks[0].StackStatus' \

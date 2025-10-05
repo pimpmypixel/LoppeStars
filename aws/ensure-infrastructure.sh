@@ -34,6 +34,7 @@ STACK_NAME="LoppestarsEcsStack"
 AWS_REGION="eu-central-1"
 DOMAIN="${ECS_DOMAIN:-loppestars.spoons.dk}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+AWS_CLI="/usr/local/bin/aws"
 
 # Parse arguments
 MODE="check"
@@ -99,11 +100,16 @@ check_prerequisites() {
   
   local missing=0
   
-  if ! command -v aws &> /dev/null; then
+  # Check for AWS CLI in common locations
+  if command -v aws &> /dev/null; then
+    AWS_CLI="aws"
+    print_success "AWS CLI installed: $(aws --version 2>&1 | head -1)"
+  elif [ -f "/usr/local/bin/aws" ]; then
+    AWS_CLI="/usr/local/bin/aws"
+    print_success "AWS CLI installed: $($AWS_CLI --version 2>&1 | head -1)"
+  else
     print_error "AWS CLI not found"
     missing=1
-  else
-    print_success "AWS CLI installed: $(aws --version 2>&1 | head -1)"
   fi
   
   if ! command -v node &> /dev/null; then
@@ -153,7 +159,7 @@ check_prerequisites() {
 check_stack_status() {
   print_header "Checking CloudFormation Stack"
   
-  local status=$(aws cloudformation describe-stacks \
+  local status=$($AWS_CLI cloudformation describe-stacks \
     --stack-name "$STACK_NAME" \
     --region "$AWS_REGION" \
     --query 'Stacks[0].StackStatus' \
@@ -178,7 +184,7 @@ check_stack_status() {
 get_stack_outputs() {
   print_header "Retrieving Stack Outputs"
   
-  local outputs=$(aws cloudformation describe-stacks \
+  local outputs=$($AWS_CLI cloudformation describe-stacks \
     --stack-name "$STACK_NAME" \
     --region "$AWS_REGION" \
     --query 'Stacks[0].Outputs' \
@@ -211,7 +217,7 @@ get_resource_names() {
   print_header "Extracting CDK Resource Names"
   
   # Get task definition family
-  local task_def=$(aws ecs list-task-definitions \
+  local task_def=$($AWS_CLI ecs list-task-definitions \
     --family-prefix "${STACK_NAME}Service" \
     --region "$AWS_REGION" \
     --query 'taskDefinitionArns[0]' \
@@ -221,7 +227,7 @@ get_resource_names() {
     print_success "Task Definition: $task_def"
     
     # Get detailed task definition info
-    local task_info=$(aws ecs describe-task-definition \
+    local task_info=$($AWS_CLI ecs describe-task-definition \
       --task-definition "$task_def" \
       --region "$AWS_REGION" \
       --query 'taskDefinition.{executionRoleArn:executionRoleArn,taskRoleArn:taskRoleArn,logGroup:containerDefinitions[0].logConfiguration.options."awslogs-group",logPrefix:containerDefinitions[0].logConfiguration.options."awslogs-stream-prefix"}' \
@@ -262,7 +268,7 @@ EOF
   fi
   
   # Get cluster and service names
-  local cluster=$(aws ecs list-clusters \
+  local cluster=$($AWS_CLI ecs list-clusters \
     --region "$AWS_REGION" \
     --query "clusterArns[?contains(@, '$STACK_NAME')] | [0]" \
     --output text 2>/dev/null || echo "")
@@ -271,7 +277,7 @@ EOF
     local cluster_name=$(echo "$cluster" | awk -F/ '{print $NF}')
     print_success "Cluster: $cluster_name"
     
-    local service=$(aws ecs list-services \
+    local service=$($AWS_CLI ecs list-services \
       --cluster "$cluster_name" \
       --region "$AWS_REGION" \
       --query 'serviceArns[0]' \
@@ -295,7 +301,7 @@ EOF
 check_load_balancer() {
   print_header "Checking Load Balancer Health"
   
-  local lb_arn=$(aws elbv2 describe-load-balancers \
+  local lb_arn=$($AWS_CLI elbv2 describe-load-balancers \
     --region "$AWS_REGION" \
     --query "LoadBalancers[?contains(LoadBalancerName, 'Loppe') || contains(LoadBalancerName, 'Service')].LoadBalancerArn | [0]" \
     --output text 2>/dev/null || echo "")
@@ -305,7 +311,7 @@ check_load_balancer() {
     return 1
   fi
   
-  local lb_state=$(aws elbv2 describe-load-balancers \
+  local lb_state=$($AWS_CLI elbv2 describe-load-balancers \
     --load-balancer-arns "$lb_arn" \
     --region "$AWS_REGION" \
     --query 'LoadBalancers[0].State.Code' \
@@ -319,7 +325,7 @@ check_load_balancer() {
   fi
   
   # Check target health
-  local target_groups=$(aws elbv2 describe-target-groups \
+  local target_groups=$($AWS_CLI elbv2 describe-target-groups \
     --load-balancer-arn "$lb_arn" \
     --region "$AWS_REGION" \
     --query 'TargetGroups[*].TargetGroupArn' \
@@ -327,7 +333,7 @@ check_load_balancer() {
   
   if [ -n "$target_groups" ]; then
     for tg in $target_groups; do
-      local health=$(aws elbv2 describe-target-health \
+      local health=$($AWS_CLI elbv2 describe-target-health \
         --target-group-arn "$tg" \
         --region "$AWS_REGION" \
         --query 'TargetHealthDescriptions[0].TargetHealth.State' \

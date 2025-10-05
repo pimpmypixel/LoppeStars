@@ -6,7 +6,7 @@ AWS_REGION="eu-central-1"
 echo "🔍 Checking CDK Stack Status..."
 echo ""
 
-STATUS=$(/usr/local/bin/aws cloudformation describe-stacks \
+STATUS=$(${AWS_CLI:-/usr/local/bin/aws} cloudformation describe-stacks \
   --stack-name $STACK_NAME \
   --region $AWS_REGION \
   --query 'Stacks[0].StackStatus' \
@@ -21,7 +21,7 @@ elif [[ "$STATUS" == "DELETE_IN_PROGRESS" ]]; then
   echo "⏳ Stack is being DELETED..."
   echo ""
   echo "Recent deletion events:"
-  /usr/local/bin/aws cloudformation describe-stack-events \
+  ${AWS_CLI:-/usr/local/bin/aws} cloudformation describe-stack-events \
     --stack-name $STACK_NAME \
     --region $AWS_REGION \
     --max-items 5 \
