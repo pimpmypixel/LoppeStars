@@ -192,7 +192,6 @@ build_and_push_image() {
     --build-arg SOURCE_BUCKET="stall-photos" \
     --build-arg STORAGE_BUCKET="stall-photos-processed" \
     --build-arg BUILDKIT_INLINE_CACHE=1 \
-    -t "loppestars:$image_tag" \
     -t "$ecr_repo:$image_tag" \
     -t "$ecr_repo:latest" \
     --push \
@@ -211,6 +210,11 @@ register_task_definition() {
   local task_role=$(get_stack_output "TaskRoleArn")
   local log_group=$(get_stack_output "LogGroupName")
   
+  # Escape values properly for JSON
+  local escaped_supabase_url=$(echo "$SUPABASE_URL" | sed 's/"/\\\\&/g')
+  local escaped_service_role=$(echo "$SUPABASE_SERVICE_ROLE_KEY" | sed 's/"/\\\\&/g')
+  local escaped_anon_key=$(echo "$SUPABASE_ANON_KEY" | sed 's/"/\\\\&/g')
+  
   cat > /tmp/task-def.json <<EOF
 {
   "family": "loppestars",
@@ -227,13 +231,33 @@ register_task_definition() {
       "cpu": 256,
       "memory": 512,
       "essential": true,
-      "portMappings": [{"containerPort": 8080, "protocol": "tcp"}],
+      "portMappings": [
+        {
+          "containerPort": 8080,
+          "protocol": "tcp"
+        }
+      ],
       "environment": [
-        {"name": "SUPABASE_URL", "value": "$SUPABASE_URL"},
-        {"name": "SUPABASE_SERVICE_ROLE_KEY", "value": "$SUPABASE_SERVICE_ROLE_KEY"},
-        {"name": "SUPABASE_ANON_KEY", "value": "$SUPABASE_ANON_KEY"},
-        {"name": "SOURCE_BUCKET", "value": "stall-photos"},
-        {"name": "STORAGE_BUCKET", "value": "stall-photos-processed"}
+        {
+          "name": "SUPABASE_URL",
+          "value": "$escaped_supabase_url"
+        },
+        {
+          "name": "SUPABASE_SERVICE_ROLE_KEY",
+          "value": "$escaped_service_role"
+        },
+        {
+          "name": "SUPABASE_ANON_KEY",
+          "value": "$escaped_anon_key"
+        },
+        {
+          "name": "SOURCE_BUCKET",
+          "value": "stall-photos"
+        },
+        {
+          "name": "STORAGE_BUCKET",
+          "value": "stall-photos-processed"
+        }
       ],
       "logConfiguration": {
         "logDriver": "awslogs",
