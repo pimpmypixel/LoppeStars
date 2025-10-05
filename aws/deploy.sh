@@ -141,7 +141,7 @@ deploy_infrastructure() {
 
 # Build and push Docker image
 build_and_push_image() {
-  log_header "Building and Pushing Docker Image"
+  log_header "Building and Pushing Docker Image" >&2
   
   local ecr_repo="$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/loppestars"
   local image_tag=$(cd "$SCRIPT_DIR/.." && git rev-parse --short HEAD)
