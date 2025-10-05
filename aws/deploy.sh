@@ -203,7 +203,7 @@ build_and_push_image() {
 
 # Create or update task definition
 register_task_definition() {
-  log_header "Registering Task Definition"
+  log_header "Registering Task Definition" >&2
   
   local image=$1
   local task_exec_role=$(get_stack_output "TaskExecutionRoleArn")
@@ -278,13 +278,13 @@ EOF
     --query 'taskDefinition.taskDefinitionArn' \
     --output text)
   
-  log_success "Task definition: $task_def_arn"
+  log_success "Task definition: $task_def_arn" >&2
   echo "$task_def_arn"
 }
 
 # Create or update ECS service
 deploy_service() {
-  log_header "Deploying ECS Service"
+  log_header "Deploying ECS Service" >&2
   
   local task_def_arn=$1
   local target_group=$(get_stack_output "TargetGroupArn")
