@@ -5,6 +5,7 @@ import * as ecspatterns from "aws-cdk-lib/aws-ecs-patterns";
 import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import * as logs from 'aws-cdk-lib/aws-logs';
 import { config } from 'dotenv';
 
 // Load environment variables from root .env file
@@ -45,9 +46,10 @@ export class LoppestarsEcsStack extends cdk.Stack {
       certificate: certificate,
       assignPublicIp: true,
       taskImageOptions: {
-        image: ecs.ContainerImage.fromAsset("../api", {
+        image: ecs.ContainerImage.fromAsset("..", {
           file: "Dockerfile",
         }),
+        containerName: "web",
         containerPort: 8080,
         environment: {
           SUPABASE_URL: process.env.SUPABASE_URL!,
@@ -55,7 +57,20 @@ export class LoppestarsEcsStack extends cdk.Stack {
           SOURCE_BUCKET: process.env.SOURCE_BUCKET || "stall-photos",
           STORAGE_BUCKET: process.env.STORAGE_BUCKET || "stall-photos-processed",
         },
+        logDriver: ecs.LogDrivers.awsLogs({
+          streamPrefix: "loppestars",
+          logRetention: logs.RetentionDays.ONE_WEEK,
+        }),
       },
+    });
+
+    // Configure health check for target group
+    fargateService.targetGroup.configureHealthCheck({
+      path: "/health",
+      interval: cdk.Duration.seconds(30),
+      timeout: cdk.Duration.seconds(10),
+      healthyThresholdCount: 2,
+      unhealthyThresholdCount: 3,
     });
 
     new cdk.CfnOutput(this, "LoadBalancerDNS", {

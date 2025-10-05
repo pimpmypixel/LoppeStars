@@ -58,5 +58,22 @@ ENV SUPABASE_URL=$SUPABASE_URL \
 # ENV STORAGE_BUCKET="stall-photos-processed"
 EXPOSE 8080
 
+# Create startup script with better error handling
+RUN echo '#!/bin/bash\n\
+set -e\n\
+echo "Starting Loppestars API..."\n\
+echo "SUPABASE_URL: ${SUPABASE_URL}"\n\
+echo "SOURCE_BUCKET: ${SOURCE_BUCKET}"\n\
+echo "STORAGE_BUCKET: ${STORAGE_BUCKET}"\n\
+\n\
+# Start cron in background\n\
+cron\n\
+echo "Cron started"\n\
+\n\
+# Start uvicorn\n\
+echo "Starting uvicorn on 0.0.0.0:8080..."\n\
+exec uvicorn main:app --host 0.0.0.0 --port 8080 --workers 1 --log-level info\n\
+' > /app/start.sh && chmod +x /app/start.sh
+
 # Start both the web service and cron daemon
-CMD ["sh", "-c", "cron && uvicorn main:app --host 0.0.0.0 --port 8080 --workers 1"]
+CMD ["/app/start.sh"]
