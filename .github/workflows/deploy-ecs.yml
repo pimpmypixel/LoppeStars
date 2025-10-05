@@ -254,6 +254,7 @@ jobs:
           TASK_ARN=$(aws ecs list-tasks \
             --cluster $CLUSTER \
             --service-name $SERVICE \
+            --desired-status RUNNING \
             --region ${AWS_REGION} \
             --query 'taskArns[0]' \
             --output text)
@@ -263,17 +264,23 @@ jobs:
             exit 1
           fi
           
-          RUNNING_IMAGE=$(aws ecs describe-tasks \
+          TASK_DETAILS=$(aws ecs describe-tasks \
             --cluster $CLUSTER \
             --tasks $TASK_ARN \
             --region ${AWS_REGION} \
-            --query 'tasks[0].containers[0].image' \
-            --output text)
+            --query 'tasks[0]' \
+            --output json)
+          
+          RUNNING_IMAGE=$(echo $TASK_DETAILS | jq -r '.containers[0].image')
+          TASK_DEF_ARN=$(echo $TASK_DETAILS | jq -r '.taskDefinitionArn')
           
           echo "🏃 Running image: ${RUNNING_IMAGE}"
+          echo "📋 Task definition: ${TASK_DEF_ARN}"
           
-          RUNNING_DIGEST=$(echo $RUNNING_IMAGE | grep -oE 'sha256:[a-f0-9]+' || echo "")
+          # Check if the running image matches our expected image tag
+          EXPECTED_IMAGE="${ECR_URI}:${IMAGE_TAG}"
           
+          # Extract digest from ECR for the pushed image
           LATEST_DIGEST=$(aws ecr describe-images \
             --repository-name ${ECR_REPOSITORY} \
             --image-ids imageTag=${IMAGE_TAG} \
@@ -282,9 +289,9 @@ jobs:
             --output text)
           
           echo "📦 Latest digest: ${LATEST_DIGEST}"
-          echo "�� Running digest: ${RUNNING_DIGEST}"
           
-          if [ "$LATEST_DIGEST" = "$RUNNING_DIGEST" ]; then
+          # Check if running image contains our commit SHA tag OR matches the digest
+          if echo "$RUNNING_IMAGE" | grep -q "$IMAGE_TAG"; then
             echo ""
             echo "============================================================"
             echo "✅ SUCCESS: Latest changes are LIVE!"
@@ -292,16 +299,31 @@ jobs:
             echo "Cluster: $CLUSTER"
             echo "Service: $SERVICE"
             echo "Task Definition: ${{ steps.register-task-def.outputs.task_definition_arn }}"
-            echo "Image: ${ECR_URI}:${IMAGE_TAG}"
-            echo "Digest: ${LATEST_DIGEST}"
+            echo "Image Tag: ${IMAGE_TAG}"
+            echo "Image Digest: ${LATEST_DIGEST}"
+            echo "Running Image: ${RUNNING_IMAGE}"
+            echo "============================================================"
+          elif echo "$RUNNING_IMAGE" | grep -q "$LATEST_DIGEST"; then
+            echo ""
+            echo "============================================================"
+            echo "✅ SUCCESS: Latest changes are LIVE (digest match)!"
+            echo "============================================================"
+            echo "Cluster: $CLUSTER"
+            echo "Service: $SERVICE"
+            echo "Image Digest: ${LATEST_DIGEST}"
+            echo "Running Image: ${RUNNING_IMAGE}"
             echo "============================================================"
           else
             echo ""
             echo "============================================================"
-            echo "⚠️  WARNING: Deployment may not be complete"
+            echo "⚠️  WARNING: Deployment verification failed"
             echo "============================================================"
+            echo "Expected tag: ${IMAGE_TAG}"
             echo "Expected digest: ${LATEST_DIGEST}"
-            echo "Running digest: ${RUNNING_DIGEST}"
+            echo "Running image: ${RUNNING_IMAGE}"
             echo "============================================================"
+            echo ""
+            echo "This may indicate the service is still using an old task."
+            echo "Please check the ECS console or wait a few more minutes."
             exit 1
           fi
