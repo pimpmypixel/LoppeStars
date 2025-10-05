@@ -158,7 +158,7 @@ build_and_push_image() {
     return 0
   fi
   
-  log_info "Building Docker image..."
+  log_info "Building Docker image with BuildX (cached builds)..."
   
   # Login to ECR
   $AWS_CLI ecr get-login-password --region "$REGION" | \
@@ -172,21 +172,31 @@ build_and_push_image() {
       --repository-name loppestars \
       --region "$REGION" >/dev/null
   
-  # Build image
+  # Ensure BuildX is available and create builder if needed
+  if ! docker buildx ls | grep -q loppestars-builder; then
+    log_info "Creating BuildX builder instance..."
+    docker buildx create --name loppestars-builder --use --bootstrap 2>/dev/null || true
+  else
+    docker buildx use loppestars-builder 2>/dev/null || true
+  fi
+  
+  # Build image with BuildX and layer caching
   cd "$SCRIPT_DIR/.."
-  docker build -t "loppestars:$image_tag" \
+  docker buildx build \
+    --platform linux/amd64 \
+    --cache-from type=registry,ref="$ecr_repo:buildcache" \
+    --cache-to type=registry,ref="$ecr_repo:buildcache",mode=max \
     --build-arg SUPABASE_URL="$SUPABASE_URL" \
     --build-arg SUPABASE_SERVICE_ROLE_KEY="$SUPABASE_SERVICE_ROLE_KEY" \
     --build-arg SUPABASE_ANON_KEY="$SUPABASE_ANON_KEY" \
     --build-arg SOURCE_BUCKET="stall-photos" \
     --build-arg STORAGE_BUCKET="stall-photos-processed" \
+    --build-arg BUILDKIT_INLINE_CACHE=1 \
+    -t "loppestars:$image_tag" \
+    -t "$ecr_repo:$image_tag" \
+    -t "$ecr_repo:latest" \
+    --push \
     -f Dockerfile .
-  
-  # Tag and push
-  docker tag "loppestars:$image_tag" "$ecr_repo:$image_tag"
-  docker tag "loppestars:$image_tag" "$ecr_repo:latest"
-  docker push "$ecr_repo:$image_tag"
-  docker push "$ecr_repo:latest"
   
   log_success "Image pushed: $ecr_repo:$image_tag"
   echo "$ecr_repo:$image_tag"

@@ -1,0 +1,31 @@
+
+[0;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[0;36mLoppestars Deployment[0m
+[0;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+
+[0;32m✅ Loaded environment variables[0m
+
+[0;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[0;36mDeploying Infrastructure[0m
+[0;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+
+[0;34mℹ️  Checking for ACM certificate...[0m
+[0;32m✅ Found existing certificate: arn:aws:acm:eu-central-1:035338517878:certificate/82a99014-eb81-4aef-b32b-ea6071457b52[0m
+[0;34mℹ️  Deploying CloudFormation stack...[0m
+
+Waiting for changeset to be created..
+Waiting for stack create/update to complete
+Successfully created/updated stack - LoppestarsEcsStack
+[0;32m✅ Infrastructure deployed[0m
+ERROR: Cannot connect to the Docker daemon at unix:///Users/andreas/.docker/run/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/andreas/.docker/run/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/andreas/.docker/run/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/andreas/.docker/run/docker.sock. Is the docker daemon running?
+Cannot connect to the Docker daemon at unix:///Users/andreas/.docker/run/docker.sock. Is the docker daemon running?
+
+Error parsing parameter 'cli-input-json': Invalid JSON received.
+
+[0;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+[0;36mDeploying ECS Service[0m
+[0;36m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m
+

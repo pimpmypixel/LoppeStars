@@ -1,0 +1,65 @@
+# Git and version control
+.git
+.gitignore
+.github
+
+# Documentation
+docs/
+*.md
+README.md
+
+# Development environment
+.env.local
+.env.development
+.env.test
+
+# Mobile app (not needed in API container)
+app/
+backups/
+
+# AWS CDK (not needed in container)
+aws/
+cdk.out/
+
+# Supabase (not needed in container)
+supabase/
+
+# Build artifacts and logs
+*.log
+build.log
+logs/
+*.pyc
+__pycache__/
+.pytest_cache/
+*.egg-info/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Keys and secrets (extra safety)
+keys/
+*.pem
+*.key
+
+# Test files
+test/
+*_test.py
+test_*.py
+
+# Node modules (if any)
+node_modules/
+package-lock.json
+bun.lock
+
+# Temporary files
+tmp/
+temp/
+*.tmp
