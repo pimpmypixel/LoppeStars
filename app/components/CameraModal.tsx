@@ -31,45 +31,74 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
   if (!permission.granted) {
     return (
       <Modal visible={visible} animationType="slide">
-        <View
-          className={`flex-1 items-center justify-center bg-black/90 px-6 ${
-            orientation === 'landscape' ? 'py-4' : 'py-8'
-          }`}
-          {...({} as any)}
-        >
-          <Card className={`w-full max-w-sm gap-5 border border-border/60 bg-card/95 ${
-            orientation === 'landscape' ? 'max-w-md' : 'max-w-sm'
-          }`}>
-            <CardHeader className="items-center">
-              <CardTitle className={`text-center ${
-                orientation === 'landscape' ? 'text-lg' : 'text-xl'
-              }`}>
+        <View style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: 'rgba(0,0,0,0.9)',
+          paddingHorizontal: 24,
+          paddingVertical: orientation === 'landscape' ? 16 : 32
+        }}>
+          <View style={{
+            width: '100%',
+            maxWidth: orientation === 'landscape' ? 384 : 320,
+            gap: 20,
+            padding: 24,
+            borderWidth: 1,
+            borderColor: 'rgba(255,255,255,0.2)',
+            borderRadius: 16,
+            backgroundColor: 'rgba(28,25,23,0.95)'
+          }}>
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{
+                fontSize: orientation === 'landscape' ? 18 : 20,
+                fontWeight: 'bold',
+                color: '#ffffff',
+                textAlign: 'center',
+                marginBottom: 8
+              }}>
                 {t('permissions.camera.title')}
-              </CardTitle>
-              <CardDescription className={`text-center ${
-                orientation === 'landscape' ? 'text-sm' : 'text-base'
-              }`}>
+              </Text>
+              <Text style={{
+                fontSize: orientation === 'landscape' ? 14 : 16,
+                color: 'rgba(255,255,255,0.7)',
+                textAlign: 'center'
+              }}>
                 {t('permissions.camera.message')}
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="gap-3">
-              <TouchableOpacity className="w-full h-12" onPress={requestPermission} {...({} as any)}>
-                <Text className="font-medium">
+              </Text>
+            </View>
+            <View style={{ gap: 12 }}>
+              <TouchableOpacity
+                style={{
+                  width: '100%',
+                  height: 48,
+                  backgroundColor: '#FF9500',
+                  borderRadius: 12,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+                onPress={requestPermission}
+              >
+                <Text style={{ fontWeight: '600', color: '#ffffff', fontSize: 16 }}>
                   {t('permissions.camera.grant')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                variant="ghost"
-                className="w-full h-12"
+                style={{
+                  width: '100%',
+                  height: 48,
+                  borderRadius: 12,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
                 onPress={onClose}
-                {...({} as any)}
               >
-                <Text className="text-muted-foreground font-medium">
+                <Text style={{ fontWeight: '600', color: 'rgba(255,255,255,0.7)', fontSize: 16 }}>
                   {t('common.cancel')}
                 </Text>
               </TouchableOpacity>
-            </CardContent>
-          </Card>
+            </View>
+          </View>
         </View>
       </Modal>
     );
@@ -140,152 +169,225 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="fullScreen">
-      <View className="flex-1 bg-black" {...({} as any)}>
+      <View style={{ flex: 1, backgroundColor: '#000000' }}>
         {isProcessing && (
-          <View className="absolute inset-0 z-20 items-center justify-center bg-black/70" {...({} as any)}>
-            <View className="items-center gap-4" {...({} as any)}>
+          <View style={{ 
+            position: 'absolute', 
+            top: 0, 
+            left: 0, 
+            right: 0, 
+            bottom: 0, 
+            zIndex: 20, 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            backgroundColor: 'rgba(0,0,0,0.7)' 
+          }}>
+            <View style={{ alignItems: 'center', gap: 16 }}>
               <ActivityIndicator size="large" color="#ffffff" />
-              <Text className="text-white text-lg font-semibold">{t('camera.processing')}</Text>
+              <Text style={{ color: '#ffffff', fontSize: 18, fontWeight: '600' }}>
+                {t('camera.processing')}
+              </Text>
             </View>
           </View>
         )}
 
         {capturedImage ? (
-          <View className="flex-1" {...({} as any)}>
+          <View style={{ flex: 1 }}>
             <Image
               source={{ uri: capturedImage }}
-              className="flex-1 w-full"
+              style={{ flex: 1, width: '100%' }}
               resizeMode="contain"
-              {...({} as any)}
             />
-            <View
-              className={`flex-row items-center justify-between gap-3 bg-black/90 px-4 py-6 ${
-                orientation === 'landscape' ? 'flex-col h-32' : 'flex-row'
-              }`}
-              {...({} as any)}
-            >
+            <View style={{
+              flexDirection: orientation === 'landscape' ? 'column' : 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              gap: 12,
+              backgroundColor: 'rgba(0,0,0,0.9)',
+              paddingHorizontal: 16,
+              paddingVertical: 24,
+              height: orientation === 'landscape' ? 128 : undefined
+            }}>
               <TouchableOpacity
-                variant="outline"
-                className={`border-white/40 ${orientation === 'landscape' ? 'flex-1 h-12' : 'flex-1 h-12'}`}
+                style={{
+                  flex: 1,
+                  height: 48,
+                  borderWidth: 1,
+                  borderColor: 'rgba(255,255,255,0.4)',
+                  borderRadius: 12,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(255,255,255,0.1)'
+                }}
                 onPress={resetImage}
-                {...({} as any)}
               >
-                <Text className="text-white font-medium">{t('camera.retake')}</Text>
+                <Text style={{ color: '#ffffff', fontWeight: '600' }}>{t('camera.retake')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                className={`bg-green-600 hover:bg-green-700 ${orientation === 'landscape' ? 'flex-1 h-12' : 'flex-1 h-12'}`}
+                style={{
+                  flex: 1,
+                  height: 48,
+                  backgroundColor: '#16a34a',
+                  borderRadius: 12,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
                 onPress={handleSave}
-                {...({} as any)}
               >
-                <Text className="text-white font-medium">{t('camera.usePhoto')}</Text>
+                <Text style={{ color: '#ffffff', fontWeight: '600' }}>{t('camera.usePhoto')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                variant="ghost"
-                className={`text-white ${orientation === 'landscape' ? 'flex-1 h-12' : 'flex-1 h-12'}`}
+                style={{
+                  flex: 1,
+                  height: 48,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
                 onPress={handleClose}
-                {...({} as any)}
               >
-                <Text className="text-white font-medium">{t('camera.cancel')}</Text>
+                <Text style={{ color: '#ffffff', fontWeight: '600' }}>{t('camera.cancel')}</Text>
               </TouchableOpacity>
             </View>
           </View>
         ) : (
           <>
-            <View
-              className={`flex-row items-center justify-between bg-black/80 px-5 pt-14 pb-4 ${
-                orientation === 'landscape' ? 'flex-col py-2' : 'flex-row'
-              }`}
-              {...({} as any)}
-            >
+            <View style={{
+              flexDirection: orientation === 'landscape' ? 'column' : 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              backgroundColor: 'rgba(0,0,0,0.8)',
+              paddingHorizontal: 20,
+              paddingTop: 56,
+              paddingBottom: 16
+            }}>
               <TouchableOpacity
-                variant="ghost"
-                className="h-12 w-12 rounded-full bg-white/10"
+                style={{
+                  height: 48,
+                  width: 48,
+                  borderRadius: 24,
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
                 onPress={handleClose}
-                {...({} as any)}
               >
                 <X size={24} color="#ffffff" />
               </TouchableOpacity>
-              <Text className={`text-white text-xl font-bold ${
-                orientation === 'landscape' ? 'text-lg my-2' : 'text-lg'
-              }`}>
+              <Text style={{
+                color: '#ffffff',
+                fontSize: orientation === 'landscape' ? 18 : 20,
+                fontWeight: 'bold',
+                marginVertical: orientation === 'landscape' ? 8 : 0
+              }}>
                 {t('camera.takePhoto')}
               </Text>
-              <View className="h-12 w-12" {...({} as any)} />
+              <View style={{ height: 48, width: 48 }} />
             </View>
 
-            <View className="flex-1" {...({} as any)}>
+            <View style={{ flex: 1 }}>
               <CameraView
-                style={{ flex: 1 }}
+                style={{ flex: 1, width: '100%', height: '100%' }}
                 facing={facing}
                 ref={cameraRef}
                 responsiveOrientationWhenOrientationLocked={true}
               />
 
-              <View
-                id='instructionsBox'
-                className={`absolute items-center rounded-xl bg-black/70 p-4 ${
-                  orientation === 'landscape' 
-                    ? 'top-5 bottom-5 left-2 right-auto w-32' 
-                    : 'top-24 left-5 right-5'
-                }`}
-                style={{
-                  transform: orientation === 'landscape' 
-                    ? [{ rotate: '90deg' }] 
-                    : [{ rotate: '0deg' }]
-                }}
-                {...({} as any)}
-              >
-                <Text className={`text-white text-base font-semibold text-center ${
-                  orientation === 'landscape' ? 'text-sm' : ''
-                }`}>
+              <View style={{
+                position: 'absolute',
+                top: orientation === 'landscape' ? 20 : 96,
+                left: orientation === 'landscape' ? 8 : 20,
+                right: orientation === 'landscape' ? undefined : 20,
+                width: orientation === 'landscape' ? 128 : undefined,
+                alignItems: 'center',
+                borderRadius: 12,
+                backgroundColor: 'rgba(0,0,0,0.7)',
+                padding: 16
+              }}>
+                <Text style={{
+                  color: '#ffffff',
+                  fontSize: orientation === 'landscape' ? 14 : 16,
+                  fontWeight: '600',
+                  textAlign: 'center'
+                }}>
                   {t('camera.instructionsTitle')}
                 </Text>
-                <Text className={`text-white/80 text-sm text-center ${
-                  orientation === 'landscape' ? 'text-xs' : ''
-                }`}>
+                <Text style={{
+                  color: 'rgba(255,255,255,0.8)',
+                  fontSize: orientation === 'landscape' ? 12 : 14,
+                  textAlign: 'center',
+                  marginTop: 4
+                }}>
                   {t('camera.instructionsSubtitle')}
                 </Text>
               </View>
             </View>
 
-            <View
-              className={`absolute bottom-16 left-0 right-0 flex-row items-center justify-around px-6 ${
-                orientation === 'landscape' ? 'bottom-8 px-4' : 'bottom-16 px-6'
-              }`}
-              {...({} as any)}
-            >
+            <View style={{
+              position: 'absolute',
+              bottom: orientation === 'landscape' ? 32 : 64,
+              left: 0,
+              right: 0,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              paddingHorizontal: orientation === 'landscape' ? 16 : 24
+            }}>
               <TouchableOpacity
-                variant="ghost"
-                className={`bg-white/10 rounded-full ${orientation === 'landscape' ? 'h-14 w-14' : 'h-16 px-6'}`}
+                style={{
+                  height: orientation === 'landscape' ? 56 : 64,
+                  width: orientation === 'landscape' ? 56 : undefined,
+                  paddingHorizontal: orientation === 'landscape' ? 0 : 24,
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  borderRadius: 9999,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
                 onPress={pickImageFromLibrary}
-                {...({} as any)}
               >
-                <View className="items-center gap-1" {...({} as any)}>
+                <View style={{ alignItems: 'center', gap: 4 }}>
                   <ImageIcon size={orientation === 'landscape' ? 20 : 24} color="#ffffff" />
                   {orientation === 'portrait' && (
-                    <Text className="text-white font-medium text-xs">{t('camera.fromLibrary')}</Text>
+                    <Text style={{ color: '#ffffff', fontWeight: '600', fontSize: 12 }}>
+                      {t('camera.fromLibrary')}
+                    </Text>
                   )}
                 </View>
               </TouchableOpacity>
               
               <TouchableOpacity
-                className="h-20 w-20 rounded-full border-4 border-white/40 bg-white/20"
+                style={{
+                  height: 80,
+                  width: 80,
+                  borderRadius: 40,
+                  borderWidth: 4,
+                  borderColor: 'rgba(255,255,255,0.4)',
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
                 onPress={takePicture}
-                {...({} as any)}
               >
                 <Camera size={32} color="#ffffff" />
               </TouchableOpacity>
               
               <TouchableOpacity
-                variant="ghost"
-                className={`bg-white/10 rounded-full ${orientation === 'landscape' ? 'h-14 w-14' : 'h-16 px-6'}`}
+                style={{
+                  height: orientation === 'landscape' ? 56 : 64,
+                  width: orientation === 'landscape' ? 56 : undefined,
+                  paddingHorizontal: orientation === 'landscape' ? 0 : 24,
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  borderRadius: 9999,
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
                 onPress={toggleCameraFacing}
-                {...({} as any)}
               >
-                <View className="items-center gap-1" {...({} as any)}>
+                <View style={{ alignItems: 'center', gap: 4 }}>
                   <RefreshCcw size={orientation === 'landscape' ? 20 : 24} color="#ffffff" />
                   {orientation === 'portrait' && (
-                    <Text className="text-white font-medium text-xs">{t('camera.flip')}</Text>
+                    <Text style={{ color: '#ffffff', fontWeight: '600', fontSize: 12 }}>
+                      {t('camera.flip')}
+                    </Text>
                   )}
                 </View>
               </TouchableOpacity>
