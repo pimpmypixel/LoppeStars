@@ -2,11 +2,9 @@ import React, { useState, useRef } from 'react';
 import { View, Alert, Image, Modal, useWindowDimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
-import { getInfoAsync, readAsStringAsync } from 'expo-file-system/legacy';
 import { useTranslation } from '../utils/localization';
 import { Card, CardContent, CardHeader, CardTitle, Text } from './ui-kitten';
 import { Camera, ImageIcon, RefreshCcw, X } from 'lucide-react-native';
-import { useAuth } from '../contexts/AuthContext';
 
 interface CameraModalProps {
   visible: boolean;
@@ -22,7 +20,6 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
   const cameraRef = useRef<CameraView>(null);
   const { width, height } = useWindowDimensions();
   const orientation = width > height ? 'landscape' : 'portrait';
-  const { user } = useAuth();
   const { t } = useTranslation();
 
   console.log('Current orientation:', orientation, { width, height });
@@ -82,97 +79,15 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
     setFacing(current => (current === 'back' ? 'front' : 'back'));
   };
 
-  const processImageWithEdgeFunction = async (imageUri: string) => {
-    try {
-      console.log('Uploading image to stall-photos bucket...');
-      
-      // Check if user is authenticated
-      if (!user) {
-        throw new Error('User not authenticated');
-      }
-
-      // Read image file as base64
-      console.log('Reading image file...');
-      const fileInfo = await getInfoAsync(imageUri);
-      if (!fileInfo.exists) {
-        throw new Error('Image file does not exist');
-      }
-
-      const base64Data = await readAsStringAsync(imageUri, {
-        encoding: 'base64',
-      });
-
-      // Convert base64 to Uint8Array for upload
-      const binaryData = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-      
-      // Use the existing authenticated Supabase client
-      const { supabase } = await import('../utils/supabase');
-
-      // Generate unique filename
-      const timestamp = Date.now();
-      const fileName = `${user.id}/${timestamp}.jpg`;
-      
-      // Upload to stall-photos bucket
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('stall-photos')
-        .upload(fileName, binaryData, {
-          contentType: 'image/jpeg',
-          upsert: false
-        });
-
-      if (uploadError) {
-        console.error('Upload error:', uploadError);
-        throw new Error(`Failed to upload image: ${uploadError.message}`);
-      }
-
-      console.log('Image uploaded successfully:', uploadData.path);
-
-      // Call Edge Function to process the image
-      console.log('Calling edge function to process image...');
-      const { data, error } = await supabase.functions.invoke('process-image', {
-        body: { 
-          imagePath: uploadData.path,
-          userId: user.id 
-        }
-      });
-
-      if (error) {
-        console.error('Edge function error:', error);
-        throw new Error(`Processing failed: ${error.message}`);
-      }
-
-      console.log('Edge function response:', data);
-      
-      if (!data.processedImageUrl) {
-        throw new Error('No processed image URL returned');
-      }
-
-      return { success: true, uri: data.processedImageUrl };
-    } catch (error) {
-      console.error('Error in image processing flow:', error);
-      return { 
-        success: false, 
-        uri: imageUri, 
-        error: error instanceof Error ? error.message : 'Processing failed' 
-      };
-    }
-  };
-
   const takePicture = async () => {
     if (cameraRef.current) {
       try {
         setIsProcessing(true);
         const photo = await cameraRef.current.takePictureAsync();
         if (photo) {
-          console.log('Photo taken, processing with edge function...');
-          // Process image for GDPR compliance (blur faces if detected)
-          const processedImage = await processImageWithEdgeFunction(photo.uri);
-          console.log('Edge function result:', processedImage);
-          setCapturedImage(processedImage.uri || photo.uri);
-
-          if (processedImage.error) {
-            console.warn('Edge function warning:', processedImage.error);
-          }
+          console.log('Photo taken:', photo.uri);
+          // Just save the photo URI - processing will happen in RatingScreen via usePhotoUpload hook
+          setCapturedImage(photo.uri);
         }
       } catch (error) {
         Alert.alert(t('common.error'), t('camera.errorCapture'));
@@ -194,13 +109,9 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
       });
 
       if (!result.canceled) {
-        // Process selected image for GDPR compliance
-        const processedImage = await processImageWithEdgeFunction(result.assets[0].uri);
-        setCapturedImage(processedImage.uri || result.assets[0].uri);
-
-        if (processedImage.error) {
-          console.warn('Edge function warning:', processedImage.error);
-        }
+        console.log('Image selected from library:', result.assets[0].uri);
+        // Just save the photo URI - processing will happen in RatingScreen via usePhotoUpload hook
+        setCapturedImage(result.assets[0].uri);
       }
     } catch (error) {
       Alert.alert(t('common.error'), t('camera.errorSelect'));
