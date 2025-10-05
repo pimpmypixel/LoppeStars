@@ -59,8 +59,8 @@ jobs:
             "networkMode": "awsvpc",
             "cpu": "256",
             "memory": "512",
-            "executionRoleArn": "arn:aws:iam::035338517878:role/LoppestarsEcsStack-ServiceTaskDefExecutionRole919F7-gnhoBqLZhTql",
-            "taskRoleArn": "arn:aws:iam::035338517878:role/LoppestarsEcsStack-ServiceTaskDefTaskRole0CFE2F57-v3VAz81Cmm5R",
+            "executionRoleArn": "arn:aws:iam::035338517878:role/LoppestarsEcsStack-TaskExecutionRole-RIAkMYD1kOjs",
+            "taskRoleArn": "arn:aws:iam::035338517878:role/LoppestarsEcsStack-TaskRole-N7ax2UYdMxas",
             "containerDefinitions": [
               {
                 "name": "web",
@@ -158,12 +158,83 @@ jobs:
             --query "serviceArns[0]" \
             --output text | awk -F/ '{print $NF}')
           
-          aws ecs wait services-stable \
-            --cluster $CLUSTER \
-            --services $SERVICE \
-            --region ${AWS_REGION}
+          echo "📦 Cluster: $CLUSTER"
+          echo "🔧 Service: $SERVICE"
+          echo ""
+          echo "Polling deployment status (max 10 minutes)..."
           
-          echo "✅ Deployment stable!"
+          # Custom wait loop with timeout and better error handling
+          MAX_ATTEMPTS=40  # 40 attempts × 15 seconds = 10 minutes
+          ATTEMPT=0
+          
+          while [ $ATTEMPT -lt $MAX_ATTEMPTS ]; do
+            ATTEMPT=$((ATTEMPT + 1))
+            echo "Attempt $ATTEMPT/$MAX_ATTEMPTS..."
+            
+            # Get deployment status
+            DEPLOYMENT_STATUS=$(aws ecs describe-services \
+              --cluster $CLUSTER \
+              --services $SERVICE \
+              --region ${AWS_REGION} \
+              --query 'services[0].deployments[?status==`PRIMARY`].{RolloutState:rolloutState,Running:runningCount,Desired:desiredCount,Failed:failedTasks}' \
+              --output json)
+            
+            ROLLOUT_STATE=$(echo $DEPLOYMENT_STATUS | jq -r '.[0].RolloutState')
+            RUNNING_COUNT=$(echo $DEPLOYMENT_STATUS | jq -r '.[0].Running')
+            DESIRED_COUNT=$(echo $DEPLOYMENT_STATUS | jq -r '.[0].Desired')
+            FAILED_TASKS=$(echo $DEPLOYMENT_STATUS | jq -r '.[0].Failed')
+            
+            echo "  Rollout: $ROLLOUT_STATE | Running: $RUNNING_COUNT/$DESIRED_COUNT | Failed: $FAILED_TASKS"
+            
+            # Check for completion
+            if [ "$ROLLOUT_STATE" = "COMPLETED" ]; then
+              echo ""
+              echo "✅ Deployment completed successfully!"
+              break
+            fi
+            
+            # Check for failures
+            if [ "$FAILED_TASKS" -gt 0 ]; then
+              echo ""
+              echo "⚠️  WARNING: $FAILED_TASKS task(s) failed during deployment"
+              echo "Checking for recent task failures..."
+              
+              STOPPED_TASKS=$(aws ecs list-tasks \
+                --cluster $CLUSTER \
+                --service-name $SERVICE \
+                --desired-status STOPPED \
+                --region ${AWS_REGION} \
+                --query 'taskArns[0]' \
+                --output text)
+              
+              if [ "$STOPPED_TASKS" != "None" ] && [ -n "$STOPPED_TASKS" ]; then
+                echo "Last stopped task: $STOPPED_TASKS"
+                aws ecs describe-tasks \
+                  --cluster $CLUSTER \
+                  --tasks $STOPPED_TASKS \
+                  --region ${AWS_REGION} \
+                  --query 'tasks[0].{StoppedReason:stoppedReason,ExitCode:containers[0].exitCode}' \
+                  --output json
+              fi
+            fi
+            
+            # Check if stuck with no progress
+            if [ "$RUNNING_COUNT" -eq 0 ] && [ $ATTEMPT -gt 10 ]; then
+              echo ""
+              echo "❌ ERROR: Deployment stuck - no tasks running after ${ATTEMPT} attempts"
+              echo "This usually indicates health check failures or resource constraints"
+              exit 1
+            fi
+            
+            # Wait before next check
+            sleep 15
+          done
+          
+          if [ $ATTEMPT -ge $MAX_ATTEMPTS ]; then
+            echo ""
+            echo "❌ ERROR: Deployment did not stabilize within 10 minutes"
+            exit 1
+          fi
 
       - name: Verify Deployment
         run: |
