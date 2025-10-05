@@ -153,24 +153,24 @@ build_and_push_image() {
     --region "$REGION" 2>/dev/null || echo "NOT_FOUND")
   
   if [[ "$image_exists" != "NOT_FOUND" ]] && [ "$FORCE_DEPLOY" = false ]; then
-    log_success "Image already exists: $ecr_repo:$image_tag"
+    log_success "Image already exists: $ecr_repo:$image_tag" >&2
     echo "$ecr_repo:$image_tag"
     return 0
   fi
   
-  log_info "Building Docker image with BuildX (cached builds)..."
+  log_info "Building Docker image with BuildX (cached builds)..." >&2
   
   # Login to ECR
   $AWS_CLI ecr get-login-password --region "$REGION" | \
-    docker login --username AWS --password-stdin "$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
+    docker login --username AWS --password-stdin "$ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com" >&2
   
   # Create ECR repository if needed
   $AWS_CLI ecr describe-repositories \
     --repository-names loppestars \
-    --region "$REGION" 2>/dev/null || \
+    --region "$REGION" 2>/dev/null >&2 || \
     $AWS_CLI ecr create-repository \
       --repository-name loppestars \
-      --region "$REGION" >/dev/null
+      --region "$REGION" >/dev/null 2>&1
   
   # Ensure BuildX is available and create builder if needed
   if ! docker buildx ls | grep -q loppestars-builder; then
@@ -195,9 +195,9 @@ build_and_push_image() {
     -t "$ecr_repo:$image_tag" \
     -t "$ecr_repo:latest" \
     --push \
-    -f Dockerfile .
+    -f Dockerfile . >&2
   
-  log_success "Image pushed: $ecr_repo:$image_tag"
+  log_success "Image pushed: $ecr_repo:$image_tag" >&2
   echo "$ecr_repo:$image_tag"
 }
 
