@@ -85,9 +85,9 @@ jobs:
                 "logConfiguration": {
                   "logDriver": "awslogs",
                   "options": {
-                    "awslogs-group": "/ecs/loppestars",
+                    "awslogs-group": "LoppestarsEcsStack-ServiceTaskDefwebLogGroup2A898F61-l6JeWYmfnmS5",
                     "awslogs-region": "${AWS_REGION}",
-                    "awslogs-stream-prefix": "ecs"
+                    "awslogs-stream-prefix": "Service"
                   }
                 }
               }
