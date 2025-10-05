@@ -24,7 +24,7 @@ while true; do
     exit 1
   else
     echo "⏳ Stack status: $STATUS - waiting 30 seconds..."
-    sleep 30
+    sleep 10
   fi
 done
 
@@ -34,14 +34,21 @@ echo ""
 
 # Bootstrap CDK if needed (safe to run multiple times)
 echo "📦 Bootstrapping CDK..."
-npx cdk bootstrap aws://035338517878/eu-central-1 --region eu-central-1
+timeout 300 npx cdk bootstrap aws://035338517878/eu-central-1 --region eu-central-1 --verbose || {
+  echo "⚠️  Bootstrap timed out or failed, but continuing (may already be bootstrapped)"
+}
 
 echo ""
 echo "🏗️  Deploying CDK stack..."
 echo ""
 
-# Deploy the stack
-npx cdk deploy --region eu-central-1 --require-approval never
+# Deploy the stack with verbose output
+npx cdk deploy --region eu-central-1 --require-approval never --verbose 2>&1 | tee deploy.log
+
+if [ ${PIPESTATUS[0]} -ne 0 ]; then
+  echo "❌ CDK deployment failed. Check deploy.log for details."
+  exit 1
+fi
 
 echo ""
 echo "============================================================"
