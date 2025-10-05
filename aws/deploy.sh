@@ -103,14 +103,16 @@ deploy_infrastructure() {
   log_info "Checking for ACM certificate..."
   local cert_arn=$($AWS_CLI acm list-certificates \
     --region "$REGION" \
-    --query "CertificateSummaryList[?DomainName=='$DOMAIN'].CertificateArn" \
+    --certificate-statuses ISSUED \
+    --query "CertificateSummaryList[?DomainName=='$DOMAIN'].CertificateArn | [0]" \
     --output text 2>/dev/null || echo "")
   
-  if [ -n "$cert_arn" ]; then
+  if [ -n "$cert_arn" ] && [ "$cert_arn" != "None" ]; then
     log_success "Found existing certificate: $cert_arn"
   else
     log_warning "No ACM certificate found, will create DNS-validated certificate"
     log_info "You will need to add DNS validation records in Cloudflare"
+    cert_arn=""
   fi
   
   log_info "Deploying CloudFormation stack..."
