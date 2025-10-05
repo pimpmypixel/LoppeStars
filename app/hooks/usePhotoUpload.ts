@@ -82,31 +82,42 @@ export const usePhotoUpload = () => {
         .from('stall-photos')
         .getPublicUrl(uploadData.path);
 
-      // Step 2: Process image with Edge Function (50% progress)
+      // Step 2: Process image via FastAPI /process endpoint (50% progress)
       setUploadProgress(prev => ({
         ...prev,
         progress: 50,
       }));
 
-      console.log('[photo-upload] Processing image with Edge Function');
+      console.log('[photo-upload] Processing image with FastAPI /process endpoint');
 
-      // Call Edge Function to process the image
-      const { data: edgeData, error: edgeError } = await supabase.functions.invoke('process-image', {
-        body: {
+      // Call FastAPI directly (runs on AWS ECS with face blurring)
+      const API_BASE_URL = 'https://loppestars.spoons.dk';
+      const processResponse = await fetch(`${API_BASE_URL}/process`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           imagePath: uploadData.path,
-          userId: userId
-        }
+          userId: userId,
+          mode: 'pixelate',
+          pixelateSize: 15,
+          blurStrength: 31,
+          downscaleForDetection: 800
+        })
       });
 
-      if (edgeError) {
-        console.error('Edge function error:', edgeError);
-        throw new Error(`Processing failed: ${edgeError.message}`);
+      if (!processResponse.ok) {
+        const errorText = await processResponse.text();
+        console.error('Processing error:', processResponse.status, errorText);
+        throw new Error(`Processing failed: ${processResponse.statusText}`);
       }
 
-      console.log('[photo-upload] Edge function response:', edgeData);
+      const processData = await processResponse.json();
+      console.log('[photo-upload] API response:', processData);
 
-      if (!edgeData.processedImageUrl) {
-        throw new Error('No processed image URL returned');
+      if (!processData?.processedImageUrl) {
+        throw new Error('No processed image URL returned from API');
       }
 
       // Step 3: Complete (100% progress)
@@ -130,7 +141,7 @@ export const usePhotoUpload = () => {
       return {
         success: true,
         originalUrl: originalUrlData.publicUrl,
-        processedUrl: edgeData.processedImageUrl,
+        processedUrl: processData.processedImageUrl,
       };
 
     } catch (error) {
