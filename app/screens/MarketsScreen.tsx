@@ -14,6 +14,7 @@ import { useTranslation } from '../utils/localization';
 import { supabase } from '../utils/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useMarket } from '../contexts/MarketContext';
+import { useAppStore } from '../stores/appStore';
 import { Layout } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import AuthGuard from '../components/AuthGuard';
@@ -25,6 +26,7 @@ export default function MarketsScreen() {
   const navigation = useNavigation<any>();
   const { user } = useAuth();
   const { selectedMarket, setSelectedMarket } = useMarket();
+  const selectedMarketFromStore = useAppStore((state) => state.selectedMarket);
   const { t } = useTranslation();
 
   const [markets, setMarkets] = useState<Market[]>([]);
@@ -41,7 +43,7 @@ export default function MarketsScreen() {
 
   useEffect(() => {
     filterMarkets();
-  }, [markets, searchQuery, userLocation]);
+  }, [markets, searchQuery, userLocation, selectedMarketFromStore]);
 
   const requestLocationPermission = async () => {
     try {
@@ -69,10 +71,13 @@ export default function MarketsScreen() {
     try {
       setIsLoading(true);
 
-      // Query the database for markets
+      // Query the database for markets with ratings count
       const { data: marketsData, error } = await supabase
         .from('markets')
-        .select('*')
+        .select(`
+          *,
+          ratings_count:stall_ratings(count)
+        `)
         .order('start_date', { ascending: true })
         .limit(50);
 
@@ -124,7 +129,7 @@ export default function MarketsScreen() {
       );
     }
 
-    // Sort by distance if user location is available
+    // Add distance calculation if user location is available
     if (userLocation) {
       filtered = filtered.map(market => ({
         ...market,
@@ -134,8 +139,23 @@ export default function MarketsScreen() {
           market.latitude,
           market.longitude
         ) : undefined,
-      })).sort((a, b) => (a.distance || Infinity) - (b.distance || Infinity));
+      }));
     }
+
+    // Sort: selected market first, then by distance if available, then by start date
+    filtered.sort((a, b) => {
+      // Selected market always comes first
+      if (selectedMarketFromStore?.id === a.id) return -1;
+      if (selectedMarketFromStore?.id === b.id) return 1;
+      
+      // Then sort by distance if available
+      if (userLocation && a.distance !== undefined && b.distance !== undefined) {
+        return a.distance - b.distance;
+      }
+      
+      // Fall back to sorting by start date
+      return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+    });
 
     setFilteredMarkets(filtered);
   };
@@ -193,7 +213,7 @@ export default function MarketsScreen() {
           ) : (
             <FlatList
               data={filteredMarkets}
-              extraData={selectedMarket}
+              extraData={selectedMarketFromStore}
               renderItem={renderMarketItem}
               keyExtractor={(item) => item.id}
               contentContainerStyle={styles.listContent}

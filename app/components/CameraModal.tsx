@@ -4,7 +4,7 @@ import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from '../utils/localization';
 import { Card, CardContent, CardHeader, CardTitle, Text } from './ui-kitten';
-import { Camera, ImageIcon, RefreshCcw, X } from 'lucide-react-native';
+import { Icon } from '@ui-kitten/components';
 
 interface CameraModalProps {
   visible: boolean;
@@ -271,7 +271,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                 }}
                 onPress={handleClose}
               >
-                <X size={24} color="#ffffff" />
+                <Icon name="close" style={{ width: 24, height: 24 }} fill="#ffffff" />
               </TouchableOpacity>
               <Text style={{
                 color: '#ffffff',
@@ -345,7 +345,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                 onPress={pickImageFromLibrary}
               >
                 <View style={{ alignItems: 'center', gap: 4 }}>
-                  <ImageIcon size={orientation === 'landscape' ? 20 : 24} color="#ffffff" />
+                  <Icon name="image" style={{ width: orientation === 'landscape' ? 20 : 24, height: orientation === 'landscape' ? 20 : 24 }} fill="#ffffff" />
                   {orientation === 'portrait' && (
                     <Text style={{ color: '#ffffff', fontWeight: '600', fontSize: 12 }}>
                       {t('camera.fromLibrary')}
@@ -367,7 +367,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                 }}
                 onPress={takePicture}
               >
-                <Camera size={32} color="#ffffff" />
+                <Icon name="camera" style={{ width: 32, height: 32 }} fill="#ffffff" />
               </TouchableOpacity>
               
               <TouchableOpacity
@@ -383,7 +383,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
                 onPress={toggleCameraFacing}
               >
                 <View style={{ alignItems: 'center', gap: 4 }}>
-                  <RefreshCcw size={orientation === 'landscape' ? 20 : 24} color="#ffffff" />
+                  <Icon name="flip-2" style={{ width: orientation === 'landscape' ? 20 : 24, height: orientation === 'landscape' ? 20 : 24 }} fill="#ffffff" />
                   {orientation === 'portrait' && (
                     <Text style={{ color: '#ffffff', fontWeight: '600', fontSize: 12 }}>
                       {t('camera.flip')}

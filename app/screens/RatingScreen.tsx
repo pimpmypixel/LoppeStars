@@ -47,6 +47,7 @@ export default function RatingScreen() {
   const { user } = useAuth();
   const { t } = useTranslation();
   const [rating, setRating] = useState(5);
+  const [ratingType, setRatingType] = useState<'stall' | 'market'>('stall');
   const [stallName, setStallName] = useState('');
   const [mobilePayCode, setMobilePayCode] = useState('');
   const [comments, setComments] = useState('');
@@ -89,7 +90,7 @@ export default function RatingScreen() {
     }
 
 
-    if (!stallName.trim()) {
+    if (ratingType === 'stall' && !stallName.trim()) {
       Alert.alert(t('common.error'), t('rating.errorNoStallName'));
       return;
     }
@@ -121,17 +122,26 @@ export default function RatingScreen() {
       // Submit rating to database
       console.log('Submitting rating...');
 
+      // Prepare the insert data - make rating_type optional for backwards compatibility
+      const insertData: any = {
+        user_id: user.id,
+        market_id: selectedMarket.id,
+        stall_name: ratingType === 'stall' ? stallName.trim() : null,
+        mobilepay_phone: ratingType === 'stall' ? (mobilePayCode.trim() || null) : null,
+        rating: rating,
+        photo_url: photoUrl,
+        created_at: new Date().toISOString(),
+      };
+
+      // Only add rating_type if we're confident the column exists
+      // TODO: Remove this conditional once migration is applied
+      if (ratingType) {
+        insertData.rating_type = ratingType;
+      }
+
       const { data: ratingData, error } = await supabase
         .from('stall_ratings')
-        .insert({
-          user_id: user.id,
-          market_id: selectedMarket.id,
-          stall_name: stallName.trim(),
-          mobilepay_phone: mobilePayCode.trim() || null,
-          rating: rating,
-          photo_url: photoUrl,
-          created_at: new Date().toISOString(),
-        })
+        .insert(insertData)
         .select('id')
         .single();
 
@@ -139,19 +149,20 @@ export default function RatingScreen() {
         throw error;
       }
 
-      // Log stall_rated event
+      // Log appropriate rating event based on type
       await logEvent(
         user.id,
-        'stall_rated',
+        ratingType === 'stall' ? 'stall_rated' : 'market_rated',
         'rating',
         ratingData.id,
         {
           market_id: selectedMarket.id,
           market_name: selectedMarket.name,
-          stall_name: stallName.trim(),
+          rating_type: ratingType,
+          stall_name: ratingType === 'stall' ? stallName.trim() : null,
           rating_value: rating,
           has_photo: !!photoUrl,
-          has_mobilepay: !!mobilePayCode.trim(),
+          has_mobilepay: ratingType === 'stall' ? !!mobilePayCode.trim() : false,
           has_comments: !!comments.trim(),
           rated_at: new Date().toISOString(),
         }
@@ -180,6 +191,7 @@ export default function RatingScreen() {
           text: t('common.ok'),
           onPress: () => {
             // Reset form
+            setRatingType('stall');
             setStallName('');
             setMobilePayCode('');
             setComments('');
@@ -211,28 +223,67 @@ export default function RatingScreen() {
               </CardHeader>
               <CardContent style={styles.formContent}>
 
-                {/* Stall Name */}
+                {/* Rating Type Toggle */}
                 <View style={styles.fieldContainer}>
-                  <Label>{t('rating.stallName')}</Label>
-                  <Input
-                    placeholder={t('rating.stallNamePlaceholder')}
-                    value={stallName}
-                    onChangeText={setStallName}
-                    style={styles.input}
-                  />
+                  <Label>{t('form.ratingType')}</Label>
+                  <View style={styles.toggleRow}>
+                    <TouchableOpacity
+                      style={[
+                        styles.typeButton,
+                        ratingType === 'stall' && styles.typeButtonActive
+                      ]}
+                      onPress={() => setRatingType('stall')}
+                    >
+                      <Icon name="home" style={styles.typeIcon} fill={ratingType === 'stall' ? '#FF9500' : '#8F9BB3'} />
+                      <Text style={ratingType === 'stall' ? styles.typeButtonTextActive : styles.typeButtonText}>
+                        {t('form.rateStall')}
+                      </Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={[
+                        styles.typeButton,
+                        ratingType === 'market' && styles.typeButtonActive
+                      ]}
+                      onPress={() => setRatingType('market')}
+                    >
+                      <Icon name="map-pin" style={styles.typeIcon} fill={ratingType === 'market' ? '#FF9500' : '#8F9BB3'} />
+                      <Text style={ratingType === 'market' ? styles.typeButtonTextActive : styles.typeButtonText}>
+                        {t('form.rateMarket')}
+                      </Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
 
-                {/* MobilePay Code */}
-                <View style={{ ...styles.fieldContainer, marginBottom: 10, width: '50%' }}>
-                  <Label>{t('form.mobilePayPhone')}</Label>
-                  <Input
-                    placeholder={t('form.mobilePayPhonePlaceholder')}
-                    value={mobilePayCode}
-                    onChangeText={setMobilePayCode}
-                    keyboardType="number-pad"
-                    style={styles.input}
-                  />
-                </View>
+                {/* Stall Name - Only shown for stall ratings */}
+                {ratingType === 'stall' && (
+                  <View style={{ ...styles.fieldContainer, width: '50%' }}>
+                    <Label>{t('rating.stallName')}</Label>
+                    <Input
+                      placeholder={t('rating.stallNamePlaceholder')}
+                      value={stallName}
+                      onChangeText={setStallName}
+                      style={styles.input}
+                    />
+                  </View>
+                )}
+
+                {/* MobilePay Code - Only shown for stall ratings */}
+                {ratingType === 'stall' && (
+                  <View style={{ ...styles.fieldContainer, marginBottom: 10 }}>
+                    <Label>{t('form.mobilePayPhone')}</Label>
+                    <Input
+                      placeholder={t('form.mobilePayPhonePlaceholder')}
+                      value={mobilePayCode}
+                      onChangeText={(text) => {
+                        // Only allow alphanumeric characters
+                        const alphanumeric = text.replace(/[^a-zA-Z0-9]/g, '');
+                        setMobilePayCode(alphanumeric);
+                      }}
+                      keyboardType="default"
+                      style={styles.input}
+                    />
+                  </View>
+                )}
 
                 {/* Photo Upload */}
                 <View style={styles.fieldContainer}>
@@ -526,5 +577,41 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     textTransform: 'uppercase',
     zIndex: 1,
+  },
+  toggleRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 12,
+  },
+  typeButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(143, 155, 179, 0.3)',
+    borderRadius: 14,
+    backgroundColor: 'rgba(143, 155, 179, 0.1)',
+  },
+  typeButtonActive: {
+    borderColor: 'rgba(255, 149, 0, 0.4)',
+    backgroundColor: 'rgba(255, 149, 0, 0.15)',
+  },
+  typeIcon: {
+    width: 20,
+    height: 20,
+  },
+  typeButtonText: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#8F9BB3',
+    flex: 1,
+    textAlign: 'center',
+  },
+  typeButtonTextActive: {
+    color: '#FF9500',
+    fontWeight: '700',
   },
 });

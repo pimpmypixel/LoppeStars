@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, ScrollView, TouchableOpacity, Text as RNText, StyleSheet, Image, Dimensions, Linking, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
-import { Star } from 'lucide-react-native';
+import { Icon } from '@ui-kitten/components';
 import { useTranslation } from '../utils/localization';
 import { useAuth } from '../contexts/AuthContext';
 import { useMarket } from '../contexts/MarketContext';
@@ -239,7 +239,7 @@ export default function MarketDetailsScreen() {
             )}
             {averageRating !== null && (
               <View style={styles.statItem}>
-                <Star size={18} color="#FFCA28" fill="#FFCA28" />
+                <Icon name="star" style={{ width: 18, height: 18 }} fill="#FFCA28" />
                 <View style={styles.statTextContainer}>
                   <Text style={styles.statLabel}>{t('markets.averageRating')}</Text>
                   <Text style={styles.statValue}>{averageRating.toFixed(1)} ({stallRatings.length})</Text>
@@ -346,7 +346,7 @@ export default function MarketDetailsScreen() {
                         </Text>
                       </View>
                       <View style={styles.ratingBadge}>
-                        <Star size={14} color={getRatingColor(rating.rating)} fill={getRatingColor(rating.rating)} />
+                        <Icon name="star" style={{ width: 14, height: 14 }} fill={getRatingColor(rating.rating)} />
                         <Text style={{ ...styles.ratingValue, color: getRatingColor(rating.rating) }}>
                           {rating.rating}/10
                         </Text>
@@ -363,7 +363,7 @@ export default function MarketDetailsScreen() {
 
                     <View style={styles.ratingStars}>
                       {Array.from({ length: rating.rating }, (_, i) => (
-                        <Star
+                                                <Icon name="star"
                           key={i}
                           size={14}
                           color={getRatingColor(rating.rating)}

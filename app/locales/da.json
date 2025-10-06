@@ -6,7 +6,7 @@
     "success": "Succes",
     "cancel": "Annuller",
     "ok": "OK",
-    "yes": "Ja", 
+    "yes": "Ja",
     "no": "Nej",
     "retry": "Prøv igen",
     "done": "Færdig",
@@ -22,8 +22,8 @@
   "auth": {
     "signIn": "Log ind",
     "signOut": "Log ud",
-    "signInWithGoogle": "Log ind med Google",
-    "signInWithFacebook": "Log ind med Facebook",
+    "signInWithGoogle": "Google",
+    "signInWithFacebook": "Facebook",
     "pleaseSignIn": "Log venligst ind for at fortsætte",
     "signInError": "Login mislykkedes",
     "signOutError": "Logout mislykkedes",
@@ -37,17 +37,19 @@
   },
   "home": {
     "welcome": "Velkommen til Loppestars!",
-    "subtitle": "Din danske markedsplads for brugte skatte",
+    "subtitle": "Din danske markedsplads for second-hand skatte",
+    "currentMarket": "Nuværende marked",
+    "rateStallNow": "Bedøm en stand nu",
     "rateFinds": "Bedøm dine fund",
-    "rateFindsDescription": "Opdag fantastiske boder på dit lokale loppemarked og bedøm dem med stjerner!",
+    "rateFindsDescription": "Oplev fantastiske stande på dit lokale loppemarked og bedøm dem med stjerner!",
     "captureMemories": "Fang minder",
     "captureMemoriesDescription": "Tag billeder af dine yndlingsfund og del dem med fællesskabet.",
     "funForEveryone": "Sjov for alle",
-    "funForEveryoneDescription": "En børnevenlig app der gør loppemarked shopping spændende og nem!"
+    "funForEveryoneDescription": "En børnevenlig app, der gør loppemarkedsshopping spændende og nemt!"
   },
   "markets": {
     "title": "Markeder",
-    "searchPlaceholder": "Søg markeder...",
+    "searchPlaceholder": "Henter markeder...",
     "noMarkets": "Ingen markeder fundet",
     "loadError": "Kunne ikke indlæse markeder",
     "details": "Detaljer",
@@ -56,11 +58,14 @@
     "markedHere": "Jeg er her",
     "selected": "Valgt",
     "markedHereToast": "Marked markeret som her!",
+    "rateStall": "Bedøm Bod",
+    "rateMarket": "Bedøm Marked",
+    "averageRating": "Gennemsnitlig bedømmelse",
     "addFavorite": "Tilføj til favoritter",
     "addFavoriteToast": "Marked tilføjet til favoritter!",
     "location": "Placering",
     "dateTime": "Dato & Tid",
-  "category": "Kategori",
+    "category": "Kategori",
     "features": "Faciliteter",
     "food": "Mad",
     "parking": "Parkering",
@@ -73,13 +78,11 @@
     "stallCount": "Antal boder",
     "organizer": "Arrangør",
     "away": "væk",
-  "rateStall": "Bedøm en bod",
-  "active": "Aktiv",
-  "dateUnavailable": "Dato ikke tilgængelig",
+    "active": "Aktiv",
+    "dateUnavailable": "Dato ikke tilgængelig",
     "checkInHere": "Check Ind Her",
     "checkedIn": "Checked Ind",
     "openingHours": "Åbningstider",
-    "averageRating": "Gennemsnitlig Vurdering",
     "stallRatings": "Standvurderinger",
     "noRatings": "Ingen vurderinger endnu",
     "reviews": "anmeldelser",
@@ -89,7 +92,9 @@
     "navigationError": "Kunne ikke navigere til bedømmelsesskærmen. Prøv igen."
   },
   "form": {
+    "ratingType": "Hvad vil du bedømme?",
     "rateStall": "Bedøm en bod",
+    "rateMarket": "Bedøm markedet",
     "photo": "Foto",
     "addPhoto": "Tilføj foto",
     "removePhoto": "Fjern foto",
@@ -97,8 +102,8 @@
     "stallNameRequired": "Bod navn er påkrævet",
     "stallNamePlaceholder": "Indtast navnet på boden",
     "stallNameDescription": "Indtast navnet på loppemarkedsboden",
-    "mobilePayPhone": "MobilePay telefon eller kode",
-    "mobilePayPhoneRequired": "MobilePay telefonnummer er påkrævet",
+    "mobilePayPhone": "MobilePay nr. eller kode",
+    "mobilePayPhoneRequired": "MobilePay nr. er påkrævet",
     "mobilePayPhonePlaceholder": "30405060",
     "mobilePayPhoneDescription": "Vi er GDPR compliant - dine data er sikre og beskyttede",
     "ratingMarket": "Bedømmer marked",
@@ -149,8 +154,8 @@
   },
   "camera": {
     "takePhoto": "Tag foto",
-    "fromLibrary": "Fra bibliotek",
-    "retake": "Tag igen",
+    "fromLibrary": "Vælg billede",
+    "retake": "Tag forfra",
     "usePhoto": "Brug foto",
     "cancel": "Annuller",
     "noCamera": "Intet kamera tilgængeligt",
@@ -177,8 +182,8 @@
     "locationError": "Kunne ikke hente din placering. Markederne vises uden afstandssortering."
   },
   "footer": {
-    "copyright": "© 2025 Loppestars", 
-    "tagline": "Hvad er det værd?"
+    "copyright": "©2025 Loppestars",
+    "tagline": "Er det noget værd?"
   },
   "user": {
     "email": "Email",
@@ -187,22 +192,40 @@
   "myRatings": {
     "title": "Mine bedømmelser",
     "noRatings": "Du har endnu ikke bedømt nogen boder",
-    "startRating": "Gå til kameraet for at bedømme din første bod!"
+    "startRating": "Bedøm din første bod!"
+  },
+  "connectivity": {
+    "starting": "Starter Loppestars",
+    "initializing": "Initialiserer...",
+    "checkingDatabase": "Tjekker database forbindelse...",
+    "checkingAPI": "Tjekker API forbindelse...",
+    "finalizing": "Færdiggør opsætning...",
+    "connectionFailed": "Forbindelse mislykkedes",
+    "connectionFailedMessage": "Kan ikke forbinde til tjenester. Tjek venligst din internetforbindelse.",
+    "limitedConnectivity": "Begrænset Forbindelse",
+    "limitedConnectivityMessage": "Nogle funktioner kan være utilgængelige",
+    "allSystemsOperational": "Alle Systemer Operationelle",
+    "database": "Database",
+    "api": "API",
+    "connected": "Forbundet"
+  },
+  "stats": {
+    "ratings": "Bedømmelser",
+    "markets": "Markeder"
   },
   "rating": {
     "title": "Bedøm bod",
     "selectedMarket": "Valgt Marked",
     "noMarketSelected": "Intet Marked Valgt",
-    "rateStall": "Bedøm en Bod",
     "stallName": "Bod Navn",
-    "stallNamePlaceholder": "Indtast navnet på boden",
+    "stallNamePlaceholder": "Giv boden et navn",
     "rating": "Bedømmelse",
     "comments": "Kommentarer",
     "commentsPlaceholder": "Del dine tanker om denne bod (valgfrit)",
     "photo": "Foto",
-    "takePhoto": "Tag Foto",
+    "takePhoto": "Tilføj Foto",
     "photoAttached": "Foto vedhæftet",
-    "submit": "Send Bedømmelse",
+    "submit": "Send Bedømmelse!",
     "submitting": "Sender...",
     "successMessage": "Tak for din bedømmelse!",
     "errorNoMarket": "Vælg venligst et marked først",
@@ -210,6 +233,6 @@
     "errorPhotoUpload": "Kunne ikke uploade foto",
     "errorSubmit": "Kunne ikke sende bedømmelse",
     "imageProcessed": "Billede behandlet",
-    "uploadSuccessToast": "Foto uploadet succesfuldt"
+    "uploadSuccessToast": "Foto uploadet succesfuldt!"
   }
 }

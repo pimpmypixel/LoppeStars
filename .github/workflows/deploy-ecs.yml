@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - kitty
 
 jobs:
   deploy:

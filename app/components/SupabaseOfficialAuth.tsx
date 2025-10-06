@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, Alert, View, StyleSheet } from 'react-native';
+import { ActivityIndicator, Alert, View, StyleSheet, TouchableOpacity } from 'react-native';
 import { makeRedirectUri } from 'expo-auth-session';
 import * as QueryParams from 'expo-auth-session/build/QueryParams';
 import * as WebBrowser from 'expo-web-browser';
@@ -7,12 +7,11 @@ import * as Linking from 'expo-linking';
 import { supabase } from '../utils/supabase';
 import { useTranslation } from '../utils/localization';
 import Logo from './Logo';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui-kitten';
-import { Button } from './ui-kitten';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, Button } from './ui-kitten';
 import { Text } from './ui-kitten';
-import { Facebook, Mail, Shield } from 'lucide-react-native';
 import { OAuthProvider, ParsedParams } from '../types/components/SupabaseOfficialAuth';
-import { Layout } from '@ui-kitten/components';
+import { Layout, Icon } from '@ui-kitten/components';
+import { GoogleIcon, FacebookIcon } from './icons';
 
 export default function SupabaseOfficialAuth() {
   const [isLoading, setIsLoading] = useState(false);
@@ -141,53 +140,46 @@ export default function SupabaseOfficialAuth() {
         </CardHeader>
 
         <CardContent style={styles.cardContent}>
-          <Button
-            variant="destructive"
-            style={styles.authButton}
-            onPress={() => performOAuth('google')}
-            disabled={isLoading}
-          >
-            {loadingProvider === 'google' ? (
-              <ActivityIndicator size="small" color="#ffffff" />
-            ) : (
-              <View style={styles.buttonContent}>
-                <Mail size={20} color="#ffffff" />
-                <Text style={styles.buttonText}>
-                  {t('auth.signInWithGoogle')}
-                </Text>
-              </View>
-            )}
-          </Button>
+          <View style={styles.authButtonsRow}>
+            <TouchableOpacity
+              style={styles.googleButton}
+              onPress={() => performOAuth('google')}
+              disabled={isLoading}
+              activeOpacity={0.7}
+            >
+              {loadingProvider === 'google' ? (
+                <ActivityIndicator size="small" color="#FF9500" />
+              ) : (
+                <GoogleIcon width={30} height={30} style={styles.googleIcon} />
+              )}
+            </TouchableOpacity>
 
-          <Button
-            style={{ ...styles.authButton, ...styles.facebookButton }}
-            onPress={() => performOAuth('facebook')}
-            disabled={isLoading}
-          >
-            {loadingProvider === 'facebook' ? (
-              <ActivityIndicator size="small" color="#ffffff" />
-            ) : (
-              <View style={styles.buttonContent}>
-                <Facebook size={20} color="#ffffff" />
-                <Text style={styles.buttonText}>
-                  {t('auth.signInWithFacebook')}
-                </Text>
-              </View>
-            )}
-          </Button>
+            <TouchableOpacity
+              style={styles.facebookButton}
+              onPress={() => performOAuth('facebook')}
+              disabled={isLoading}
+              activeOpacity={0.7}
+            >
+              {loadingProvider === 'facebook' ? (
+                <ActivityIndicator size="small" color="#FF9500" />
+              ) : (
+                <FacebookIcon width={32} height={32} style={styles.facebookIcon} />
+              )}
+            </TouchableOpacity>
+          </View>
 
-          <Button
-            variant="link"
-            style={styles.linkButton}
+          {/* <Button
+            // variant="ghost"
+            style={styles.privacyButton}
             onPress={() => Linking.openURL('https://loppestars.com/privacy')}
           >
-            <View style={styles.buttonContent}>
-              <Shield size={18} color="#2563eb" />
-              <Text style={styles.linkText}>{t('auth.privacyPolicy')}</Text>
+            <View style={styles.privacyButtonContent}>
+              <Icon name="shield" style={styles.privacyIcon} fill="#FF9500" />
+              <Text style={styles.privacyButtonText}>{t('auth.privacyPolicy')}</Text>
             </View>
-          </Button>
+          </Button> */}
 
-          <Card style={styles.infoCard}>
+          {/* <Card style={styles.infoCard}>
             <CardContent style={styles.infoCardContent}>
               <Text variant="muted" style={styles.infoText}>
                 {t('auth.signIn')}
@@ -196,14 +188,17 @@ export default function SupabaseOfficialAuth() {
                 Redirect URI: {redirectTo}
               </Text>
             </CardContent>
-          </Card>
+          </Card> */}
 
           {__DEV__ && (
             <Card style={styles.debugCard}>
               <CardContent style={styles.debugCardContent}>
-                <Text variant="small" style={styles.debugText}>
-                  OAuth debug
-                </Text>
+                <View style={styles.debugHeader}>
+                  <Icon name="settings" style={styles.debugIcon} fill="#FF9500" />
+                  <Text style={styles.debugText}>
+                    OAuth Debug
+                  </Text>
+                </View>
                 <Button
                   variant="outline"
                   style={styles.debugButton}
@@ -222,7 +217,10 @@ export default function SupabaseOfficialAuth() {
                     }
                   }}
                 >
-                  <Text>Check Session</Text>
+                  <View style={styles.debugButtonContent}>
+                    <Icon name="checkmark-circle" style={styles.debugButtonIcon} fill="#FF9500" />
+                    <Text style={styles.debugButtonText}>Check Session</Text>
+                  </View>
                 </Button>
               </CardContent>
             </Card>
@@ -243,46 +241,129 @@ const styles = StyleSheet.create({
   card: {
     width: '100%',
     maxWidth: 450,
+    borderRadius: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.1)',
   },
   cardHeader: {
     alignItems: 'center',
-    gap: 12,
-    paddingBottom: 0,
+    gap: 16,
+    paddingBottom: 8,
+    paddingTop: 8,
   },
   title: {
     textAlign: 'center',
-    fontSize: 24,
-    fontWeight: '600',
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#FFFFFF',
+    marginBottom: 4,
   },
   description: {
     textAlign: 'center',
     fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.8)',
+    lineHeight: 22,
   },
   cardContent: {
     gap: 16,
     paddingTop: 24,
   },
-  authButton: {
-    height: 48,
+  authButtonsRow: {
+    flexDirection: 'row',
+    gap: 16,
+    width: '100%',
+  },
+  googleButton: {
+    flex: 1,
+    height: 64,
+    borderRadius: 20,
+    backgroundColor: 'transparent',
+    // shadowColor: '#4285F4',
+    // shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 8,
+    // elevation: 6,
+    borderWidth: 3,
+    borderColor: '#FF9500',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   facebookButton: {
-    backgroundColor: '#1877F2',
+    flex: 1,
+    height: 64,
+    borderRadius: 20,
+    backgroundColor: 'transparent',
+    // shadowColor: '#1877F2',
+    // shadowOffset: { width: 0, height: 4 },
+    // shadowOpacity: 0.2,
+    // shadowRadius: 8,
+    // elevation: 6,
+    borderWidth: 3,
+    borderColor: '#FF9500',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   buttonContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    justifyContent: 'center',
+    gap: 6,
+    paddingHorizontal: 8,
+    width: '100%',
+  },
+  buttonIcon: {
+    marginRight: 8,
+  },
+  brandIcon: {
+    width: 36,
+    height: 36,
+  },
+  googleIcon: {
+    // SVG component handles its own sizing
+  },
+  facebookIcon: {
+    // SVG component handles its own sizing
+  },
+  privacyIcon: {
+    width: 20,
+    height: 20,
+    marginRight: 8,
   },
   buttonText: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
+    letterSpacing: 0.2,
+    flexShrink: 1,
+    textAlign: 'center',
   },
-  linkButton: {
+  privacyButton: {
+    height: 52,
+    borderRadius: 14,
+    backgroundColor: 'rgba(255, 149, 0, 0.1)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.3)',
     justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 12,
   },
-  linkText: {
-    textDecorationLine: 'underline',
+  privacyButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    paddingHorizontal: 16,
+  },
+  privacyButtonText: {
+    color: '#FF9500',
+    fontSize: 15,
+    fontWeight: '600',
+    letterSpacing: 0.3,
   },
   infoCard: {
     borderStyle: 'dashed',
@@ -304,15 +385,49 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   debugCard: {
-    opacity: 0.8,
+    borderRadius: 16,
+    borderColor: 'rgba(255, 149, 0, 0.2)',
+    borderWidth: 1,
+    backgroundColor: 'rgba(255, 149, 0, 0.03)',
+    opacity: 0.9,
   },
   debugCardContent: {
-    gap: 12,
+    gap: 16,
+  },
+  debugHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    justifyContent: 'center',
+  },
+  debugIcon: {
+    width: 16,
+    height: 16,
   },
   debugText: {
-    fontSize: 12,
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#FF9500',
   },
   debugButton: {
-    height: 40,
+    height: 44,
+    borderRadius: 12,
+    borderColor: 'rgba(255, 149, 0, 0.4)',
+    backgroundColor: 'rgba(255, 149, 0, 0.08)',
+  },
+  debugButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+  },
+  debugButtonIcon: {
+    width: 16,
+    height: 16,
+  },
+  debugButtonText: {
+    color: '#FF9500',
+    fontSize: 13,
+    fontWeight: '500',
   },
 });

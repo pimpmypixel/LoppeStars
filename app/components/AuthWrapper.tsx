@@ -18,9 +18,9 @@ export default function AuthWrapper() {
   const { t } = useTranslation();
   const [showSplash, setShowSplash] = useState(true);
 
-  useEffect(() => {
+ /*  useEffect(() => {
     console.log('🔄 AuthWrapper session state:', session ? 'Authenticated' : 'Not authenticated');
-  }, [session]);
+  }, [session]); */
 
   // Hide splash after successful connectivity check
   useEffect(() => {

@@ -4,6 +4,7 @@ export type EventType =
   | 'market_selected'
   | 'market_marked_here'
   | 'stall_rated'
+  | 'market_rated'
   | 'photo_added'
   | 'market_favorited'
   | 'market_unfavorited'

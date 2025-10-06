@@ -23,7 +23,7 @@ class ProcessRequest(BaseModel):
     imagePath: str
     userId: str
     mode: str = "pixelate"  # "pixelate" or "blur"
-    pixelateSize: int = 15
+    pixelateSize: int = 20
     blurStrength: int = 31
     downscaleForDetection: int = 800
 

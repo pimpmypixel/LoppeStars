@@ -101,17 +101,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'nowrap',
     justifyContent: 'center',
-    gap: 0,
+    gap: 4,
   },
   starButton: {
-    height: 30,
-    width: 32,
+    height: 36,
+    width: 36,
     alignItems: 'center',
     justifyContent: 'center',
   },
   starIcon: {
-    width: 20,
-    height: 20,
+    width: 28,
+    height: 28,
   },
   minMaxRow: {
     flexDirection: 'row',

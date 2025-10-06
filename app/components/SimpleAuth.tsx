@@ -5,7 +5,7 @@ import Config from 'react-native-config';
 import { supabase } from '../utils/supabase';
 import { useTranslation } from '../utils/localization';
 import Logo from './Logo';
-import { Facebook, Mail } from 'lucide-react-native';
+import { Icon } from '@ui-kitten/components';
 
 // Complete the auth session for web browser
 WebBrowser.maybeCompleteAuthSession();
@@ -234,7 +234,7 @@ export default function SimpleAuth() {
             <ActivityIndicator size="small" color="white" />
           ) : (
             <>
-              <Mail size={22} color="white" style={styles.icon} />
+              <Icon name="google" style={styles.icon} fill="white" />
               <Text style={styles.socialButtonText}>
                 {t('auth.signInWithGoogle') || 'Sign in with Google'}
               </Text>
@@ -252,7 +252,7 @@ export default function SimpleAuth() {
             <ActivityIndicator size="small" color="white" />
           ) : (
             <>
-              <Facebook size={22} color="white" style={styles.icon} />
+              <Icon name="facebook" style={styles.icon} fill="white" />
               <Text style={styles.socialButtonText}>
                 {t('auth.signInWithFacebook') || 'Sign in with Facebook'}
               </Text>

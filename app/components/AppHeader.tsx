@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
     backgroundColor: 'rgba(255, 149, 0, 0.15)',
-    paddingHorizontal: 14,
+    paddingHorizontal: 8,
     paddingVertical: 6,
     borderRadius: 16,
     borderWidth: 1,
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     height: 16,
   },
   marketText: {
-    fontSize: 13,
+    fontSize: 11,
     marginLeft: 8,
     color: '#D4D4D8',
     fontWeight: '600',

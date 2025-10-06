@@ -22,11 +22,11 @@
   "auth": {
     "signIn": "Sign In",
     "signOut": "Sign Out",
-    "signInWithGoogle": "Sign in with Google",
-    "signInWithFacebook": "Sign in with Facebook",
+    "signInWithGoogle": "Google",
+    "signInWithFacebook": "Facebook",
     "pleaseSignIn": "Please sign in to continue",
-    "signInError": "Failed to sign in",
-    "signOutError": "Failed to sign out",
+    "signInError": "Sign in failed",
+    "signOutError": "Sign out failed",
     "privacyPolicy": "Privacy Policy"
   },
   "navigation": {
@@ -38,6 +38,8 @@
   "home": {
     "welcome": "Welcome to Loppestars!",
     "subtitle": "Your Danish marketplace for second-hand treasures",
+    "currentMarket": "Current Market",
+    "rateStallNow": "Rate a Stall Now",
     "rateFinds": "Rate Your Finds",
     "rateFindsDescription": "Discover amazing stalls at your local flea market and rate them with stars!",
     "captureMemories": "Capture Memories",
@@ -56,6 +58,9 @@
     "markedHere": "I'm Here",
     "selected": "Selected",
     "markedHereToast": "Market marked as here!",
+        "rateStall": "Rate Stall",
+    "rateMarket": "Rate Market",
+    "averageRating": "Average rating",
     "addFavorite": "Add to Favorites",
     "addFavoriteToast": "Market added to favorites!",
     "location": "Location",
@@ -73,13 +78,11 @@
     "stallCount": "Number of Stalls",
     "organizer": "Organizer",
     "away": "away",
-  "rateStall": "Rate a Stall",
-  "active": "Active",
-  "dateUnavailable": "Date unavailable",
+    "active": "Active",
+    "dateUnavailable": "Date unavailable",
     "checkInHere": "Check In Here",
     "checkedIn": "Checked In",
     "openingHours": "Opening Hours",
-    "averageRating": "Average Rating",
     "stallRatings": "Stall Ratings",
     "noRatings": "No ratings yet",
     "reviews": "reviews",
@@ -89,7 +92,9 @@
     "navigationError": "Could not navigate to rating screen. Please try again."
   },
   "form": {
+    "ratingType": "What would you like to rate?",
     "rateStall": "Rate a Stall",
+    "rateMarket": "Rate the Market",
     "photo": "Photo",
     "addPhoto": "Add Photo",
     "removePhoto": "Remove Photo",
@@ -188,6 +193,25 @@
     "title": "My Ratings",
     "noRatings": "You haven't rated any stalls yet",
     "startRating": "Go to camera to rate your first stall!"
+  },
+  "connectivity": {
+    "starting": "Starting Loppestars",
+    "initializing": "Initializing...",
+    "checkingDatabase": "Checking database connection...",
+    "checkingAPI": "Checking API connection...",
+    "finalizing": "Finalizing setup...",
+    "connectionFailed": "Connection Failed",
+    "connectionFailedMessage": "Unable to connect to services. Please check your internet connection.",
+    "limitedConnectivity": "Limited Connectivity",
+    "limitedConnectivityMessage": "Some features may be unavailable",
+    "allSystemsOperational": "All Systems Operational",
+    "database": "Database",
+    "api": "API",
+    "connected": "Connected"
+  },
+  "stats": {
+    "ratings": "Ratings",
+    "markets": "Markets"
   },
   "rating": {
     "title": "Rate Stall",

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Pressable, Platform, ToastAndroid, StyleSheet, TouchableOpacity } from 'react-native';
 // Remove LinearGradient to prevent crashes
 import { useNavigation } from '@react-navigation/native';
@@ -9,10 +9,16 @@ import { useAuth } from '../contexts/AuthContext';
 import { logEvent } from '../utils/eventLogger';
 import { Card, CardContent, Text } from './ui-kitten';
 import { Market } from '../types/common/market';
+import { supabase } from '../utils/supabase';
 
 interface MarketItemProps {
   market: Market & { distance?: number };
   formatDistance: (distance: number) => string;
+}
+
+interface RatingData {
+  averageRating: number;
+  ratingsCount: number;
 }
 
 export default function MarketItem({ market, formatDistance }: MarketItemProps) {
@@ -21,6 +27,7 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
   const setSelectedMarket = useAppStore((state) => state.setSelectedMarket);
   const { user } = useAuth();
   const { t, language } = useTranslation();
+  const [ratingData, setRatingData] = useState<RatingData>({ averageRating: 0, ratingsCount: 0 });
 
   const isSelected = selectedMarket?.id === market.id;
   const isMarkedHere = isSelected; // Only selected market is marked as "here"
@@ -42,15 +49,51 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
 
   const isActive = now >= startDate && (!endDate || now <= endDate);
 
+  useEffect(() => {
+    fetchRatingData();
+  }, [market.id]);
+
+  const fetchRatingData = async () => {
+    try {
+      // Fetch both stall ratings and market ratings for this market
+      const { data, error } = await supabase
+        .from('stall_ratings')
+        .select('rating, rating_type')
+        .eq('market_id', market.id);
+
+      if (error) {
+        console.error('Error fetching ratings:', error);
+        return;
+      }
+
+      if (data && data.length > 0) {
+        // Calculate average rating from all ratings (both stall and market)
+        const avgRating = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+        setRatingData({
+          averageRating: Math.round(avgRating * 10) / 10, // Round to 1 decimal
+          ratingsCount: data.length
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching rating data:', error);
+    }
+  };
+
   const handlePress = () => {
     setSelectedMarket(market);
     navigation.navigate('MarketDetails', { market });
   };
 
+  const handleRateStall = () => {
+    if (user) {
+      navigation.navigate('Rating' as never);
+    }
+  };
+
   const handleMarkHere = async () => {
     console.log('User marked as being at:', market.name);
     setSelectedMarket(market); // This will make it the only selected market
-    
+
     // Log event
     if (user?.id) {
       await logEvent(
@@ -66,11 +109,11 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
         }
       );
     }
-    
+
     if (Platform.OS === 'android') {
       ToastAndroid.showWithGravity(
-        t('markets.markedHereToast', { 
-          defaultValue: language === 'da' ? 'Markeret er gemt som her!' : 'Market saved as here!' 
+        t('markets.markedHereToast', {
+          defaultValue: language === 'da' ? 'Markeret er gemt som her!' : 'Market saved as here!'
         }),
         ToastAndroid.SHORT,
         ToastAndroid.BOTTOM
@@ -80,7 +123,7 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
 
   const handleAddFavorite = async () => {
     console.log('Added to favorites:', market.name);
-    
+
     // Log event
     if (user?.id) {
       await logEvent(
@@ -95,11 +138,11 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
         }
       );
     }
-    
+
     if (Platform.OS === 'android') {
       ToastAndroid.showWithGravity(
-        t('markets.addFavoriteToast', { 
-          defaultValue: language === 'da' ? 'Markeret er tilføjet til favoritter!' : 'Market added to favorites!' 
+        t('markets.addFavoriteToast', {
+          defaultValue: language === 'da' ? 'Markeret er tilføjet til favoritter!' : 'Market added to favorites!'
         }),
         ToastAndroid.SHORT,
         ToastAndroid.BOTTOM
@@ -124,44 +167,37 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
       return startDateStr;
     } catch (error) {
       console.error('Error formatting market dates:', error);
-      return t('markets.dateUnavailable', { 
-        defaultValue: language === 'da' ? 'Dato ikke tilgængelig' : 'Date unavailable' 
+      return t('markets.dateUnavailable', {
+        defaultValue: language === 'da' ? 'Dato ikke tilgængelig' : 'Date unavailable'
       });
     }
   };
 
   return (
-    <Pressable 
-      onPress={handlePress} 
-      android_ripple={{ color: 'rgba(51, 102, 255, 0.3)' }} 
+    <Pressable
+      onPress={handlePress}
+      android_ripple={{ color: 'rgba(51, 102, 255, 0.3)' }}
       style={styles.container}
     >
       {isSelected ? (
         <View style={[styles.gradientWrapper, { backgroundColor: '#FF9500' }]}>
           <Card style={styles.selectedCard}>
             <CardContent>
-              {/* Header with name, city and distance */}
               <View style={styles.header}>
                 <View style={styles.nameSection}>
                   <View style={styles.nameRow}>
                     <Text style={styles.nameTextSelected} numberOfLines={2}>
                       {market.name}
                     </Text>
-                    <View style={styles.selectedBadge}>
+                    {/* <View style={styles.selectedBadge}>
                       <Text style={styles.selectedBadgeText}>{t('markets.selected')}</Text>
                     </View>
+                  </View> */}
+                    {market.city && (
+                      <Text style={styles.cityTextSelected}>{market.city}</Text>
+                    )}
                   </View>
-                  {market.city && (
-                    <Text style={styles.cityTextSelected}>{market.city}</Text>
-                  )}
                 </View>
-                {market.distance && (
-                  <View style={styles.distanceBadgeSelected}>
-                    <Text style={styles.distanceTextSelected}>
-                      {formatDistance(market.distance)}
-                    </Text>
-                  </View>
-                )}
               </View>
 
               {/* Tags */}
@@ -176,11 +212,19 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
                     </Text>
                   </View>
                 )}
-                <View style={styles.categoryTagSelected}>
+                {/* <View style={styles.categoryTagSelected}>
                   <Text style={styles.categoryTagTextSelected}>
                     {t('markets.category', { defaultValue: language === 'da' ? 'Loppemarked' : 'Flea Market' })}
                   </Text>
-                </View>
+                </View> */}
+                {ratingData.ratingsCount > 0 && (
+                  <View style={styles.ratingsTagSelected}>
+                    <Ionicons name="star" size={12} color="#FFD700" />
+                    <Text style={styles.ratingsTagTextSelected}>
+                      {ratingData.averageRating} ({ratingData.ratingsCount})
+                    </Text>
+                  </View>
+                )}
                 {market.city && (
                   <View style={styles.cityTagSelected}>
                     <Text style={styles.cityTagTextSelected}>{market.city}</Text>
@@ -196,6 +240,13 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
                     {market.address}{market.address && market.city ? ', ' : ''}{market.city}
                   </Text>
                 </View>
+                {market.distance && (
+                  <View style={styles.distanceBadgeSelected}>
+                    <Text style={styles.distanceTextSelected}>
+                      {formatDistance(market.distance)}
+                    </Text>
+                  </View>
+                )}
                 <View style={styles.dateInfo}>
                   <Ionicons name="calendar-outline" size={16} color="rgba(255, 255, 255, 0.9)" />
                   <Text style={styles.dateTextSelected}>{formatDate()}</Text>
@@ -204,13 +255,17 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
 
               {/* Action buttons */}
               <View style={styles.buttonsRow}>
-                <TouchableOpacity style={styles.hereButtonSelected} onPress={handleMarkHere}>
-                  <Ionicons name="checkmark-circle-outline" size={18} color="#3366FF" />
-                  <Text style={styles.hereButtonTextSelected}>{t('markets.here')}</Text>
+                <TouchableOpacity style={styles.rateStallButtonSelected} onPress={handleRateStall}>
+                  <Ionicons name="star" size={18} color="rgba(255, 255, 255, 0.9)" />
+                  <Text style={styles.rateStallButtonTextSelected}>{t('markets.rateStall')}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.favoriteButtonSelected} onPress={handleAddFavorite}>
-                  <Ionicons name="heart-outline" size={18} color="rgba(255, 255, 255, 0.9)" />
-                  <Text style={styles.favoriteButtonTextSelected}>{t('markets.addFavorite')}</Text>
+                <TouchableOpacity style={styles.detailsButton} onPress={handlePress}>
+                  <Ionicons name="information-circle-outline" size={16} color="#FF9500" />
+                  <Text style={styles.detailsButtonText}>{t('markets.details')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.favoriteButton} onPress={handleAddFavorite}>
+                  <Ionicons name="heart-outline" size={16} color="#8F9BB3" />
+                  <Text style={styles.favoriteButtonText}>{t('markets.favorite')}</Text>
                 </TouchableOpacity>
               </View>
             </CardContent>
@@ -257,11 +312,19 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
                   </Text>
                 </View>
               )}
-              <View style={styles.categoryTag}>
+              {/* <View style={styles.categoryTag}>
                 <Text style={styles.categoryTagText}>
                   {t('markets.category', { defaultValue: language === 'da' ? 'Loppemarked' : 'Flea Market' })}
                 </Text>
-              </View>
+              </View> */}
+              {ratingData.ratingsCount > 0 && (
+                <View style={styles.ratingsTag}>
+                  <Ionicons name="star" size={12} color="#FFD700" />
+                  <Text style={styles.ratingsTagText}>
+                    {ratingData.averageRating} ({ratingData.ratingsCount})
+                  </Text>
+                </View>
+              )}
               {market.city && (
                 <View style={styles.cityTag}>
                   <Text style={styles.cityTagText}>{market.city}</Text>
@@ -277,6 +340,13 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
                   {market.address}{market.address && market.city ? ', ' : ''}{market.city}
                 </Text>
               </View>
+                {market.distance && (
+                  <View style={styles.distanceBadgeSelected}>
+                    <Text style={styles.distanceTextSelected}>
+                      {formatDistance(market.distance)}
+                    </Text>
+                  </View>
+                )}
               <View style={styles.dateInfo}>
                 <Ionicons name="calendar-outline" size={16} color="#8F9BB3" />
                 <Text style={styles.dateText}>{formatDate()}</Text>
@@ -515,6 +585,36 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.8)',
     letterSpacing: 0.3,
   },
+  ratingsTag: {
+    backgroundColor: 'rgba(255, 215, 0, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  ratingsTagSelected: {
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  ratingsTagText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFD700',
+    letterSpacing: 0.3,
+  },
+  ratingsTagTextSelected: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#FFD700',
+    letterSpacing: 0.3,
+  },
   infoRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -647,6 +747,25 @@ const styles = StyleSheet.create({
   },
   favoriteButtonTextSelected: {
     color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '700',
+    fontSize: 15,
+    marginLeft: 6,
+    letterSpacing: 0.3,
+  },
+  rateStallButtonSelected: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 149, 0, 0.2)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 149, 0, 0.4)',
+    borderRadius: 14,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rateStallButtonTextSelected: {
+    color: '#FF9500',
     fontWeight: '700',
     fontSize: 15,
     marginLeft: 6,

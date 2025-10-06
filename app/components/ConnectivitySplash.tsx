@@ -9,7 +9,7 @@ import { View, StyleSheet, ActivityIndicator } from 'react-native';
 import { Layout } from '@ui-kitten/components';
 import { Text } from './ui-kitten';
 import Logo from './Logo';
-import { AlertCircle, CheckCircle, Wifi, WifiOff } from 'lucide-react-native';
+import { Icon } from '@ui-kitten/components';
 import { ConnectivityStatus } from '../utils/connectivityCheck';
 
 interface ConnectivitySplashProps {
@@ -42,7 +42,7 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
           <Logo size="large" />
           <View style={styles.statusContainer}>
             <View style={styles.iconContainer}>
-              <WifiOff size={48} color="#EF4444" />
+              <Icon name="wifi-off" style={{ width: 48, height: 48 }} fill="#EF4444" />
             </View>
             <Text style={styles.errorTitle}>Connection Failed</Text>
             <Text style={styles.errorSubtitle}>
@@ -52,13 +52,13 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
             <View style={styles.detailsContainer}>
               {!status.database.connected && (
                 <View style={styles.detailRow}>
-                  <AlertCircle size={20} color="#EF4444" />
+                  <Icon name="alert-circle" style={{ width: 20, height: 20 }} fill="#EF4444" />
                   <Text style={styles.detailText}>Database: {status.database.error}</Text>
                 </View>
               )}
               {!status.api.connected && (
                 <View style={styles.detailRow}>
-                  <AlertCircle size={20} color="#EF4444" />
+                  <Icon name="alert-circle" style={{ width: 20, height: 20 }} fill="#EF4444" />
                   <Text style={styles.detailText}>API: {status.api.error}</Text>
                 </View>
               )}
@@ -77,7 +77,7 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
           <Logo size="large" />
           <View style={styles.statusContainer}>
             <View style={styles.iconContainer}>
-              <AlertCircle size={48} color="#F59E0B" />
+              <Icon name="alert-circle" style={{ width: 48, height: 48 }} fill="#F59E0B" />
             </View>
             <Text style={styles.warningTitle}>Limited Connectivity</Text>
             <Text style={styles.warningSubtitle}>
@@ -87,25 +87,25 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
             <View style={styles.detailsContainer}>
               {status.database.connected && (
                 <View style={styles.detailRow}>
-                  <CheckCircle size={20} color="#10B981" />
+                  <Icon name="checkmark-circle" style={{ width: 20, height: 20 }} fill="#10B981" />
                   <Text style={styles.detailText}>Database: Connected ({status.database.latency}ms)</Text>
                 </View>
               )}
               {!status.database.connected && (
                 <View style={styles.detailRow}>
-                  <AlertCircle size={20} color="#EF4444" />
+                  <Icon name="alert-circle" style={{ width: 20, height: 20 }} fill="#EF4444" />
                   <Text style={styles.detailText}>Database: {status.database.error}</Text>
                 </View>
               )}
               {status.api.connected && (
                 <View style={styles.detailRow}>
-                  <CheckCircle size={20} color="#10B981" />
+                  <Icon name="checkmark-circle" style={{ width: 20, height: 20 }} fill="#10B981" />
                   <Text style={styles.detailText}>API: Connected ({status.api.latency}ms)</Text>
                 </View>
               )}
               {!status.api.connected && (
                 <View style={styles.detailRow}>
-                  <AlertCircle size={20} color="#EF4444" />
+                  <Icon name="alert-circle" style={{ width: 20, height: 20 }} fill="#EF4444" />
                   <Text style={styles.detailText}>API: {status.api.error}</Text>
                 </View>
               )}
@@ -123,16 +123,16 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
         <Logo size="large" />
         <View style={styles.statusContainer}>
           <View style={styles.iconContainer}>
-            <CheckCircle size={48} color="#10B981" />
+            <Icon name="checkmark-circle" style={{ width: 48, height: 48 }} fill="#10B981" />
           </View>
           <Text style={styles.successTitle}>All Systems Operational</Text>
           <View style={styles.detailsContainer}>
             <View style={styles.detailRow}>
-              <CheckCircle size={20} color="#10B981" />
+              <Icon name="checkmark-circle" style={{ width: 20, height: 20 }} fill="#10B981" />
               <Text style={styles.detailText}>Database: {status.database.latency}ms</Text>
             </View>
             <View style={styles.detailRow}>
-              <CheckCircle size={20} color="#10B981" />
+              <Icon name="checkmark-circle" style={{ width: 20, height: 20 }} fill="#10B981" />
               <Text style={styles.detailText}>API: {status.api.latency}ms</Text>
             </View>
           </View>

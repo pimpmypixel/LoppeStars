@@ -12,7 +12,7 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
   const { session, loading } = useAuth();
   const { t } = useTranslation();
 
-  console.log('AuthGuard - session:', !!session, 'loading:', loading);
+  // console.log('AuthGuard - session:', !!session, 'loading:', loading);
 
   if (loading) {
     console.log('AuthGuard - showing loading screen');
@@ -54,7 +54,7 @@ export default function AuthGuard({ children, fallback }: AuthGuardProps) {
     );
   }
 
-  console.log('AuthGuard - rendering children');
+  // console.log('AuthGuard - rendering children');
   return <>{children}</>;
 }
 
