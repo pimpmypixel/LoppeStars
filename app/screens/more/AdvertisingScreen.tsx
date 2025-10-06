@@ -1,6 +1,6 @@
 import React from 'react';
-import { StyleSheet, Linking, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import { StyleSheet, Linking, TouchableOpacity, View } from 'react-native';
+// Remove LinearGradient to prevent crashes
 import { useTranslation } from '../../utils/localization';
 import ScreenWrapper from '../../components/ScreenWrapper';
 import { Text, Card, CardContent } from '../../components/ui-kitten';
@@ -13,7 +13,7 @@ export default function AdvertisingScreen() {
   };
 
   return (
-    <ScreenWrapper title={t('more.advertising')} showBackButton={true} showFooter={true}>
+    <ScreenWrapper title={t('more.advertising')} showBackButton={true}>
       <Card style={styles.card}>
         <CardContent style={styles.cardContent}>
           <Text style={styles.title}>Reklamer med Loppestars</Text>
@@ -56,14 +56,9 @@ export default function AdvertisingScreen() {
           </Text>
 
           <TouchableOpacity onPress={handleEmailPress} style={styles.ctaButton}>
-            <LinearGradient
-              colors={['#FFD700', '#FFA500', '#FF8C00']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.gradient}
-            >
+            <View style={[styles.gradient, { backgroundColor: '#FFA500' }]}>
               <Text style={styles.ctaText}>Få reklameinfo</Text>
-            </LinearGradient>
+            </View>
           </TouchableOpacity>
         </CardContent>
       </Card>

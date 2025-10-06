@@ -6,6 +6,7 @@ import { Icon } from '@ui-kitten/components';
 import { Text } from '../components/ui-kitten';
 import { useTranslation } from '../utils/localization';
 import { useLanguage } from '../stores/appStore';
+import { RootTabParamList } from '../types/navigation';
 
 import HomeScreen from '../screens/HomeScreen';
 import MarketsNavigator from './MarketsNavigator';
@@ -14,7 +15,7 @@ import MoreNavigator from './MoreNavigator';
 import { NAV_THEME, THEME, useTheme } from '../contexts/ThemeContext';
 import { navigationRef } from '../utils/navigation';
 
-const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator<RootTabParamList>();
 
 function CustomTabBar({ state, descriptors, navigation }: any) {
   return (
@@ -93,6 +94,14 @@ export default function AppNavigator() {
   const { t } = useTranslation();
 
   console.log('AppNavigator - rendering, navigationRef ready:', navigationRef.isReady());
+  
+  // Remove navigation debugging in production
+  React.useEffect(() => {
+    // Navigation debugging can be added here if needed for development
+    if (__DEV__) {
+      console.log('AppNavigator - Navigation system ready');
+    }
+  }, []);
 
   return (
     <NavigationContainer ref={navigationRef} theme={NAV_THEME[theme]}>

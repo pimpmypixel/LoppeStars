@@ -383,7 +383,8 @@ export default function MarketDetailsScreen() {
             onPress={async () => {
               try {
                 setSelectedMarket(market);
-                reset([{ name: 'Rating' }]);
+                // Use safer navigation instead of reset
+                navigation.navigate('Rating' as never);
               } catch (error) {
                 console.error('Error selecting market for rating:', error);
               }

@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SUPABASE_URL: ${SUPABASE_URL}
+        SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+        SUPABASE_ANON_KEY: ${SUPABASE_ANON_KEY}
+        STALL_PHOTOS_BUCKET: ${STALL_PHOTOS_BUCKET:-stall-photos}
+        STALL_PHOTOS_PROCESSED_BUCKET: ${STALL_PHOTOS_PROCESSED_BUCKET:-stall-photos-processed}
+    ports:
+      - "8080:8080"
+    volumes:
+      # Mount source code for hot reload
+      - ./api:/app
+      # Exclude Python cache
+      - /app/__pycache__
+      - /app/.pytest_cache
+    environment:
+      - SUPABASE_URL=${SUPABASE_URL}
+      - SUPABASE_SERVICE_ROLE_KEY=${SUPABASE_SERVICE_ROLE_KEY}
+      - SUPABASE_ANON_KEY=${SUPABASE_ANON_KEY}
+      - STALL_PHOTOS_BUCKET=${STALL_PHOTOS_BUCKET:-stall-photos}
+      - STALL_PHOTOS_PROCESSED_BUCKET=${STALL_PHOTOS_PROCESSED_BUCKET:-stall-photos-processed}
+      - PYTHONUNBUFFERED=1
+    command: uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+networks:
+  default:
+    name: loppestars-dev

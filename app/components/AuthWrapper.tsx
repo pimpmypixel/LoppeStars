@@ -8,6 +8,7 @@ import { Layout } from '@ui-kitten/components';
 import SupabaseOfficialAuth from '../components/SupabaseOfficialAuth';
 import AppNavigator from '../navigation/AppNavigator';
 import ConnectivitySplash from '../components/ConnectivitySplash';
+import ErrorBoundary from '../components/ErrorBoundary';
 import { supabase } from '../utils/supabase';
 import { Text, Button } from './ui-kitten';
 
@@ -110,7 +111,13 @@ export default function AuthWrapper() {
     );
   }
 
-  return session ? <AppNavigator /> : <SupabaseOfficialAuth />;
+  return session ? (
+    <ErrorBoundary>
+      <AppNavigator />
+    </ErrorBoundary>
+  ) : (
+    <SupabaseOfficialAuth />
+  );
 }
 
 const styles = StyleSheet.create({

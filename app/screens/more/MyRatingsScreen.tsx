@@ -199,7 +199,7 @@ export default function MyRatingsScreen() {
         )}
       </ScrollView>
 
-      <AppFooter />
+      {/* <AppFooter /> */}
     </View>
   );
 }

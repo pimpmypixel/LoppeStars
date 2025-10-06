@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Pressable, Platform, ToastAndroid, StyleSheet, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+// Remove LinearGradient to prevent crashes
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../utils/localization';
@@ -137,12 +137,7 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
       style={styles.container}
     >
       {isSelected ? (
-        <LinearGradient 
-          colors={['#FF9500', '#FFCA28']} 
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-          style={styles.gradientWrapper}
-        >
+        <View style={[styles.gradientWrapper, { backgroundColor: '#FF9500' }]}>
           <Card style={styles.selectedCard}>
             <CardContent>
               {/* Header with name, city and distance */}
@@ -220,7 +215,7 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
               </View>
             </CardContent>
           </Card>
-        </LinearGradient>
+        </View>
       ) : (
         <Card style={{
           ...styles.card,

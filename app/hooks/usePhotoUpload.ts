@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react';
 import { getInfoAsync, readAsStringAsync } from 'expo-file-system/legacy';
 import { supabase } from '../utils/supabase';
+import { getAPIBaseUrl } from '../utils/api';
 
 interface UploadProgress {
   isUploading: boolean;
@@ -90,8 +91,10 @@ export const usePhotoUpload = () => {
 
       console.log('[photo-upload] Processing image with FastAPI /process endpoint');
 
-      // Call FastAPI directly (runs on AWS ECS with face blurring)
-      const API_BASE_URL = 'https://loppestars.spoons.dk';
+      // Get API base URL (auto-detects local or production)
+      const API_BASE_URL = await getAPIBaseUrl();
+      console.log('[photo-upload] Using API:', API_BASE_URL);
+      
       const processResponse = await fetch(`${API_BASE_URL}/process`, {
         method: 'POST',
         headers: {

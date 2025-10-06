@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, ScrollView, Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../utils/supabase';
 import { useTranslation } from '../utils/localization';
@@ -8,9 +9,10 @@ import { Layout, Icon } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import LanguageSelector from '../components/LanguageSelector';
 import { Button, Text, Card, CardContent } from '../components/ui-kitten';
+import { MoreStackParamList } from '../types/navigation';
 
 export default function MoreScreen() {
-    const navigation = useNavigation();
+    const navigation = useNavigation<StackNavigationProp<MoreStackParamList>>();
     const { user, session, signOut } = useAuth();
     const [refreshKey, setRefreshKey] = useState(0);
     const { t } = useTranslation();
@@ -27,8 +29,14 @@ export default function MoreScreen() {
         }
     };
 
-    const handleMenuPress = (screen: string) => {
-        navigation.navigate(screen as never);
+    const handleMenuPress = (screen: keyof MoreStackParamList) => {
+        try {
+            console.log(`Navigating to: ${screen}`);
+            navigation.navigate(screen);
+        } catch (error) {
+            console.error('Navigation error:', error);
+            Alert.alert(t('common.error'), 'Navigation failed');
+        }
     };
 
     const handleLanguageChange = () => {

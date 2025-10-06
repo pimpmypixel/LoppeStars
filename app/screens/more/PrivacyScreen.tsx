@@ -8,7 +8,7 @@ export default function PrivacyScreen() {
   const { t } = useTranslation();
 
   return (
-    <ScreenWrapper title={t('more.privacy')} showBackButton={true} showFooter={true}>
+    <ScreenWrapper title={t('more.privacy')} showBackButton={true}>
       <Card style={styles.card}>
         <CardContent style={styles.cardContent}>
           <Text style={styles.title}>Privatlivspolitik</Text>

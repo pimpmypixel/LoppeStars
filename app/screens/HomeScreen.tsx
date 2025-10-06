@@ -9,7 +9,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { useSelectedMarket } from '../stores/appStore';
 import { Button } from '../components/ui-kitten';
 import { useNavigation } from '@react-navigation/native';
-import { LinearGradient } from 'expo-linear-gradient';
+// Remove LinearGradient completely to prevent crashes
+const LinearGradient = null;
 
 export default function HomeScreen() {
   const { selectedMarket } = useSelectedMarket();
@@ -34,12 +35,7 @@ export default function HomeScreen() {
           {/* Selected Market Display */}
           {selectedMarket && (
             <Card style={styles.selectedMarketCard}>
-              <LinearGradient
-                colors={['#FF9500', '#FFCA28']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.gradientCard}
-              >
+              <View style={[styles.gradientCard, { backgroundColor: '#FF9500' }]}>
                 <View style={styles.marketCardContent}>
                   <Icon name="pin" style={styles.iconLarge} fill="#FFFFFF" />
                   <UIKittenText category="h6" style={styles.marketLabel}>
@@ -60,7 +56,7 @@ export default function HomeScreen() {
                     Rate a Stall Now
                   </Button>
                 </View>
-              </LinearGradient>
+              </View>
             </Card>
           )}
 
@@ -82,12 +78,9 @@ export default function HomeScreen() {
           <View style={styles.featureCards}>
             <Card style={styles.featureCard}>
               <View style={styles.featureIconContainer}>
-                <LinearGradient
-                  colors={['#FF9500', '#FFCA28']}
-                  style={styles.iconGradient}
-                >
+                <View style={[styles.iconGradient, { backgroundColor: '#FF9500' }]}>
                   <Icon name="star" style={styles.iconLarge} fill="#FFFFFF" />
-                </LinearGradient>
+                </View>
               </View>
               <CardHeader>
                 <CardTitle style={styles.featureTitle}>{t('home.rateFinds')}</CardTitle>
@@ -101,12 +94,9 @@ export default function HomeScreen() {
 
             <Card style={styles.featureCard}>
               <View style={styles.featureIconContainer}>
-                <LinearGradient
-                  colors={['#10B981', '#34D399']}
-                  style={styles.iconGradient}
-                >
+                <View style={[styles.iconGradient, { backgroundColor: '#10B981' }]}>
                   <Icon name="camera" style={styles.iconLarge} fill="#FFFFFF" />
-                </LinearGradient>
+                </View>
               </View>
               <CardHeader>
                 <CardTitle style={styles.featureTitle}>{t('home.captureMemories')}</CardTitle>
@@ -120,12 +110,9 @@ export default function HomeScreen() {
 
             <Card style={styles.featureCard}>
               <View style={styles.featureIconContainer}>
-                <LinearGradient
-                  colors={['#FF3D2E', '#FF6F61']}
-                  style={styles.iconGradient}
-                >
+                <View style={[styles.iconGradient, { backgroundColor: '#FF3D2E' }]}>
                   <Icon name="heart" style={styles.iconLarge} fill="#FFFFFF" />
-                </LinearGradient>
+                </View>
               </View>
               <CardHeader>
                 <CardTitle style={styles.featureTitle}>{t('home.funForEveryone')}</CardTitle>

@@ -7,8 +7,9 @@ import PrivacyScreen from '../screens/more/PrivacyScreen';
 import OrganiserScreen from '../screens/more/OrganiserScreen';
 import AdvertisingScreen from '../screens/more/AdvertisingScreen';
 import ContactScreen from '../screens/more/ContactScreen';
+import { MoreStackParamList } from '../types/navigation';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<MoreStackParamList>();
 
 export default function MoreNavigator() {
   return (

@@ -13,8 +13,33 @@ import PhotoUploadProgress from '../components/PhotoUploadProgress';
 import { usePhotoUpload } from '../hooks/usePhotoUpload';
 import { useTranslation } from '../utils/localization';
 import { supabase } from '../utils/supabase';
-import { LinearGradient } from 'expo-linear-gradient';
 import { logEvent } from '../utils/eventLogger';
+
+// Simple gradient background without native dependencies
+const GradientBackground = () => {
+  return (
+    <View 
+      style={[
+        StyleSheet.absoluteFillObject, 
+        { 
+          backgroundColor: '#FFA500',
+          // Create a subtle gradient effect with overlapping views
+        }
+      ]} 
+      pointerEvents="none"
+    >
+      <View 
+        style={[
+          StyleSheet.absoluteFillObject,
+          {
+            backgroundColor: 'rgba(255, 215, 0, 0.3)', // Gold overlay
+            borderRadius: 16,
+          }
+        ]}
+      />
+    </View>
+  );
+};
 
 export default function RatingScreen() {
   console.log('=== RATING SCREEN MOUNTED ===');
@@ -97,14 +122,13 @@ export default function RatingScreen() {
       console.log('Submitting rating...');
 
       const { data: ratingData, error } = await supabase
-        .from('ratings')
+        .from('stall_ratings')
         .insert({
           user_id: user.id,
           market_id: selectedMarket.id,
           stall_name: stallName.trim(),
-          mobilepay_code: mobilePayCode.trim() || null,
+          mobilepay_phone: mobilePayCode.trim() || null,
           rating: rating,
-          comments: comments.trim() || null,
           photo_url: photoUrl,
           created_at: new Date().toISOString(),
         })
@@ -308,14 +332,7 @@ export default function RatingScreen() {
                   disabled={isSubmitting}
                   activeOpacity={0.85}
                 >
-                  <View style={StyleSheet.absoluteFillObject} pointerEvents="none">
-                    <LinearGradient
-                      colors={['#FFD700', '#FFA500', '#FF8C00']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 0 }}
-                      style={styles.gradientButton}
-                    />
-                  </View>
+                  <GradientBackground />
                   <Text style={styles.submitButtonText}>
                     {isSubmitting ? t('form.submitting') : t('form.submit')}
                   </Text>
@@ -501,10 +518,6 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  gradientButton: {
-    flex: 1,
-    borderRadius: 16,
   },
   submitButtonText: {
     color: '#FFFFFF',
