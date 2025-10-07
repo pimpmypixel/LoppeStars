@@ -45,7 +45,14 @@
     "captureMemories": "Fang minder",
     "captureMemoriesDescription": "Tag billeder af dine yndlingsfund og del dem med fællesskabet.",
     "funForEveryone": "Sjov for alle",
-    "funForEveryoneDescription": "En børnevenlig app, der gør loppemarkedsshopping spændende og nemt!"
+    "funForEveryoneDescription": "En børnevenlig app, der gør loppemarkedsshopping spændende og nemt!",
+    "rateMarkets": "Bedøm markeder",
+    "rateMarketsDescription": "Hjælp andre skattejægere ved at bedømme markeder, du besøger.",
+    "getStarted": "Kom i gang",
+    "loadingMarket": "Henter marked...",
+    "noMarketNearby": "Intet marked i nærheden",
+    "noMarketNearbyDescription": "Vi kunne ikke finde et marked i nærheden af din placering. Prøv at søge efter markeder i Markeder fanen.",
+    "viewMarkets": "Se markeder"
   },
   "markets": {
     "title": "Markeder",
@@ -234,5 +241,12 @@
     "errorSubmit": "Kunne ikke sende bedømmelse",
     "imageProcessed": "Billede behandlet",
     "uploadSuccessToast": "Foto uploadet succesfuldt!"
+  },
+  "admin": {
+    "title": "Admin Handlinger",
+    "triggerScraper": "Udløs Scraper",
+    "scraperTriggered": "Scraper udløst succesfuldt",
+    "scraperError": "Kunne ikke udløse scraper",
+    "scraperRunning": "Scraper kører..."
   }
 }

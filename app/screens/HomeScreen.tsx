@@ -63,9 +63,9 @@ export default function HomeScreen() {
           {/* Selected Market Display */}
           {selectedMarket && (
             <Card style={styles.selectedMarketCard}>
-              <View style={[styles.gradientCard, { backgroundColor: '#FF9500' }]}>
+              {/* <View style={[styles.gradientCard, { backgroundColor: '#FF9500' }]}> */}
                 <View style={styles.marketCardContent}>
-                  <Icon name="pin" style={styles.iconLarge} fill="#FFFFFF" />
+                  <Icon name="navigation-2" style={styles.iconLarge} fill="#FFFFFF" />
                   <UIKittenText category="h6" style={styles.marketLabel}>
                     {t('home.currentMarket')}
                   </UIKittenText>
@@ -78,26 +78,26 @@ export default function HomeScreen() {
                     </UIKittenText>
                   )}
                   <TouchableOpacity
-                    style={styles.rateButton}
+                    style={[styles.rateButton, { marginTop: 10 }]}
                     onPress={() => navigation.navigate('Rating' as never)}
                     activeOpacity={0.8}
                   >
                     <UIKittenText style={styles.rateButtonText}>{t('home.rateStallNow')}</UIKittenText>
                   </TouchableOpacity>
                 </View>
-              </View>
+              {/* </View> */}
             </Card>
           )}
 
           {/* Stats Section */}
           <View style={styles.statsContainer}>
             <View style={styles.statCard}>
-              <Icon name="star" style={styles.iconMedium} fill="#3366FF" />
+              <Icon name="star-outline" style={styles.iconMedium} fill="#3366FF" />
               <UIKittenText category="h5" style={styles.statNumber}>{stats.ratingsCount.toLocaleString()}</UIKittenText>
               <UIKittenText category="c1" appearance="hint">{t('stats.ratings')}</UIKittenText>
             </View>
             <View style={styles.statCard}>
-              <Icon name="trending-up" style={styles.iconMedium} fill="#10B981" />
+              <Icon name="trending-up-outline" style={styles.iconMedium} fill="#10B981" />
               <UIKittenText category="h5" style={styles.statNumber}>{stats.marketsCount.toLocaleString()}</UIKittenText>
               <UIKittenText category="c1" appearance="hint">{t('stats.markets')}</UIKittenText>
             </View>
@@ -106,25 +106,25 @@ export default function HomeScreen() {
           {/* Feature Cards */}
           <View style={styles.featureCards}>
             <FeatureCard
-              iconName="info"
+              iconName="info-outline"
               iconColor="#3700ffff"
               title={t('home.rateFinds')}
               description={t('home.rateFindsDescription')}
             />
             <FeatureCard
-              iconName="star"
+              iconName="star-outline"
               iconColor="#FF9500"
-              title={t('home.rateFinds')}
-              description={t('home.rateFindsDescription')}
+              title={t('home.rateMarkets')}
+              description={t('home.rateMarketsDescription')}
             />
             <FeatureCard
-              iconName="camera"
+              iconName="camera-outline"
               iconColor="#10B981"
               title={t('home.captureMemories')}
               description={t('home.captureMemoriesDescription')}
             />
             <FeatureCard
-              iconName="heart"
+              iconName="heart-outline"
               iconColor="#FF3D2E"
               title={t('home.funForEveryone')}
               description={t('home.funForEveryoneDescription')}
@@ -176,6 +176,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 16,
+    borderWidth: 3,
+    borderColor: '#FF9500',
   },
   gradientCard: {
     padding: 24,

@@ -3,10 +3,18 @@ import { corsHeaders } from '../_shared/cors.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
 interface RequestBody {
+  // Legacy format support
   emails?: string[];
-  summary: Record<string, unknown>;
+  summary?: Record<string, unknown>;
   status?: 'success' | 'error';
   scrapeDate?: string;
+  
+  // New format support
+  success?: boolean;
+  message?: string;
+  timestamp?: string;
+  output?: string;
+  error?: string;
 }
 
 serve(async (req: Request) => {
@@ -17,14 +25,28 @@ serve(async (req: Request) => {
 
   try {
     const body: RequestBody = await req.json();
-    const { emails = [], summary, status = 'success', scrapeDate } = body;
-
-    // Validate input
-    if (!summary) {
-      return new Response(JSON.stringify({ error: 'Summary is required' }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
+    
+    // Support both old and new format
+    let success: boolean;
+    let message: string;
+    let timestamp: string;
+    let output: string | undefined;
+    let errorDetails: string | undefined;
+    
+    if (body.success !== undefined) {
+      // New format
+      success = body.success;
+      message = body.message || '';
+      timestamp = body.timestamp || new Date().toISOString();
+      output = body.output;
+      errorDetails = body.error;
+    } else {
+      // Legacy format
+      success = body.status === 'success';
+      message = body.summary ? JSON.stringify(body.summary) : 'Scraper executed';
+      timestamp = body.scrapeDate || new Date().toISOString();
+      output = undefined;
+      errorDetails = undefined;
     }
 
     // Initialize Supabase client
@@ -37,18 +59,16 @@ serve(async (req: Request) => {
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Log scrape status to database
-    const logEntry = {
-      emails,
-      summary,
-      status,
-      scrape_date: scrapeDate || new Date().toISOString(),
-      created_at: new Date().toISOString()
-    };
-
+    // Log to new scraping_logs table
     const { data, error } = await supabase
-      .from('scrape_status_logs')
-      .insert([logEntry])
+      .from('scraping_logs')
+      .insert({
+        success,
+        message,
+        output,
+        error_details: errorDetails,
+        scraped_at: timestamp
+      })
       .select();
 
     if (error) {
@@ -56,21 +76,13 @@ serve(async (req: Request) => {
       throw error;
     }
 
-    console.log('Scrape status logged:', {
-      id: data?.[0]?.id,
-      status,
-      summaryKeys: Object.keys(summary),
-      emailCount: emails.length
-    });
-
-    // TODO: Implement email notification if needed
-    // For now, just log to database
+    console.log(`Scraping status logged: ${success ? 'SUCCESS' : 'FAILURE'} - ${message}`);
     
     return new Response(JSON.stringify({ 
       success: true,
       logged: true,
       id: data?.[0]?.id,
-      message: 'Scrape status logged successfully'
+      message: 'Scraping status logged successfully'
     }), {
       status: 200,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' }

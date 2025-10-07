@@ -1,0 +1,440 @@
+openapi: 3.0.3
+info:
+  title: Loppestars API
+  description: API for the Loppestars flea market rating application
+  version: 1.0.0
+  contact:
+    name: Loppestars Team
+    email: contact@loppestars.com
+servers:
+  - url: https://loppestars.spoons.dk
+    description: Production server
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /:
+    get:
+      summary: Root endpoint
+      description: Welcome message for the API
+      responses:
+        '200':
+          description: Welcome message
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Welcome to the Loppestars API"
+
+  /health:
+    get:
+      summary: Health check endpoint
+      description: Check if the API service is healthy
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "healthy"
+                  service:
+                    type: string
+                    example: "loppestars"
+
+  /process:
+    post:
+      summary: Process image to anonymize faces
+      description: Processes an uploaded image to blur or pixelate detected faces
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProcessRequest'
+      responses:
+        '200':
+          description: Image processed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProcessResponse'
+        '500':
+          description: Processing failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /markets/today:
+    get:
+      summary: Get today's markets
+      description: Retrieve all markets happening today, optionally sorted by distance
+      parameters:
+        - name: latitude
+          in: query
+          description: User's latitude for distance calculation
+          required: false
+          schema:
+            type: number
+            format: float
+            example: 55.6761
+        - name: longitude
+          in: query
+          description: User's longitude for distance calculation
+          required: false
+          schema:
+            type: number
+            format: float
+            example: 12.5683
+        - name: limit
+          in: query
+          description: Maximum number of markets to return
+          required: false
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: List of today's markets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MarketResponse'
+        '500':
+          description: Error fetching markets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /markets/nearby:
+    get:
+      summary: Get nearby markets
+      description: Find markets within a specified radius and time frame
+      parameters:
+        - name: latitude
+          in: query
+          description: User's latitude
+          required: true
+          schema:
+            type: number
+            format: float
+            example: 55.6761
+        - name: longitude
+          in: query
+          description: User's longitude
+          required: true
+          schema:
+            type: number
+            format: float
+            example: 12.5683
+        - name: radius_km
+          in: query
+          description: Search radius in kilometers
+          required: false
+          schema:
+            type: number
+            format: float
+            default: 50.0
+            minimum: 1
+            maximum: 500
+        - name: days_ahead
+          in: query
+          description: Number of days to look ahead
+          required: false
+          schema:
+            type: integer
+            default: 30
+            minimum: 1
+            maximum: 365
+        - name: limit
+          in: query
+          description: Maximum number of markets to return
+          required: false
+          schema:
+            type: integer
+            default: 50
+            minimum: 1
+            maximum: 100
+      responses:
+        '200':
+          description: List of nearby markets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MarketResponse'
+        '500':
+          description: Error fetching nearby markets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /scraper/trigger:
+    post:
+      summary: Trigger market data scraper
+      description: Manually trigger the market data scraping process
+      responses:
+        '200':
+          description: Scraper triggered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScraperResponse'
+        '500':
+          description: Scraper execution failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ProcessRequest:
+      type: object
+      required:
+        - imagePath
+        - userId
+      properties:
+        imagePath:
+          type: string
+          description: Path to the image in Supabase storage
+          example: "user123/photo.jpg"
+        userId:
+          type: string
+          description: ID of the user requesting processing
+          example: "user123"
+        mode:
+          type: string
+          enum: [pixelate, blur]
+          default: pixelate
+          description: Face anonymization mode
+        pixelateSize:
+          type: integer
+          default: 20
+          minimum: 5
+          maximum: 50
+          description: Size of pixelation blocks
+        blurStrength:
+          type: integer
+          default: 31
+          minimum: 1
+          maximum: 99
+          description: Blur kernel size (must be odd)
+        downscaleForDetection:
+          type: integer
+          default: 800
+          minimum: 200
+          maximum: 2000
+          description: Maximum dimension for face detection
+
+    ProcessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        processedImageUrl:
+          type: string
+          description: URL of the processed image
+          example: "https://supabase.co/storage/v1/object/public/processed/user123/image.jpg"
+        facesDetected:
+          type: integer
+          description: Number of faces detected and processed
+          example: 2
+        mode:
+          type: string
+          enum: [pixelate, blur]
+          description: Processing mode used
+
+    ScraperResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        message:
+          type: string
+          example: "Scraper triggered successfully"
+        output:
+          type: string
+          description: Scraper execution output
+
+    MarketResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Internal market ID
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        external_id:
+          type: string
+          description: External source ID
+          example: "loppemarkeder_nu_12345"
+        name:
+          type: string
+          description: Market name
+          example: "Frederiksberg Loppemarked"
+        municipality:
+          type: string
+          nullable: true
+          description: Municipality name
+          example: "Frederiksberg"
+        category:
+          type: string
+          description: Market category
+          example: "Loppemarked"
+        start_date:
+          type: string
+          format: date
+          description: Market start date
+          example: "2024-10-06"
+        end_date:
+          type: string
+          format: date
+          description: Market end date
+          example: "2024-10-06"
+        address:
+          type: string
+          nullable: true
+          description: Street address
+          example: "Frederiksberg Allé 12"
+        city:
+          type: string
+          nullable: true
+          description: City name
+          example: "Frederiksberg"
+        postal_code:
+          type: string
+          nullable: true
+          description: Postal code
+          example: "2000"
+        latitude:
+          type: number
+          format: float
+          nullable: true
+          description: Latitude coordinate
+          example: 55.6761
+        longitude:
+          type: number
+          format: float
+          nullable: true
+          description: Longitude coordinate
+          example: 12.5683
+        description:
+          type: string
+          nullable: true
+          description: Market description
+        organizer_name:
+          type: string
+          nullable: true
+          description: Organizer name
+        organizer_phone:
+          type: string
+          nullable: true
+          description: Organizer phone
+        organizer_email:
+          type: string
+          nullable: true
+          description: Organizer email
+        organizer_website:
+          type: string
+          nullable: true
+          description: Organizer website
+        opening_hours:
+          type: string
+          nullable: true
+          description: Opening hours
+          example: "09:00-16:00"
+        entry_fee:
+          type: number
+          format: float
+          nullable: true
+          description: Entry fee in DKK
+          example: 20.0
+        stall_count:
+          type: integer
+          nullable: true
+          description: Number of stalls
+          example: 50
+        has_food:
+          type: boolean
+          description: Has food vendors
+          example: true
+        has_parking:
+          type: boolean
+          description: Has parking available
+          example: true
+        has_toilets:
+          type: boolean
+          description: Has toilet facilities
+          example: true
+        has_wifi:
+          type: boolean
+          description: Has WiFi available
+          example: false
+        is_indoor:
+          type: boolean
+          description: Indoor market
+          example: false
+        is_outdoor:
+          type: boolean
+          description: Outdoor market
+          example: true
+        special_features:
+          type: string
+          nullable: true
+          description: Special features or notes
+        source_url:
+          type: string
+          nullable: true
+          description: Original source URL
+        loppemarkeder_nu:
+          type: object
+          nullable: true
+          description: Raw metadata from loppemarkeder.nu
+        scraped_at:
+          type: string
+          format: date-time
+          description: When the data was scraped
+          example: "2024-10-06T12:00:00Z"
+        distance:
+          type: number
+          format: float
+          nullable: true
+          description: Distance from user location in km
+          example: 5.2
+
+    ErrorResponse:
+      type: object
+      properties:
+        detail:
+          type: string
+          description: Error message
+          example: "Internal server error"
+
+security:
+  - ApiKeyAuth: []
+
+tags:
+  - name: Health
+    description: Health check endpoints
+  - name: Image Processing
+    description: Face anonymization and image processing
+  - name: Markets
+    description: Flea market data and search
+  - name: Scraping
+    description: Data scraping and collection

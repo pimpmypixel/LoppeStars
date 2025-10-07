@@ -4,8 +4,7 @@
 
 ### Primary Method (Recommended)
 ```bash
-cd aws
-./deploy.sh
+../scripts/deploy.sh
 ```
 
 This idempotent script handles:
@@ -17,9 +16,9 @@ This idempotent script handles:
 
 ### Options
 ```bash
-./deploy.sh           # Full deployment
-./deploy.sh --status  # Status check only
-./deploy.sh --force   # Force redeployment
+../scripts/deploy.sh           # Full deployment
+../scripts/deploy.sh --status  # Status check only
+../scripts/deploy.sh --force   # Force redeployment
 ```
 
 ### Alternative (Node.js)
@@ -30,7 +29,7 @@ node deploy-and-dns.js
 ## Files
 
 **Essential**:
-- `deploy.sh` - Master deployment script
+- `../scripts/deploy.sh` - Master deployment script
 - `stack-template.yaml` - CloudFormation template
 - `deploy-and-dns.js` - Node.js alternative
 
@@ -43,10 +42,10 @@ See `/docs/MASTER_DEPLOY_SCRIPT.md` for complete usage guide.
 
 ## Deprecated Scripts Removed
 
-9 old scripts consolidated into `deploy.sh`:
+9 old scripts consolidated into `../scripts/deploy.sh`:
 - build-push.sh, check-status.sh, create-service.sh
 - deploy-direct.sh, deploy-full.sh, deploy-manual.sh
-- deploy-simple.sh, ensure-infrastructure.sh, rebuild-stack.shour CDK TypeScript project
+- deploy-simple.sh, ensure-infrastructure.sh, ../scripts/rebuild-stack.sh
 
 This is a blank project for CDK development with TypeScript.
 

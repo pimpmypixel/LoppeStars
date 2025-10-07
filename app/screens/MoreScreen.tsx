@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, Alert, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, ScrollView, Alert, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '../contexts/AuthContext';
@@ -10,12 +10,16 @@ import AppHeader from '../components/AppHeader';
 import LanguageSelector from '../components/LanguageSelector';
 import { Button, Text, Card, CardContent } from '../components/ui-kitten';
 import { MoreStackParamList } from '../types/navigation';
+import { useScrapingStore } from '../stores/scrapingStore';
+import { checkAdminStatus } from '../utils/adminCheck';
 
 export default function MoreScreen() {
     const navigation = useNavigation<StackNavigationProp<MoreStackParamList>>();
     const { user, session, signOut } = useAuth();
     const [refreshKey, setRefreshKey] = useState(0);
+    const [isAdmin, setIsAdmin] = useState(false);
     const { t } = useTranslation();
+    const { isScrapingActive, lastScrapingResult, setScrapingActive, setScrapingResult } = useScrapingStore();
 
     const handleLogout = async () => {
         try {
@@ -44,6 +48,59 @@ export default function MoreScreen() {
         setRefreshKey(prev => prev + 1);
     };
 
+    const handleTriggerScraper = async () => {
+        if (isScrapingActive) return;
+        
+        setScrapingActive(true);
+        try {
+            console.log('🔄 Triggering scraper...');
+            const { data, error } = await supabase.functions.invoke('trigger-scraper');
+            
+            if (error) {
+                console.error('❌ Scraper trigger error:', error);
+                setScrapingResult({
+                    success: false,
+                    message: error.message || t('admin.scraperError'),
+                    timestamp: new Date().toISOString()
+                });
+                Alert.alert(t('common.error'), t('admin.scraperError') + ': ' + error.message);
+            } else {
+                console.log('✅ Scraper triggered successfully:', data);
+                setScrapingResult({
+                    success: true,
+                    message: t('admin.scraperTriggered'),
+                    timestamp: new Date().toISOString()
+                });
+                Alert.alert(t('common.success'), t('admin.scraperTriggered'));
+            }
+        } catch (error) {
+            console.error('❌ Scraper trigger error:', error);
+            setScrapingResult({
+                success: false,
+                message: t('admin.scraperError'),
+                timestamp: new Date().toISOString()
+            });
+            Alert.alert(t('common.error'), t('admin.scraperError'));
+        }
+    };
+
+    // Check admin status when session changes
+    useEffect(() => {
+        const checkAdmin = async () => {
+            if (session) {
+                console.log('🔄 Starting admin check for session:', session.user?.email);
+                const adminStatus = await checkAdminStatus(session);
+                setIsAdmin(adminStatus);
+                console.log(`🔐 Final admin status for ${session.user?.email}: ${adminStatus}`);
+            } else {
+                console.log('❌ No session available, setting admin to false');
+                setIsAdmin(false);
+            }
+        };
+        
+        checkAdmin();
+    }, [session]);
+
     const menuItems = [
         { title: t('myRatings.title'), onPress: () => handleMenuPress('MyRatings') },
         { title: t('more.privacy'), onPress: () => handleMenuPress('Privacy') },
@@ -51,6 +108,16 @@ export default function MoreScreen() {
         { title: t('more.advertising'), onPress: () => handleMenuPress('Advertising') },
         { title: t('more.about'), onPress: () => handleMenuPress('About') },
         { title: t('more.contact'), onPress: () => handleMenuPress('Contact') },
+    ];
+
+    const adminItems = [
+        { 
+            title: t('admin.triggerScraper'), 
+            onPress: handleTriggerScraper,
+            isLoading: isScrapingActive,
+            icon: 'refresh-outline'
+        },
+        { title: t('myRatings.title'), onPress: () => handleMenuPress('MyRatings') },
     ];
 
     return (
@@ -79,6 +146,45 @@ export default function MoreScreen() {
                             ))}
                         </CardContent>
                     </Card>
+                    {isAdmin && (
+                    <Card style={styles.adminCard}>
+                        <CardContent style={styles.menuCard}>
+                            <Text style={styles.adminTitle}>{t('admin.title')}</Text>
+                            {adminItems.map((item, index) => (
+                                <View key={index}>
+                                    <TouchableOpacity
+                                        style={[styles.menuItem, item.isLoading && styles.disabledMenuItem]}
+                                        onPress={item.onPress}
+                                        disabled={item.isLoading}
+                                    >
+                                        <View style={styles.adminItemContent}>
+                                            {item.icon && (
+                                                <Icon 
+                                                    name={item.icon} 
+                                                    style={styles.adminItemIcon} 
+                                                    fill={item.isLoading ? '#A8A29E' : '#FF9500'} 
+                                                />
+                                            )}
+                                            <Text style={StyleSheet.flatten([
+                                                styles.menuText, 
+                                                item.isLoading && styles.disabledText
+                                            ])}>
+                                                {item.title}
+                                            </Text>
+                                        </View>
+                                        {item.isLoading ? (
+                                            <ActivityIndicator size="small" color="#FF9500" />
+                                        ) : (
+                                            <Text style={styles.chevron}>›</Text>
+                                        )}
+                                    </TouchableOpacity>
+                                    {index < adminItems.length - 1 && (
+                                        <View style={styles.separator} />
+                                    )}
+                                </View>
+                            ))}
+                        </CardContent>
+                    </Card>)}
 
                     <Card style={styles.logoutCard}>
                         <CardContent style={styles.logoutCardContent}>
@@ -197,5 +303,37 @@ const styles = StyleSheet.create({
     logoutIcon: {
         width: 24,
         height: 24,
+    },
+    adminCard: {
+        backgroundColor: '#1F2937',
+        borderWidth: 1,
+        borderColor: 'rgba(59, 130, 246, 0.3)',
+        borderRadius: 16,
+    },
+    adminTitle: {
+        color: '#60A5FA',
+        fontSize: 14,
+        fontWeight: '600',
+        textTransform: 'uppercase',
+        letterSpacing: 0.5,
+        paddingHorizontal: 16,
+        paddingTop: 16,
+        paddingBottom: 8,
+    },
+    adminItemContent: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+        gap: 12,
+    },
+    adminItemIcon: {
+        width: 20,
+        height: 20,
+    },
+    disabledMenuItem: {
+        opacity: 0.6,
+    },
+    disabledText: {
+        color: '#A8A29E',
     },
 });

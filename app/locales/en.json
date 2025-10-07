@@ -235,5 +235,12 @@
     "errorSubmit": "Failed to submit rating",
     "imageProcessed": "Image processed",
     "uploadSuccessToast": "Photo uploaded successfully"
+  },
+  "admin": {
+    "title": "Admin Actions",
+    "triggerScraper": "Trigger Scraper",
+    "scraperTriggered": "Scraper triggered successfully",
+    "scraperError": "Failed to trigger scraper",
+    "scraperRunning": "Scraper is running..."
   }
 }
