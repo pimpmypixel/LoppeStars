@@ -56,16 +56,16 @@ jobs:
             "family": "loppestars",
             "requiresCompatibilities": ["FARGATE"],
             "networkMode": "awsvpc",
-            "cpu": "512",
-            "memory": "1024",
+            "cpu": "1024",
+            "memory": "2048",
             "executionRoleArn": "arn:aws:iam::035338517878:role/LoppestarsEcsStack-TaskExecutionRole-RIAkMYD1kOjs",
             "taskRoleArn": "arn:aws:iam::035338517878:role/LoppestarsEcsStack-TaskRole-N7ax2UYdMxas",
             "containerDefinitions": [
               {
                 "name": "web",
                 "image": "${ECR_URI}:${IMAGE_TAG}",
-                "cpu": 512,
-                "memory": 1024,
+                "cpu": 1024,
+                "memory": 2048,
                 "essential": true,
                 "portMappings": [
                   {
