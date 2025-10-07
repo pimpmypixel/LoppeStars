@@ -163,17 +163,15 @@ tail_logs() {
   log_success "Log group found: $LOG_GROUP"
   
   # Build AWS CLI command
-  local aws_cmd="aws logs"
+  local aws_cmd=""
   
   if [ "$follow_mode" = "true" ]; then
-    aws_cmd="$aws_cmd tail"
+    aws_cmd="aws logs tail $LOG_GROUP --region $AWS_REGION"
     log_info "📡 Starting real-time log streaming..."
   else
-    aws_cmd="$aws_cmd filter-log-events"
+    aws_cmd="aws logs filter-log-events --log-group-name $LOG_GROUP --region $AWS_REGION"
     log_info "📋 Fetching historical logs..."
   fi
-  
-  aws_cmd="$aws_cmd --log-group-name $LOG_GROUP --region $AWS_REGION"
   
   # Add time filter
   if [ -n "$since_time" ]; then
@@ -193,11 +191,7 @@ tail_logs() {
   
   # Add pattern filter
   if [ -n "$filter_pattern" ]; then
-    if [ "$follow_mode" = "true" ]; then
-      aws_cmd="$aws_cmd --filter-pattern '$filter_pattern'"
-    else
-      aws_cmd="$aws_cmd --filter-pattern '$filter_pattern'"
-    fi
+    aws_cmd="$aws_cmd --filter-pattern '$filter_pattern'"
     log_info "🔍 Filter pattern: $filter_pattern"
   fi
   
