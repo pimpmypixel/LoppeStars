@@ -48,21 +48,28 @@ load_env() {
 show_help() {
   echo "Manual Scraper Trigger Script"
   echo ""
+  echo "🕷️  Triggers market data scraper asynchronously (10-30 minute operation)"
+  echo ""
   echo "Usage:"
   echo "  $0                    # Trigger via API (default)"
   echo "  $0 --api             # Trigger via API endpoint"
   echo "  $0 --supabase        # Trigger via Supabase Edge Function"
+  echo "  $0 --status          # Check scraper status and recent data"
   echo "  $0 --help            # Show this help"
   echo ""
   echo "Environment Variables:"
   echo "  API_BASE_URL         # API endpoint (default: https://loppestars.spoons.dk)"
   echo "  SUPABASE_URL         # Supabase URL (default: https://oprevwbturtujbugynct.supabase.co)"
-  echo "  SUPABASE_ANON_KEY    # Required for Supabase method"
+  echo "  SUPABASE_ANON_KEY    # Required for Supabase method and status checks"
   echo ""
   echo "Examples:"
-  echo "  $0                           # Quick API trigger"
+  echo "  $0                           # Quick API trigger (async)"
   echo "  $0 --api                     # Explicit API trigger"
   echo "  $0 --supabase                # Trigger via Supabase function"
+  echo "  $0 --status                  # Check recent scraper activity"
+  echo ""
+  echo "⏰ Note: Scraping is asynchronous and can take 10-30 minutes"
+  echo "📊 Use --status to monitor progress and data freshness"
   echo ""
 }
 
@@ -80,11 +87,13 @@ trigger_via_api() {
   fi
   log_success "API is healthy"
   
-  # Trigger the scraper
-  log_info "Triggering scraper..."
+  # Trigger the scraper (async operation)
+  log_info "Triggering scraper (async operation)..."
+  log_warning "⏰ Scraper will run in background and may take 10-30 minutes to complete"
   
   response=$(curl -s -X POST "$API_URL/scraper/trigger" \
     -H "Content-Type: application/json" \
+    --max-time 60 \
     -w "HTTPSTATUS:%{http_code}")
   
   # Extract HTTP status code
@@ -96,11 +105,52 @@ trigger_via_api() {
     echo ""
     echo "Response:"
     echo "$response_body" | jq . 2>/dev/null || echo "$response_body"
+    echo ""
+    log_info "🕒 The scraper is now running in the background"
+    log_info "📊 Check progress with: ./scripts/trigger-scraper.sh --status"
+    log_info "📋 Monitor logs with: aws logs tail /ecs/loppestars --follow --region eu-central-1"
+  elif [ "$http_code" = "504" ] || [ "$http_code" = "502" ] || [ "$http_code" = "503" ]; then
+    log_warning "Gateway timeout/unavailable (HTTP $http_code) - Scraper likely started"
+    echo ""
+    log_info "🔄 This is normal for long-running scraper operations"
+    log_info "🚀 The scraper process has likely been initiated successfully"
+    log_info "⏱️  Scraping can take 10-30 minutes depending on market data volume"
+    echo ""
+    log_info "Next steps:"
+    log_info "1. Wait 5-10 minutes for scraper to start processing"
+    log_info "2. Check status: ./scripts/trigger-scraper.sh --status"
+    log_info "3. Monitor logs: aws logs tail /ecs/loppestars --follow --region eu-central-1 | grep -i scraper"
+    echo ""
+    log_success "✅ Scraper trigger completed (running asynchronously)"
   else
     log_error "Scraper trigger failed (HTTP $http_code)"
     echo ""
     echo "Error Response:"
     echo "$response_body" | jq . 2>/dev/null || echo "$response_body"
+    
+    # Add troubleshooting tips for common errors
+    case $http_code in
+      500)
+        echo ""
+        log_info "Troubleshooting tips:"
+        log_info "- Internal server error - check API logs"
+        log_info "- Monitor logs: aws logs tail /ecs/loppestars --follow --region eu-central-1"
+        log_info "- Verify scraper dependencies are available"
+        ;;
+      401|403)
+        echo ""
+        log_info "Troubleshooting tips:"
+        log_info "- Authentication/authorization issue"
+        log_info "- Verify API is accessible without auth"
+        ;;
+      *)
+        echo ""
+        log_info "Troubleshooting tips:"
+        log_info "- Check API health: curl $API_URL/health"
+        log_info "- Check ECS service status: ./scripts/deploy.sh --status"
+        log_info "- Try Supabase method: ./scripts/trigger-scraper.sh --supabase"
+        ;;
+    esac
     exit 1
   fi
 }
@@ -116,13 +166,15 @@ trigger_via_supabase() {
   
   log_info "Supabase Function: $SUPABASE_URL/functions/v1/trigger-scraper"
   
-  # Trigger the scraper function
-  log_info "Triggering scraper function..."
+  # Trigger the scraper function (async operation)
+  log_info "Triggering scraper function (async)..."
+  log_warning "⏰ Scraper will run in background and may take 10-30 minutes"
   
   response=$(curl -s -X POST "$SUPABASE_URL/functions/v1/trigger-scraper" \
     -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
     -H "Content-Type: application/json" \
     -d '{}' \
+    --max-time 60 \
     -w "HTTPSTATUS:%{http_code}")
   
   # Extract HTTP status code
@@ -134,11 +186,30 @@ trigger_via_supabase() {
     echo ""
     echo "Response:"
     echo "$response_body" | jq . 2>/dev/null || echo "$response_body"
+    echo ""
+    log_info "🕒 The scraper is now running in the background"
+    log_info "📊 Check progress with: ./scripts/trigger-scraper.sh --status"
+  elif [ "$http_code" = "504" ] || [ "$http_code" = "502" ] || [ "$http_code" = "503" ]; then
+    log_warning "Function timeout/unavailable (HTTP $http_code) - Scraper likely started"
+    echo ""
+    log_info "🔄 This is expected for long-running scraper operations"
+    log_info "🚀 The scraper process has likely been initiated via Supabase"
+    log_info "⏱️  Allow 10-30 minutes for completion"
+    echo ""
+    log_success "✅ Scraper trigger completed (running asynchronously)"
   else
     log_error "Scraper trigger failed (HTTP $http_code)"
     echo ""
     echo "Error Response:"
     echo "$response_body" | jq . 2>/dev/null || echo "$response_body"
+    
+    if [ "$http_code" = "401" ] || [ "$http_code" = "403" ]; then
+      echo ""
+      log_info "Troubleshooting tips:"
+      log_info "- Check SUPABASE_ANON_KEY is valid"
+      log_info "- Verify Edge Function permissions"
+      log_info "- Try API method: ./scripts/trigger-scraper.sh --api"
+    fi
     exit 1
   fi
 }
@@ -147,33 +218,78 @@ trigger_via_supabase() {
 check_status() {
   log_header "Checking Scraper Status"
   
+  # Check API health first
+  log_info "Checking API health..."
+  if curl -s -f -m 10 "$API_URL/health" > /dev/null; then
+    log_success "API is healthy"
+  else
+    log_warning "API health check failed"
+  fi
+  
   # Check recent scraping logs if available
   if [ -n "$SUPABASE_ANON_KEY" ]; then
     log_info "Fetching recent scraping logs..."
     
-    # Query recent logs (last 5 entries)
-    curl -s -X POST "$SUPABASE_URL/rest/v1/rpc/get_recent_scraping_logs" \
-      -H "apikey: $SUPABASE_ANON_KEY" \
-      -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{"limit_count": 5}' | jq . 2>/dev/null || log_warning "Could not fetch scraping logs"
-  fi
-  
-  # Check if markets data is recent
-  log_info "Checking market data freshness..."
-  
-  if [ -n "$SUPABASE_ANON_KEY" ]; then
-    recent_markets=$(curl -s -X GET "$SUPABASE_URL/rest/v1/markets?select=scraped_at&order=scraped_at.desc&limit=1" \
+    # Query scraping_logs table directly
+    recent_logs=$(curl -s -X GET "$SUPABASE_URL/rest/v1/scraping_logs?select=*&order=scraped_at.desc&limit=5" \
       -H "apikey: $SUPABASE_ANON_KEY" \
       -H "Authorization: Bearer $SUPABASE_ANON_KEY")
     
-    if echo "$recent_markets" | jq -e '.[0].scraped_at' > /dev/null 2>&1; then
-      latest_scrape=$(echo "$recent_markets" | jq -r '.[0].scraped_at')
-      log_success "Latest market data: $latest_scrape"
+    if echo "$recent_logs" | jq -e 'length > 0' > /dev/null 2>&1; then
+      echo "$recent_logs" | jq -r '.[] | "📅 \(.scraped_at) | Status: \(.status // "unknown") | Markets: \(.markets_count // 0)"' 2>/dev/null || echo "$recent_logs"
     else
-      log_warning "Could not determine latest scrape time"
+      log_warning "No recent scraping logs found or could not fetch them"
     fi
+  else
+    log_warning "SUPABASE_ANON_KEY not available - skipping log check"
   fi
+  
+  echo ""
+  
+  # Check market data freshness
+  log_info "Checking market data freshness..."
+  
+  if [ -n "$SUPABASE_ANON_KEY" ]; then
+    recent_markets=$(curl -s -X GET "$SUPABASE_URL/rest/v1/markets?select=scraped_at,name&order=scraped_at.desc&limit=3" \
+      -H "apikey: $SUPABASE_ANON_KEY" \
+      -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+    
+    if echo "$recent_markets" | jq -e 'length > 0' > /dev/null 2>&1; then
+      latest_scrape=$(echo "$recent_markets" | jq -r '.[0].scraped_at')
+      market_count=$(echo "$recent_markets" | jq -r 'length')
+      log_success "Latest market data: $latest_scrape (showing $market_count recent entries)"
+      
+      # Show sample of recent markets
+      echo "Recent markets:"
+      echo "$recent_markets" | jq -r '.[] | "  📍 \(.name) (scraped: \(.scraped_at))"' 2>/dev/null
+      
+      # Calculate time since last scrape
+      if command -v date >/dev/null 2>&1; then
+        current_time=$(date -u +%s)
+        scrape_time=$(date -d "$latest_scrape" +%s 2>/dev/null || echo "0")
+        if [ "$scrape_time" -gt 0 ]; then
+          time_diff=$((current_time - scrape_time))
+          hours_ago=$((time_diff / 3600))
+          echo ""
+          if [ $hours_ago -lt 24 ]; then
+            log_success "Data is fresh (scraped $hours_ago hours ago)"
+          elif [ $hours_ago -lt 168 ]; then  # 7 days
+            log_warning "Data is $((hours_ago / 24)) days old - consider running scraper"
+          else
+            log_warning "Data is stale (over a week old) - scraper should be run"
+          fi
+        fi
+      fi
+    else
+      log_warning "No market data found or could not fetch it"
+    fi
+  else
+    log_warning "SUPABASE_ANON_KEY not available - skipping data check"
+  fi
+  
+  echo ""
+  log_info "💡 To trigger scraper: ./scripts/trigger-scraper.sh"
+  log_info "📋 To monitor logs: aws logs tail /ecs/loppestars --follow --region eu-central-1 | grep -i scraper"
 }
 
 # Parse arguments

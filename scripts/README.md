@@ -21,10 +21,11 @@ This directory contains all operational scripts for the Loppestars project.
   - Moved from root directory
 
 ### 🔄 Data Management
-- **`trigger-scraper.sh`** - Manually trigger market data scraper
+- **`trigger-scraper.sh`** - Manually trigger market data scraper (async, 10-30 min)
   - Triggers scraper via API endpoint or Supabase Edge Function
   - Usage: `./scripts/trigger-scraper.sh [--api|--supabase|--status]`
-  - Includes health checks and status monitoring
+  - Handles timeouts gracefully (504/502/503 are normal for long operations)
+  - Includes health checks, status monitoring, and data freshness checks
 
 ## Usage
 

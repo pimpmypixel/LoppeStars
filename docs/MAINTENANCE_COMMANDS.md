@@ -474,7 +474,7 @@ gh run rerun <RUN_ID>
 
 ### Manual Scraper Trigger
 ```bash
-# Trigger market data scraper via API (default)
+# Trigger market data scraper via API (default, async 10-30 min operation)
 ./scripts/trigger-scraper.sh
 
 # Trigger via API endpoint explicitly
@@ -489,6 +489,12 @@ gh run rerun <RUN_ID>
 # Show help
 ./scripts/trigger-scraper.sh --help
 ```
+
+**⏰ Important Notes:**
+- Scraping is **asynchronous** and takes **10-30 minutes** to complete
+- 504/502/503 timeouts are **normal** - scraper continues running in background
+- Use `--status` to monitor progress and check data freshness
+- Check logs with: `aws logs tail /ecs/loppestars --follow --region eu-central-1 | grep -i scraper`
 
 ### Scraper Endpoints
 ```bash
