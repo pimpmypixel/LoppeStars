@@ -80,7 +80,27 @@ serve(async (req) => {
       },
     })
 
-    const result = await response.json()
+    console.log(`API Response: ${response.status} ${response.statusText}`)
+    
+    // Handle response based on content type
+    let result: any
+    const contentType = response.headers.get('content-type') || ''
+    
+    if (contentType.includes('application/json')) {
+      result = await response.json()
+    } else {
+      // Handle HTML or other non-JSON responses
+      const textResponse = await response.text()
+      console.log('Non-JSON response received:', textResponse.substring(0, 200) + '...')
+      
+      result = {
+        error: 'API returned non-JSON response',
+        status: response.status,
+        statusText: response.statusText,
+        contentType: contentType,
+        preview: textResponse.substring(0, 200)
+      }
+    }
     
     // Log the result
     console.log('Scraper response:', result)
@@ -122,7 +142,10 @@ serve(async (req) => {
         }
       )
     } else {
-      throw new Error(`Scraper failed: ${result.message || 'Unknown error'}`)
+      // Handle API errors (4xx, 5xx responses)
+      const errorMessage = result.error || result.message || `API returned ${response.status}: ${response.statusText}`
+      console.error('API Error:', errorMessage)
+      throw new Error(`Scraper API failed: ${errorMessage}`)
     }
 
   } catch (error) {
