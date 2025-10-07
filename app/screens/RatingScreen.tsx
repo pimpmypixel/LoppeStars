@@ -140,7 +140,7 @@ export default function RatingScreen() {
       }
 
       const { data: ratingData, error } = await supabase
-        .from('stall_ratings')
+        .from('ratings')
         .insert(insertData)
         .select('id')
         .single();

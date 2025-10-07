@@ -6,6 +6,8 @@ import {
   RefreshControl,
   FlatList,
   StyleSheet,
+  ActivityIndicator,
+  Animated,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -21,6 +23,48 @@ import AuthGuard from '../components/AuthGuard';
 import MarketItem from '../components/MarketItem';
 import { Text } from '../components/ui-kitten';
 import { Market } from '../types/common/market';
+
+// Animated Market Item Wrapper Component
+const AnimatedMarketItem = ({ 
+  item, 
+  index, 
+  formatDistance 
+}: { 
+  item: Market & { distance?: number }; 
+  index: number;
+  formatDistance: (distance: number) => string;
+}) => {
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const translateY = React.useRef(new Animated.Value(20)).current;
+
+  React.useEffect(() => {
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 400,
+        delay: index * 100, // Stagger delay: 100ms per item
+        useNativeDriver: true,
+      }),
+      Animated.timing(translateY, {
+        toValue: 0,
+        duration: 400,
+        delay: index * 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, [index]);
+
+  return (
+    <Animated.View
+      style={{
+        opacity: fadeAnim,
+        transform: [{ translateY }],
+      }}
+    >
+      <MarketItem market={item} formatDistance={formatDistance} />
+    </Animated.View>
+  );
+};
 
 export default function MarketsScreen() {
   const navigation = useNavigation<any>();
@@ -76,7 +120,7 @@ export default function MarketsScreen() {
         .from('markets')
         .select(`
           *,
-          ratings_count:stall_ratings(count)
+          ratings_count:ratings(count)
         `)
         .order('start_date', { ascending: true })
         .limit(50);
@@ -182,8 +226,8 @@ export default function MarketsScreen() {
     setRefreshing(false);
   };
 
-  const renderMarketItem = ({ item }: { item: Market & { distance?: number } }) => (
-    <MarketItem market={item} formatDistance={formatDistance} />
+  const renderMarketItem = ({ item, index }: { item: Market & { distance?: number }; index: number }) => (
+    <AnimatedMarketItem item={item} index={index} formatDistance={formatDistance} />
   );
 
   return (
@@ -208,6 +252,7 @@ export default function MarketsScreen() {
           {/* Markets List */}
           {isLoading ? (
             <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#FF9500" />
               <Text style={styles.loadingText}>{t('common.loading')}</Text>
             </View>
           ) : (
@@ -274,8 +319,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#1C1917',
   },
   loadingText: {
-    fontSize: 18,
+    fontSize: 16,
     color: '#8F9BB3',
+    marginTop: 16,
   },
   listContent: {
     padding: 20,

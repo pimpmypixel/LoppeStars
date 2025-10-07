@@ -27,9 +27,9 @@ export default function HomeScreen() {
   const loadStats = async () => {
     try {
       // Get ratings count
-      const { count: ratingsCount } = await supabase
-        .from('stall_ratings')
-        .select('*', { count: 'exact', head: true });
+            const { data: ratingsData } = await supabase
+        .from('ratings')
+        .select('id')
 
       // Get markets count
       const { count: marketsCount } = await supabase
@@ -37,7 +37,7 @@ export default function HomeScreen() {
         .select('*', { count: 'exact', head: true });
 
       setStats({
-        ratingsCount: ratingsCount || 0,
+        ratingsCount: ratingsData?.length || 0,
         marketsCount: marketsCount || 0
       });
     } catch (error) {

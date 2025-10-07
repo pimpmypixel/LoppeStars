@@ -56,9 +56,9 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
   const fetchRatingData = async () => {
     try {
       // Fetch both stall ratings and market ratings for this market
-      const { data, error } = await supabase
-        .from('stall_ratings')
-        .select('rating, rating_type')
+            const { data: ratings, error } = await supabase
+        .from('ratings')
+        .select('rating')
         .eq('market_id', market.id);
 
       if (error) {
@@ -66,12 +66,12 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
         return;
       }
 
-      if (data && data.length > 0) {
+      if (ratings && ratings.length > 0) {
         // Calculate average rating from all ratings (both stall and market)
-        const avgRating = data.reduce((sum, r) => sum + r.rating, 0) / data.length;
+        const avgRating = ratings.reduce((sum: number, r: any) => sum + r.rating, 0) / ratings.length;
         setRatingData({
           averageRating: Math.round(avgRating * 10) / 10, // Round to 1 decimal
-          ratingsCount: data.length
+          ratingsCount: ratings.length
         });
       }
     } catch (error) {

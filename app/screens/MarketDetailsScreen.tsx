@@ -61,21 +61,21 @@ export default function MarketDetailsScreen() {
 
     try {
       setLoadingRatings(true);
-      const { data, error } = await supabase
-        .from('stall_ratings')
+            const { data: ratingsData, error: ratingsError } = await supabase
+        .from('ratings')
         .select('*')
         .eq('market_id', market.id)
         .order('created_at', { ascending: false })
         .limit(10);
 
-      if (error) throw error;
+      if (ratingsError) throw ratingsError;
 
-      const ratings = data || [];
+      const ratings = ratingsData || [];
       setStallRatings(ratings);
 
       // Calculate average rating
       if (ratings.length > 0) {
-        const avg = ratings.reduce((sum, r) => sum + r.rating, 0) / ratings.length;
+        const avg = ratings.reduce((sum: number, r: any) => sum + r.rating, 0) / ratings.length;
         setAverageRating(avg);
       }
     } catch (error) {

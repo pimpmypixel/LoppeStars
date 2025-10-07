@@ -35,18 +35,18 @@ export default function MyRatingsScreen() {
         return;
       }
 
-      const { data, error } = await supabase
-        .from('stall_ratings')
+            const { data: ratingsData, error: ratingsError } = await supabase
+        .from('ratings')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
 
-      if (error) {
-        console.error('Error loading ratings:', error);
+      if (ratingsError) {
+        console.error('Error loading ratings:', ratingsError);
         return;
       }
 
-      const normalised = (data || []).map((item) => {
+      const normalised = (ratingsData || []).map((item) => {
         if (item.photo_url && !item.photo_url.startsWith('http')) {
           const { data: publicUrl } = supabase.storage
             .from('stall-photos')

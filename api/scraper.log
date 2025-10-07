@@ -1,0 +1,814 @@
+
+2025-10-07 13:10:28,498 - INFO - Starting fleamarket scraper cron service
+2025-10-07 13:10:28,499 - INFO - Running initial scrape...
+2025-10-07 13:10:28,500 - INFO - ================================================================================
+2025-10-07 13:10:28,500 - INFO - Starting fleamarket scraper...
+2025-10-07 13:10:28,501 - INFO - Timestamp: 2025-10-07T13:10:28.501594
+2025-10-07 13:10:28,502 - INFO - ================================================================================
+2025-10-07 13:10:28,503 - INFO - Discovering available spiders...
+2025-10-07 13:10:29,203 - INFO - Found 2 spider(s): fleamarket, loppemarkeder
+2025-10-07 13:10:29,204 - INFO - 
+2025-10-07 13:10:29,204 - INFO - --------------------------------------------------------------------------------
+2025-10-07 13:10:29,205 - INFO - [1/2] Starting spider: 'fleamarket'
+2025-10-07 13:10:29,205 - INFO - Spider start time: 13:10:29
+2025-10-07 13:10:29,206 - INFO - --------------------------------------------------------------------------------
+2025-10-07 13:10:36,015 - WARNING -   STDERR: 2025-10-07 13:10:29 [scrapy.utils.log] INFO: Scrapy 2.13.3 started (bot: scrapy_project)
+2025-10-07 13:10:36,017 - WARNING -   STDERR: 2025-10-07 13:10:29 [scrapy.utils.log] INFO: Versions:
+2025-10-07 13:10:36,018 - WARNING -   STDERR: {'lxml': '6.0.2',
+2025-10-07 13:10:36,019 - WARNING -   STDERR: 'libxml2': '2.14.6',
+2025-10-07 13:10:36,019 - WARNING -   STDERR: 'cssselect': '1.3.0',
+2025-10-07 13:10:36,020 - WARNING -   STDERR: 'parsel': '1.10.0',
+2025-10-07 13:10:36,020 - WARNING -   STDERR: 'w3lib': '2.3.1',
+2025-10-07 13:10:36,021 - WARNING -   STDERR: 'Twisted': '25.5.0',
+2025-10-07 13:10:36,021 - WARNING -   STDERR: 'Python': '3.11.13 (main, Sep 30 2025, 00:38:45) [GCC 14.2.0]',
+2025-10-07 13:10:36,022 - WARNING -   STDERR: 'pyOpenSSL': '25.3.0 (OpenSSL 3.5.4 30 Sep 2025)',
+2025-10-07 13:10:36,022 - WARNING -   STDERR: 'cryptography': '46.0.2',
+2025-10-07 13:10:36,022 - WARNING -   STDERR: 'Platform': 'Linux-6.10.14-linuxkit-x86_64-with-glibc2.41'}
+2025-10-07 13:10:36,023 - WARNING -   STDERR: 2025-10-07 13:10:29 [fleamarket] INFO: Initializing fleamarket spider (max_markets=10)
+2025-10-07 13:10:36,023 - WARNING -   STDERR: 2025-10-07 13:10:29 [scrapy.addons] INFO: Enabled addons:
+2025-10-07 13:10:36,023 - WARNING -   STDERR: []
+2025-10-07 13:10:36,024 - WARNING -   STDERR: 2025-10-07 13:10:29 [py.warnings] WARNING: /usr/local/lib/python3.11/site-packages/scrapy/utils/request.py:120: ScrapyDeprecationWarning: 'REQUEST_FINGERPRINTER_IMPLEMENTATION' is a deprecated setting.
+2025-10-07 13:10:36,024 - WARNING -   STDERR: It will be removed in a future version of Scrapy.
+2025-10-07 13:10:36,024 - WARNING -   STDERR: return cls(crawler)
+2025-10-07 13:10:36,025 - WARNING -   STDERR: 2025-10-07 13:10:29 [scrapy.extensions.telnet] INFO: Telnet Password: 3c3e3e795c99c3c9
+2025-10-07 13:10:36,025 - WARNING -   STDERR: 2025-10-07 13:10:29 [scrapy.middleware] INFO: Enabled extensions:
+2025-10-07 13:10:36,026 - WARNING -   STDERR: ['scrapy.extensions.corestats.CoreStats',
+2025-10-07 13:10:36,026 - WARNING -   STDERR: 'scrapy.extensions.telnet.TelnetConsole',
+2025-10-07 13:10:36,026 - WARNING -   STDERR: 'scrapy.extensions.memusage.MemoryUsage',
+2025-10-07 13:10:36,027 - WARNING -   STDERR: 'scrapy.extensions.logstats.LogStats',
+2025-10-07 13:10:36,027 - WARNING -   STDERR: 'scrapy.extensions.throttle.AutoThrottle']
+2025-10-07 13:10:36,027 - WARNING -   STDERR: 2025-10-07 13:10:29 [scrapy.crawler] INFO: Overridden settings:
+2025-10-07 13:10:36,028 - WARNING -   STDERR: {'AUTOTHROTTLE_ENABLED': True,
+2025-10-07 13:10:36,028 - WARNING -   STDERR: 'AUTOTHROTTLE_START_DELAY': 1,
+2025-10-07 13:10:36,029 - WARNING -   STDERR: 'BOT_NAME': 'scrapy_project',
+2025-10-07 13:10:36,029 - WARNING -   STDERR: 'COOKIES_ENABLED': False,
+2025-10-07 13:10:36,029 - WARNING -   STDERR: 'LOG_LEVEL': 'INFO',
+2025-10-07 13:10:36,029 - WARNING -   STDERR: 'NEWSPIDER_MODULE': 'scrapy_project.spiders',
+2025-10-07 13:10:36,030 - WARNING -   STDERR: 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
+2025-10-07 13:10:36,030 - WARNING -   STDERR: 'ROBOTSTXT_OBEY': True,
+2025-10-07 13:10:36,031 - WARNING -   STDERR: 'SPIDER_MODULES': ['scrapy_project.spiders']}
+2025-10-07 13:10:36,031 - WARNING -   STDERR: 2025-10-07 13:10:30 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Android
+2025-10-07 13:10:36,031 - WARNING -   STDERR: 2025-10-07 13:10:30 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,031 - WARNING -   STDERR: 2025-10-07 13:10:30 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,032 - WARNING -   STDERR: 2025-10-07 13:10:30 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,032 - WARNING -   STDERR: 2025-10-07 13:10:30 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV13, Brand: Sony, Model: BDV13
+2025-10-07 13:10:36,033 - WARNING -   STDERR: 2025-10-07 13:10:30 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Nintendo DSi, Brand: Nintendo, Model: DSi
+2025-10-07 13:10:36,033 - WARNING -   STDERR: 2025-10-07 13:10:30 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,033 - WARNING -   STDERR: 2025-10-07 13:10:30 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:10:36,033 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF F90M, Brand: LYF, Model: F90M
+2025-10-07 13:10:36,034 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV14, Brand: Sony, Model: BDV14
+2025-10-07 13:10:36,034 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LG Web0S SmartTV, Brand: LG, Model: Web0S SmartTV
+2025-10-07 13:10:36,035 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,035 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,035 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,036 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,036 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,036 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,037 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,037 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV11, Brand: Sony, Model: BDV11
+2025-10-07 13:10:36,037 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,037 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,038 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,038 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,038 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Nintendo DSi, Brand: Nintendo, Model: DSi
+2025-10-07 13:10:36,039 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF LF-2403N, Brand: LYF, Model: LF-2403N
+2025-10-07 13:10:36,039 - WARNING -   STDERR: 2025-10-07 13:10:31 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF F90M, Brand: LYF, Model: F90M
+2025-10-07 13:10:36,039 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,039 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,040 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Applebot
+2025-10-07 13:10:36,040 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,040 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Applebot
+2025-10-07 13:10:36,040 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:10:36,041 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:10:36,041 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:36,041 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: SMTBot
+2025-10-07 13:10:36,041 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:36,042 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:36,042 - WARNING -   STDERR: 2025-10-07 13:10:32 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: WebKit Nightly
+2025-10-07 13:10:36,042 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:36,042 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,043 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:36,043 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:36,043 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Robot
+2025-10-07 13:10:36,043 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:36,044 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Zune
+2025-10-07 13:10:36,044 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy.middleware] INFO: Enabled downloader middlewares:
+2025-10-07 13:10:36,044 - WARNING -   STDERR: ['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+2025-10-07 13:10:36,044 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware',
+2025-10-07 13:10:36,045 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+2025-10-07 13:10:36,045 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+2025-10-07 13:10:36,045 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+2025-10-07 13:10:36,046 - WARNING -   STDERR: 'scrapy_user_agents.middlewares.RandomUserAgentMiddleware',
+2025-10-07 13:10:36,046 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+2025-10-07 13:10:36,046 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+2025-10-07 13:10:36,046 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+2025-10-07 13:10:36,047 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+2025-10-07 13:10:36,047 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+2025-10-07 13:10:36,047 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+2025-10-07 13:10:36,047 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2025-10-07 13:10:36,047 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy.middleware] INFO: Enabled spider middlewares:
+2025-10-07 13:10:36,048 - WARNING -   STDERR: ['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+2025-10-07 13:10:36,048 - WARNING -   STDERR: 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+2025-10-07 13:10:36,048 - WARNING -   STDERR: 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+2025-10-07 13:10:36,048 - WARNING -   STDERR: 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+2025-10-07 13:10:36,049 - WARNING -   STDERR: 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2025-10-07 13:10:36,049 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy.middleware] INFO: Enabled item pipelines:
+2025-10-07 13:10:36,049 - WARNING -   STDERR: ['scrapy_project.pipelines.SupabasePipeline']
+2025-10-07 13:10:36,049 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy.core.engine] INFO: Spider opened
+2025-10-07 13:10:36,050 - WARNING -   STDERR: 2025-10-07 13:10:33 [fleamarket] INFO: Pipeline opened for spider: fleamarket
+2025-10-07 13:10:36,050 - WARNING -   STDERR: 2025-10-07 13:10:33 [fleamarket] INFO: Connected to Supabase: https://oprevwbturtujbugynct.supabase.co
+2025-10-07 13:10:36,050 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2025-10-07 13:10:36,050 - WARNING -   STDERR: 2025-10-07 13:10:33 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2025-10-07 13:10:36,051 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO: Parsing market listing page: https://markedskalenderen.dk/marked/kategori/loppemarked
+2025-10-07 13:10:36,051 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO: Found 101 table rows to process
+2025-10-07 13:10:36,051 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO: Following pagination link: https://markedskalenderen.dk/marked/kategori/loppemarked?page=2
+2025-10-07 13:10:36,052 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO: Parsing market listing page: https://markedskalenderen.dk/marked/kategori/loppemarked?page=2
+2025-10-07 13:10:36,052 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO: Found 9 table rows to process
+2025-10-07 13:10:36,052 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO: No more pagination pages found
+2025-10-07 13:10:36,052 - WARNING -   STDERR: 2025-10-07 13:10:35 [scrapy.core.engine] INFO: Closing spider (finished)
+2025-10-07 13:10:36,052 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO: ============================================================
+2025-10-07 13:10:36,053 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO: Pipeline Statistics:
+2025-10-07 13:10:36,053 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO:   Total items processed: 0
+2025-10-07 13:10:36,053 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO:   Successfully saved: 0
+2025-10-07 13:10:36,053 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO:   Failed: 0
+2025-10-07 13:10:36,054 - WARNING -   STDERR: 2025-10-07 13:10:35 [fleamarket] INFO: ============================================================
+2025-10-07 13:10:36,054 - WARNING -   STDERR: 2025-10-07 13:10:35 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+2025-10-07 13:10:36,054 - WARNING -   STDERR: {'downloader/request_bytes': 1028,
+2025-10-07 13:10:36,054 - WARNING -   STDERR: 'downloader/request_count': 3,
+2025-10-07 13:10:36,054 - WARNING -   STDERR: 'downloader/request_method_count/GET': 3,
+2025-10-07 13:10:36,055 - WARNING -   STDERR: 'downloader/response_bytes': 15585,
+2025-10-07 13:10:36,055 - WARNING -   STDERR: 'downloader/response_count': 3,
+2025-10-07 13:10:36,055 - WARNING -   STDERR: 'downloader/response_status_count/200': 3,
+2025-10-07 13:10:36,055 - WARNING -   STDERR: 'elapsed_time_seconds': 2.10062,
+2025-10-07 13:10:36,056 - WARNING -   STDERR: 'finish_reason': 'finished',
+2025-10-07 13:10:36,056 - WARNING -   STDERR: 'finish_time': datetime.datetime(2025, 10, 7, 13, 10, 35, 830079, tzinfo=datetime.timezone.utc),
+2025-10-07 13:10:36,056 - WARNING -   STDERR: 'httpcompression/response_bytes': 111018,
+2025-10-07 13:10:36,056 - WARNING -   STDERR: 'httpcompression/response_count': 2,
+2025-10-07 13:10:36,057 - WARNING -   STDERR: 'items_per_minute': 0.0,
+2025-10-07 13:10:36,057 - WARNING -   STDERR: 'log_count/INFO': 24,
+2025-10-07 13:10:36,057 - WARNING -   STDERR: 'log_count/WARNING': 46,
+2025-10-07 13:10:36,057 - WARNING -   STDERR: 'memusage/max': 92258304,
+2025-10-07 13:10:36,058 - WARNING -   STDERR: 'memusage/startup': 92258304,
+2025-10-07 13:10:36,058 - WARNING -   STDERR: 'request_depth_max': 1,
+2025-10-07 13:10:36,058 - WARNING -   STDERR: 'response_received_count': 3,
+2025-10-07 13:10:36,058 - WARNING -   STDERR: 'responses_per_minute': 90.0,
+2025-10-07 13:10:36,058 - WARNING -   STDERR: 'robotstxt/request_count': 1,
+2025-10-07 13:10:36,059 - WARNING -   STDERR: 'robotstxt/response_count': 1,
+2025-10-07 13:10:36,059 - WARNING -   STDERR: 'robotstxt/response_status_count/200': 1,
+2025-10-07 13:10:36,059 - WARNING -   STDERR: 'scheduler/dequeued': 2,
+2025-10-07 13:10:36,059 - WARNING -   STDERR: 'scheduler/dequeued/memory': 2,
+2025-10-07 13:10:36,059 - WARNING -   STDERR: 'scheduler/enqueued': 2,
+2025-10-07 13:10:36,060 - WARNING -   STDERR: 'scheduler/enqueued/memory': 2,
+2025-10-07 13:10:36,060 - WARNING -   STDERR: 'start_time': datetime.datetime(2025, 10, 7, 13, 10, 33, 729459, tzinfo=datetime.timezone.utc)}
+2025-10-07 13:10:36,060 - WARNING -   STDERR: 2025-10-07 13:10:35 [scrapy.core.engine] INFO: Spider closed (finished)
+2025-10-07 13:10:36,060 - INFO - 
+2025-10-07 13:10:36,060 - INFO - Spider 'fleamarket' finished in 6.81 seconds
+2025-10-07 13:10:36,061 - INFO - ✓ Spider 'fleamarket' completed successfully
+2025-10-07 13:10:36,061 - INFO -   Items scraped: 0
+2025-10-07 13:10:36,061 - INFO - 
+2025-10-07 13:10:36,061 - INFO - --------------------------------------------------------------------------------
+2025-10-07 13:10:36,062 - INFO - [2/2] Starting spider: 'loppemarkeder'
+2025-10-07 13:10:36,062 - INFO - Spider start time: 13:10:36
+2025-10-07 13:10:36,062 - INFO - --------------------------------------------------------------------------------
+2025-10-07 13:10:44,612 - WARNING -   STDERR: 2025-10-07 13:10:36 [scrapy.utils.log] INFO: Scrapy 2.13.3 started (bot: scrapy_project)
+2025-10-07 13:10:44,613 - WARNING -   STDERR: 2025-10-07 13:10:36 [scrapy.utils.log] INFO: Versions:
+2025-10-07 13:10:44,614 - WARNING -   STDERR: {'lxml': '6.0.2',
+2025-10-07 13:10:44,614 - WARNING -   STDERR: 'libxml2': '2.14.6',
+2025-10-07 13:10:44,614 - WARNING -   STDERR: 'cssselect': '1.3.0',
+2025-10-07 13:10:44,615 - WARNING -   STDERR: 'parsel': '1.10.0',
+2025-10-07 13:10:44,615 - WARNING -   STDERR: 'w3lib': '2.3.1',
+2025-10-07 13:10:44,615 - WARNING -   STDERR: 'Twisted': '25.5.0',
+2025-10-07 13:10:44,616 - WARNING -   STDERR: 'Python': '3.11.13 (main, Sep 30 2025, 00:38:45) [GCC 14.2.0]',
+2025-10-07 13:10:44,616 - WARNING -   STDERR: 'pyOpenSSL': '25.3.0 (OpenSSL 3.5.4 30 Sep 2025)',
+2025-10-07 13:10:44,617 - WARNING -   STDERR: 'cryptography': '46.0.2',
+2025-10-07 13:10:44,617 - WARNING -   STDERR: 'Platform': 'Linux-6.10.14-linuxkit-x86_64-with-glibc2.41'}
+2025-10-07 13:10:44,618 - WARNING -   STDERR: 2025-10-07 13:10:36 [scrapy.addons] INFO: Enabled addons:
+2025-10-07 13:10:44,618 - WARNING -   STDERR: []
+2025-10-07 13:10:44,618 - WARNING -   STDERR: 2025-10-07 13:10:36 [py.warnings] WARNING: /usr/local/lib/python3.11/site-packages/scrapy/utils/request.py:120: ScrapyDeprecationWarning: 'REQUEST_FINGERPRINTER_IMPLEMENTATION' is a deprecated setting.
+2025-10-07 13:10:44,619 - WARNING -   STDERR: It will be removed in a future version of Scrapy.
+2025-10-07 13:10:44,619 - WARNING -   STDERR: return cls(crawler)
+2025-10-07 13:10:44,619 - WARNING -   STDERR: 2025-10-07 13:10:36 [scrapy.extensions.telnet] INFO: Telnet Password: 74e912b3fad70e0e
+2025-10-07 13:10:44,619 - WARNING -   STDERR: 2025-10-07 13:10:36 [scrapy.middleware] INFO: Enabled extensions:
+2025-10-07 13:10:44,620 - WARNING -   STDERR: ['scrapy.extensions.corestats.CoreStats',
+2025-10-07 13:10:44,620 - WARNING -   STDERR: 'scrapy.extensions.telnet.TelnetConsole',
+2025-10-07 13:10:44,620 - WARNING -   STDERR: 'scrapy.extensions.memusage.MemoryUsage',
+2025-10-07 13:10:44,621 - WARNING -   STDERR: 'scrapy.extensions.logstats.LogStats',
+2025-10-07 13:10:44,621 - WARNING -   STDERR: 'scrapy.extensions.throttle.AutoThrottle']
+2025-10-07 13:10:44,621 - WARNING -   STDERR: 2025-10-07 13:10:36 [scrapy.crawler] INFO: Overridden settings:
+2025-10-07 13:10:44,622 - WARNING -   STDERR: {'AUTOTHROTTLE_ENABLED': True,
+2025-10-07 13:10:44,622 - WARNING -   STDERR: 'AUTOTHROTTLE_START_DELAY': 1,
+2025-10-07 13:10:44,622 - WARNING -   STDERR: 'BOT_NAME': 'scrapy_project',
+2025-10-07 13:10:44,623 - WARNING -   STDERR: 'COOKIES_ENABLED': False,
+2025-10-07 13:10:44,623 - WARNING -   STDERR: 'LOG_LEVEL': 'INFO',
+2025-10-07 13:10:44,623 - WARNING -   STDERR: 'NEWSPIDER_MODULE': 'scrapy_project.spiders',
+2025-10-07 13:10:44,624 - WARNING -   STDERR: 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
+2025-10-07 13:10:44,624 - WARNING -   STDERR: 'ROBOTSTXT_OBEY': True,
+2025-10-07 13:10:44,625 - WARNING -   STDERR: 'SPIDER_MODULES': ['scrapy_project.spiders']}
+2025-10-07 13:10:44,625 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Android
+2025-10-07 13:10:44,625 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,625 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,626 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,626 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV13, Brand: Sony, Model: BDV13
+2025-10-07 13:10:44,626 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Nintendo DSi, Brand: Nintendo, Model: DSi
+2025-10-07 13:10:44,627 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,627 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:10:44,627 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF F90M, Brand: LYF, Model: F90M
+2025-10-07 13:10:44,627 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV14, Brand: Sony, Model: BDV14
+2025-10-07 13:10:44,628 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LG Web0S SmartTV, Brand: LG, Model: Web0S SmartTV
+2025-10-07 13:10:44,628 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,629 - WARNING -   STDERR: 2025-10-07 13:10:37 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,629 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,629 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,629 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,629 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,630 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,630 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV11, Brand: Sony, Model: BDV11
+2025-10-07 13:10:44,630 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,631 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,631 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,631 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,631 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Nintendo DSi, Brand: Nintendo, Model: DSi
+2025-10-07 13:10:44,632 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF LF-2403N, Brand: LYF, Model: LF-2403N
+2025-10-07 13:10:44,632 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF F90M, Brand: LYF, Model: F90M
+2025-10-07 13:10:44,632 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,632 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,633 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Applebot
+2025-10-07 13:10:44,633 - WARNING -   STDERR: 2025-10-07 13:10:38 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,634 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Applebot
+2025-10-07 13:10:44,634 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:10:44,634 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:10:44,634 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:44,635 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: SMTBot
+2025-10-07 13:10:44,635 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:44,635 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:44,635 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: WebKit Nightly
+2025-10-07 13:10:44,636 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:44,636 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,636 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:44,636 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:10:44,637 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Robot
+2025-10-07 13:10:44,637 - WARNING -   STDERR: 2025-10-07 13:10:39 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:10:44,637 - WARNING -   STDERR: 2025-10-07 13:10:40 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Zune
+2025-10-07 13:10:44,637 - WARNING -   STDERR: 2025-10-07 13:10:40 [scrapy.middleware] INFO: Enabled downloader middlewares:
+2025-10-07 13:10:44,638 - WARNING -   STDERR: ['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+2025-10-07 13:10:44,638 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware',
+2025-10-07 13:10:44,638 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+2025-10-07 13:10:44,638 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+2025-10-07 13:10:44,639 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+2025-10-07 13:10:44,639 - WARNING -   STDERR: 'scrapy_user_agents.middlewares.RandomUserAgentMiddleware',
+2025-10-07 13:10:44,639 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+2025-10-07 13:10:44,639 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+2025-10-07 13:10:44,640 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+2025-10-07 13:10:44,640 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+2025-10-07 13:10:44,640 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+2025-10-07 13:10:44,640 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+2025-10-07 13:10:44,641 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2025-10-07 13:10:44,641 - WARNING -   STDERR: 2025-10-07 13:10:40 [scrapy.middleware] INFO: Enabled spider middlewares:
+2025-10-07 13:10:44,641 - WARNING -   STDERR: ['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+2025-10-07 13:10:44,642 - WARNING -   STDERR: 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+2025-10-07 13:10:44,642 - WARNING -   STDERR: 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+2025-10-07 13:10:44,642 - WARNING -   STDERR: 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+2025-10-07 13:10:44,642 - WARNING -   STDERR: 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2025-10-07 13:10:44,643 - WARNING -   STDERR: 2025-10-07 13:10:40 [scrapy.middleware] INFO: Enabled item pipelines:
+2025-10-07 13:10:44,643 - WARNING -   STDERR: ['scrapy_project.pipelines.SupabasePipeline']
+2025-10-07 13:10:44,643 - WARNING -   STDERR: 2025-10-07 13:10:40 [scrapy.core.engine] INFO: Spider opened
+2025-10-07 13:10:44,643 - WARNING -   STDERR: 2025-10-07 13:10:40 [loppemarkeder] INFO: Pipeline opened for spider: loppemarkeder
+2025-10-07 13:10:44,644 - WARNING -   STDERR: 2025-10-07 13:10:40 [loppemarkeder] INFO: Connected to Supabase: https://oprevwbturtujbugynct.supabase.co
+2025-10-07 13:10:44,644 - WARNING -   STDERR: 2025-10-07 13:10:40 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2025-10-07 13:10:44,644 - WARNING -   STDERR: 2025-10-07 13:10:40 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2025-10-07 13:10:44,644 - WARNING -   STDERR: 2025-10-07 13:10:42 [loppemarkeder] INFO: Parsing response from: https://loppemarkeder.nu/wp-json/tribe/events/v1/events?per_page=100
+2025-10-07 13:10:44,645 - WARNING -   STDERR: 2025-10-07 13:10:42 [loppemarkeder] INFO: Found 100 events in response
+2025-10-07 13:10:44,645 - WARNING -   STDERR: 2025-10-07 13:10:42 [scrapy.core.scraper] ERROR: Spider error processing <GET https://loppemarkeder.nu/wp-json/tribe/events/v1/events?per_page=100> (referer: None)
+2025-10-07 13:10:44,645 - WARNING -   STDERR: Traceback (most recent call last):
+2025-10-07 13:10:44,645 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/utils/defer.py", line 343, in iter_errback
+2025-10-07 13:10:44,645 - WARNING -   STDERR: yield next(it)
+2025-10-07 13:10:44,646 - WARNING -   STDERR: ^^^^^^^^
+2025-10-07 13:10:44,646 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/utils/python.py", line 369, in __next__
+2025-10-07 13:10:44,646 - WARNING -   STDERR: return next(self.data)
+2025-10-07 13:10:44,646 - WARNING -   STDERR: ^^^^^^^^^^^^^^^
+2025-10-07 13:10:44,647 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/utils/python.py", line 369, in __next__
+2025-10-07 13:10:44,647 - WARNING -   STDERR: return next(self.data)
+2025-10-07 13:10:44,647 - WARNING -   STDERR: ^^^^^^^^^^^^^^^
+2025-10-07 13:10:44,647 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/core/spidermw.py", line 167, in process_sync
+2025-10-07 13:10:44,648 - WARNING -   STDERR: yield from iterable
+2025-10-07 13:10:44,648 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/spidermiddlewares/base.py", line 58, in process_spider_output
+2025-10-07 13:10:44,648 - WARNING -   STDERR: for o in result:
+2025-10-07 13:10:44,648 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/core/spidermw.py", line 167, in process_sync
+2025-10-07 13:10:44,648 - WARNING -   STDERR: yield from iterable
+2025-10-07 13:10:44,649 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/spidermiddlewares/base.py", line 58, in process_spider_output
+2025-10-07 13:10:44,649 - WARNING -   STDERR: for o in result:
+2025-10-07 13:10:44,649 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/core/spidermw.py", line 167, in process_sync
+2025-10-07 13:10:44,649 - WARNING -   STDERR: yield from iterable
+2025-10-07 13:10:44,649 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/spidermiddlewares/base.py", line 58, in process_spider_output
+2025-10-07 13:10:44,650 - WARNING -   STDERR: for o in result:
+2025-10-07 13:10:44,650 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/core/spidermw.py", line 167, in process_sync
+2025-10-07 13:10:44,650 - WARNING -   STDERR: yield from iterable
+2025-10-07 13:10:44,650 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/spidermiddlewares/depth.py", line 59, in process_spider_output
+2025-10-07 13:10:44,651 - WARNING -   STDERR: yield from super().process_spider_output(response, result, spider)
+2025-10-07 13:10:44,651 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/spidermiddlewares/base.py", line 58, in process_spider_output
+2025-10-07 13:10:44,651 - WARNING -   STDERR: for o in result:
+2025-10-07 13:10:44,651 - WARNING -   STDERR: File "/usr/local/lib/python3.11/site-packages/scrapy/core/spidermw.py", line 167, in process_sync
+2025-10-07 13:10:44,652 - WARNING -   STDERR: yield from iterable
+2025-10-07 13:10:44,652 - WARNING -   STDERR: File "/app/scrapy_project/scrapy_project/spiders/loppemarkeder.py", line 33, in parse
+2025-10-07 13:10:44,652 - WARNING -   STDERR: item['address'] = venue.get('address')
+2025-10-07 13:10:44,652 - WARNING -   STDERR: ^^^^^^^^^
+2025-10-07 13:10:44,652 - WARNING -   STDERR: AttributeError: 'list' object has no attribute 'get'
+2025-10-07 13:10:44,653 - WARNING -   STDERR: 2025-10-07 13:10:43 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10000661 "HTTP/2 200 OK"
+2025-10-07 13:10:44,653 - WARNING -   STDERR: 2025-10-07 13:10:43 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 200 OK"
+2025-10-07 13:10:44,653 - WARNING -   STDERR: 2025-10-07 13:10:43 [loppemarkeder] INFO: ✓ [1/1] Successfully upserted: Loppemarked &#8211; Onsdagsmarked &#8211; Vig
+2025-10-07 13:10:44,653 - WARNING -   STDERR: 2025-10-07 13:10:43 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001763 "HTTP/2 200 OK"
+2025-10-07 13:10:44,653 - WARNING -   STDERR: 2025-10-07 13:10:44 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 200 OK"
+2025-10-07 13:10:44,654 - WARNING -   STDERR: 2025-10-07 13:10:44 [loppemarkeder] INFO: ✓ [2/2] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:10:44,654 - WARNING -   STDERR: 2025-10-07 13:10:44 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10003626 "HTTP/2 200 OK"
+2025-10-07 13:10:44,654 - WARNING -   STDERR: 2025-10-07 13:10:44 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 200 OK"
+2025-10-07 13:10:44,654 - WARNING -   STDERR: 2025-10-07 13:10:44 [loppemarkeder] INFO: ✓ [3/3] Successfully upserted: Loppemarked &#8211; Axeltorv ved Tivoli
+2025-10-07 13:10:44,654 - WARNING -   STDERR: 2025-10-07 13:10:44 [scrapy.core.engine] INFO: Closing spider (finished)
+2025-10-07 13:10:44,655 - WARNING -   STDERR: 2025-10-07 13:10:44 [loppemarkeder] INFO: ============================================================
+2025-10-07 13:10:44,655 - WARNING -   STDERR: 2025-10-07 13:10:44 [loppemarkeder] INFO: Pipeline Statistics:
+2025-10-07 13:10:44,655 - WARNING -   STDERR: 2025-10-07 13:10:44 [loppemarkeder] INFO:   Total items processed: 3
+2025-10-07 13:10:44,656 - WARNING -   STDERR: 2025-10-07 13:10:44 [loppemarkeder] INFO:   Successfully saved: 3
+2025-10-07 13:10:44,656 - WARNING -   STDERR: 2025-10-07 13:10:44 [loppemarkeder] INFO:   Failed: 0
+2025-10-07 13:10:44,656 - WARNING -   STDERR: 2025-10-07 13:10:44 [loppemarkeder] INFO:   Success rate: 100.0%
+2025-10-07 13:10:44,656 - WARNING -   STDERR: 2025-10-07 13:10:44 [loppemarkeder] INFO: ============================================================
+2025-10-07 13:10:44,656 - WARNING -   STDERR: 2025-10-07 13:10:44 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+2025-10-07 13:10:44,657 - WARNING -   STDERR: {'downloader/request_bytes': 626,
+2025-10-07 13:10:44,657 - WARNING -   STDERR: 'downloader/request_count': 2,
+2025-10-07 13:10:44,657 - WARNING -   STDERR: 'downloader/request_method_count/GET': 2,
+2025-10-07 13:10:44,657 - WARNING -   STDERR: 'downloader/response_bytes': 99119,
+2025-10-07 13:10:44,658 - WARNING -   STDERR: 'downloader/response_count': 2,
+2025-10-07 13:10:44,658 - WARNING -   STDERR: 'downloader/response_status_count/200': 2,
+2025-10-07 13:10:44,658 - WARNING -   STDERR: 'elapsed_time_seconds': 4.056816,
+2025-10-07 13:10:44,658 - WARNING -   STDERR: 'finish_reason': 'finished',
+2025-10-07 13:10:44,659 - WARNING -   STDERR: 'finish_time': datetime.datetime(2025, 10, 7, 13, 10, 44, 337087, tzinfo=datetime.timezone.utc),
+2025-10-07 13:10:44,659 - WARNING -   STDERR: 'httpcompression/response_bytes': 685550,
+2025-10-07 13:10:44,659 - WARNING -   STDERR: 'httpcompression/response_count': 2,
+2025-10-07 13:10:44,659 - WARNING -   STDERR: 'item_scraped_count': 3,
+2025-10-07 13:10:44,659 - WARNING -   STDERR: 'items_per_minute': 45.0,
+2025-10-07 13:10:44,660 - WARNING -   STDERR: 'log_count/ERROR': 1,
+2025-10-07 13:10:44,660 - WARNING -   STDERR: 'log_count/INFO': 30,
+2025-10-07 13:10:44,660 - WARNING -   STDERR: 'log_count/WARNING': 46,
+2025-10-07 13:10:44,660 - WARNING -   STDERR: 'memusage/max': 92270592,
+2025-10-07 13:10:44,660 - WARNING -   STDERR: 'memusage/startup': 92270592,
+2025-10-07 13:10:44,661 - WARNING -   STDERR: 'response_received_count': 2,
+2025-10-07 13:10:44,661 - WARNING -   STDERR: 'responses_per_minute': 30.0,
+2025-10-07 13:10:44,661 - WARNING -   STDERR: 'robotstxt/request_count': 1,
+2025-10-07 13:10:44,661 - WARNING -   STDERR: 'robotstxt/response_count': 1,
+2025-10-07 13:10:44,661 - WARNING -   STDERR: 'robotstxt/response_status_count/200': 1,
+2025-10-07 13:10:44,662 - WARNING -   STDERR: 'scheduler/dequeued': 1,
+2025-10-07 13:10:44,662 - WARNING -   STDERR: 'scheduler/dequeued/memory': 1,
+2025-10-07 13:10:44,662 - WARNING -   STDERR: 'scheduler/enqueued': 1,
+2025-10-07 13:10:44,662 - WARNING -   STDERR: 'scheduler/enqueued/memory': 1,
+2025-10-07 13:10:44,662 - WARNING -   STDERR: 'spider_exceptions/AttributeError': 1,
+2025-10-07 13:10:44,663 - WARNING -   STDERR: 'spider_exceptions/count': 1,
+2025-10-07 13:10:44,663 - WARNING -   STDERR: 'start_time': datetime.datetime(2025, 10, 7, 13, 10, 40, 280271, tzinfo=datetime.timezone.utc)}
+2025-10-07 13:10:44,663 - WARNING -   STDERR: 2025-10-07 13:10:44 [scrapy.core.engine] INFO: Spider closed (finished)
+2025-10-07 13:10:44,663 - INFO - 
+2025-10-07 13:10:44,663 - INFO - Spider 'loppemarkeder' finished in 8.55 seconds
+2025-10-07 13:10:44,664 - INFO - ✓ Spider 'loppemarkeder' completed successfully
+2025-10-07 13:10:44,664 - INFO -   Items scraped: 0
+2025-10-07 13:10:44,664 - INFO - 
+2025-10-07 13:10:44,664 - INFO - ================================================================================
+2025-10-07 13:10:44,664 - INFO - Scraper run completed in 15.46 seconds (0.3 minutes)
+2025-10-07 13:10:44,665 - INFO - End timestamp: 2025-10-07T13:10:44.665173
+2025-10-07 13:10:44,665 - INFO - ================================================================================
+2025-10-07 13:10:44,665 - INFO - Scraper scheduled to run daily at 02:00. Press Ctrl+C to exit.
+2025-10-07 13:12:45,712 - INFO - Starting fleamarket scraper cron service
+2025-10-07 13:12:45,713 - INFO - Running initial scrape...
+2025-10-07 13:12:45,713 - INFO - ================================================================================
+2025-10-07 13:12:45,713 - INFO - Starting fleamarket scraper...
+2025-10-07 13:12:45,713 - INFO - Timestamp: 2025-10-07T13:12:45.713922
+2025-10-07 13:12:45,714 - INFO - ================================================================================
+2025-10-07 13:12:45,714 - INFO - Discovering available spiders...
+2025-10-07 13:12:46,503 - INFO - Found 2 spider(s): fleamarket, loppemarkeder
+2025-10-07 13:12:46,504 - INFO - 
+2025-10-07 13:12:46,504 - INFO - --------------------------------------------------------------------------------
+2025-10-07 13:12:46,505 - INFO - [1/2] Starting spider: 'fleamarket'
+2025-10-07 13:12:46,505 - INFO - Spider start time: 13:12:46
+2025-10-07 13:12:46,506 - INFO - --------------------------------------------------------------------------------
+2025-10-07 13:12:54,929 - WARNING -   STDERR: 2025-10-07 13:12:47 [scrapy.utils.log] INFO: Scrapy 2.13.3 started (bot: scrapy_project)
+2025-10-07 13:12:54,929 - WARNING -   STDERR: 2025-10-07 13:12:47 [scrapy.utils.log] INFO: Versions:
+2025-10-07 13:12:54,930 - WARNING -   STDERR: {'lxml': '6.0.2',
+2025-10-07 13:12:54,930 - WARNING -   STDERR: 'libxml2': '2.14.6',
+2025-10-07 13:12:54,931 - WARNING -   STDERR: 'cssselect': '1.3.0',
+2025-10-07 13:12:54,931 - WARNING -   STDERR: 'parsel': '1.10.0',
+2025-10-07 13:12:54,932 - WARNING -   STDERR: 'w3lib': '2.3.1',
+2025-10-07 13:12:54,932 - WARNING -   STDERR: 'Twisted': '25.5.0',
+2025-10-07 13:12:54,932 - WARNING -   STDERR: 'Python': '3.11.13 (main, Sep 30 2025, 00:38:45) [GCC 14.2.0]',
+2025-10-07 13:12:54,933 - WARNING -   STDERR: 'pyOpenSSL': '25.3.0 (OpenSSL 3.5.4 30 Sep 2025)',
+2025-10-07 13:12:54,933 - WARNING -   STDERR: 'cryptography': '46.0.2',
+2025-10-07 13:12:54,934 - WARNING -   STDERR: 'Platform': 'Linux-6.10.14-linuxkit-x86_64-with-glibc2.41'}
+2025-10-07 13:12:54,934 - WARNING -   STDERR: 2025-10-07 13:12:47 [fleamarket] INFO: Initializing fleamarket spider (max_markets=10)
+2025-10-07 13:12:54,934 - WARNING -   STDERR: 2025-10-07 13:12:47 [scrapy.addons] INFO: Enabled addons:
+2025-10-07 13:12:54,935 - WARNING -   STDERR: []
+2025-10-07 13:12:54,935 - WARNING -   STDERR: 2025-10-07 13:12:47 [py.warnings] WARNING: /usr/local/lib/python3.11/site-packages/scrapy/utils/request.py:120: ScrapyDeprecationWarning: 'REQUEST_FINGERPRINTER_IMPLEMENTATION' is a deprecated setting.
+2025-10-07 13:12:54,935 - WARNING -   STDERR: It will be removed in a future version of Scrapy.
+2025-10-07 13:12:54,936 - WARNING -   STDERR: return cls(crawler)
+2025-10-07 13:12:54,936 - WARNING -   STDERR: 2025-10-07 13:12:47 [scrapy.extensions.telnet] INFO: Telnet Password: e4f34e7bb935a272
+2025-10-07 13:12:54,937 - WARNING -   STDERR: 2025-10-07 13:12:47 [scrapy.middleware] INFO: Enabled extensions:
+2025-10-07 13:12:54,937 - WARNING -   STDERR: ['scrapy.extensions.corestats.CoreStats',
+2025-10-07 13:12:54,937 - WARNING -   STDERR: 'scrapy.extensions.telnet.TelnetConsole',
+2025-10-07 13:12:54,938 - WARNING -   STDERR: 'scrapy.extensions.memusage.MemoryUsage',
+2025-10-07 13:12:54,938 - WARNING -   STDERR: 'scrapy.extensions.logstats.LogStats',
+2025-10-07 13:12:54,938 - WARNING -   STDERR: 'scrapy.extensions.throttle.AutoThrottle']
+2025-10-07 13:12:54,939 - WARNING -   STDERR: 2025-10-07 13:12:47 [scrapy.crawler] INFO: Overridden settings:
+2025-10-07 13:12:54,939 - WARNING -   STDERR: {'AUTOTHROTTLE_ENABLED': True,
+2025-10-07 13:12:54,939 - WARNING -   STDERR: 'AUTOTHROTTLE_START_DELAY': 1,
+2025-10-07 13:12:54,940 - WARNING -   STDERR: 'BOT_NAME': 'scrapy_project',
+2025-10-07 13:12:54,940 - WARNING -   STDERR: 'COOKIES_ENABLED': False,
+2025-10-07 13:12:54,941 - WARNING -   STDERR: 'LOG_LEVEL': 'INFO',
+2025-10-07 13:12:54,941 - WARNING -   STDERR: 'NEWSPIDER_MODULE': 'scrapy_project.spiders',
+2025-10-07 13:12:54,941 - WARNING -   STDERR: 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
+2025-10-07 13:12:54,942 - WARNING -   STDERR: 'ROBOTSTXT_OBEY': True,
+2025-10-07 13:12:54,942 - WARNING -   STDERR: 'SPIDER_MODULES': ['scrapy_project.spiders']}
+2025-10-07 13:12:54,942 - WARNING -   STDERR: 2025-10-07 13:12:47 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Android
+2025-10-07 13:12:54,942 - WARNING -   STDERR: 2025-10-07 13:12:47 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,943 - WARNING -   STDERR: 2025-10-07 13:12:47 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,943 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,943 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV13, Brand: Sony, Model: BDV13
+2025-10-07 13:12:54,943 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Nintendo DSi, Brand: Nintendo, Model: DSi
+2025-10-07 13:12:54,944 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,944 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:12:54,945 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF F90M, Brand: LYF, Model: F90M
+2025-10-07 13:12:54,945 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV14, Brand: Sony, Model: BDV14
+2025-10-07 13:12:54,945 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LG Web0S SmartTV, Brand: LG, Model: Web0S SmartTV
+2025-10-07 13:12:54,946 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,946 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,946 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,946 - WARNING -   STDERR: 2025-10-07 13:12:48 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,947 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,947 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,948 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,948 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV11, Brand: Sony, Model: BDV11
+2025-10-07 13:12:54,948 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,948 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,949 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,949 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,949 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Nintendo DSi, Brand: Nintendo, Model: DSi
+2025-10-07 13:12:54,949 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF LF-2403N, Brand: LYF, Model: LF-2403N
+2025-10-07 13:12:54,950 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF F90M, Brand: LYF, Model: F90M
+2025-10-07 13:12:54,950 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,951 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,951 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Applebot
+2025-10-07 13:12:54,951 - WARNING -   STDERR: 2025-10-07 13:12:49 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,952 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Applebot
+2025-10-07 13:12:54,952 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:12:54,952 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:12:54,952 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:12:54,953 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: SMTBot
+2025-10-07 13:12:54,953 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:12:54,953 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:12:54,953 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: WebKit Nightly
+2025-10-07 13:12:54,953 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:12:54,954 - WARNING -   STDERR: 2025-10-07 13:12:50 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,954 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:12:54,954 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:12:54,955 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Robot
+2025-10-07 13:12:54,955 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:12:54,955 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Zune
+2025-10-07 13:12:54,955 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy.middleware] INFO: Enabled downloader middlewares:
+2025-10-07 13:12:54,956 - WARNING -   STDERR: ['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+2025-10-07 13:12:54,956 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware',
+2025-10-07 13:12:54,956 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+2025-10-07 13:12:54,957 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+2025-10-07 13:12:54,957 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+2025-10-07 13:12:54,957 - WARNING -   STDERR: 'scrapy_user_agents.middlewares.RandomUserAgentMiddleware',
+2025-10-07 13:12:54,958 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+2025-10-07 13:12:54,958 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+2025-10-07 13:12:54,958 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+2025-10-07 13:12:54,958 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+2025-10-07 13:12:54,958 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+2025-10-07 13:12:54,959 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+2025-10-07 13:12:54,959 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2025-10-07 13:12:54,959 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy.middleware] INFO: Enabled spider middlewares:
+2025-10-07 13:12:54,960 - WARNING -   STDERR: ['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+2025-10-07 13:12:54,960 - WARNING -   STDERR: 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+2025-10-07 13:12:54,960 - WARNING -   STDERR: 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+2025-10-07 13:12:54,960 - WARNING -   STDERR: 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+2025-10-07 13:12:54,961 - WARNING -   STDERR: 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2025-10-07 13:12:54,961 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy.middleware] INFO: Enabled item pipelines:
+2025-10-07 13:12:54,961 - WARNING -   STDERR: ['scrapy_project.pipelines.SupabasePipeline']
+2025-10-07 13:12:54,961 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy.core.engine] INFO: Spider opened
+2025-10-07 13:12:54,962 - WARNING -   STDERR: 2025-10-07 13:12:51 [fleamarket] INFO: Pipeline opened for spider: fleamarket
+2025-10-07 13:12:54,962 - WARNING -   STDERR: 2025-10-07 13:12:51 [fleamarket] INFO: Connected to Supabase: https://oprevwbturtujbugynct.supabase.co
+2025-10-07 13:12:54,962 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2025-10-07 13:12:54,962 - WARNING -   STDERR: 2025-10-07 13:12:51 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2025-10-07 13:12:54,962 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: Parsing market listing page: https://markedskalenderen.dk/marked/kategori/loppemarked
+2025-10-07 13:12:54,963 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: Found 101 table rows to process
+2025-10-07 13:12:54,963 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [1/10] Visiting detail page: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,963 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [2/10] Visiting detail page: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,963 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [3/10] Visiting detail page: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,964 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [4/10] Visiting detail page: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,964 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [5/10] Visiting detail page: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,964 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [6/10] Visiting detail page: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,965 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [7/10] Visiting detail page: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,965 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [8/10] Visiting detail page: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,965 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [9/10] Visiting detail page: Loppemarked i Bella
+2025-10-07 13:12:54,965 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: [10/10] Visiting detail page: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,965 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: Following pagination link: https://markedskalenderen.dk/marked/kategori/loppemarked?page=2
+2025-10-07 13:12:54,966 - WARNING -   STDERR: 2025-10-07 13:12:53 [fleamarket] INFO: ✓ Yielding completed item #1: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,966 - WARNING -   STDERR: 2025-10-07 13:12:53 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.Den_Blaa_hal_p%C3%A5_Majgaarden_2025-10-11_2025-10-11 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:12:54,966 - WARNING -   STDERR: 2025-10-07 13:12:54 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:12:54,966 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO: ✓ [1/1] Successfully upserted: Den Blaa hal på Majgaarden
+2025-10-07 13:12:54,967 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO: Parsing market listing page: https://markedskalenderen.dk/marked/kategori/loppemarked?page=2
+2025-10-07 13:12:54,967 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO: Found 9 table rows to process
+2025-10-07 13:12:54,967 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO: No more pagination pages found
+2025-10-07 13:12:54,968 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO: ✓ Yielding completed item #2: Loppemarked i Bella
+2025-10-07 13:12:54,968 - WARNING -   STDERR: 2025-10-07 13:12:54 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.Loppemarked_i_Bella_2025-11-29_2025-11-29 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:12:54,968 - WARNING -   STDERR: 2025-10-07 13:12:54 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:12:54,968 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO: ✓ [2/2] Successfully upserted: Loppemarked i Bella
+2025-10-07 13:12:54,968 - WARNING -   STDERR: 2025-10-07 13:12:54 [scrapy.core.engine] INFO: Closing spider (finished)
+2025-10-07 13:12:54,969 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO: ============================================================
+2025-10-07 13:12:54,969 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO: Pipeline Statistics:
+2025-10-07 13:12:54,969 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO:   Total items processed: 2
+2025-10-07 13:12:54,969 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO:   Successfully saved: 2
+2025-10-07 13:12:54,969 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO:   Failed: 0
+2025-10-07 13:12:54,970 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO:   Success rate: 100.0%
+2025-10-07 13:12:54,970 - WARNING -   STDERR: 2025-10-07 13:12:54 [fleamarket] INFO: ============================================================
+2025-10-07 13:12:54,970 - WARNING -   STDERR: 2025-10-07 13:12:54 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+2025-10-07 13:12:54,970 - WARNING -   STDERR: {'downloader/request_bytes': 1814,
+2025-10-07 13:12:54,971 - WARNING -   STDERR: 'downloader/request_count': 5,
+2025-10-07 13:12:54,971 - WARNING -   STDERR: 'downloader/request_method_count/GET': 5,
+2025-10-07 13:12:54,971 - WARNING -   STDERR: 'downloader/response_bytes': 26992,
+2025-10-07 13:12:54,971 - WARNING -   STDERR: 'downloader/response_count': 5,
+2025-10-07 13:12:54,972 - WARNING -   STDERR: 'downloader/response_status_count/200': 5,
+2025-10-07 13:12:54,972 - WARNING -   STDERR: 'dupefilter/filtered': 8,
+2025-10-07 13:12:54,972 - WARNING -   STDERR: 'elapsed_time_seconds': 3.057504,
+2025-10-07 13:12:54,972 - WARNING -   STDERR: 'finish_reason': 'finished',
+2025-10-07 13:12:54,972 - WARNING -   STDERR: 'finish_time': datetime.datetime(2025, 10, 7, 13, 12, 54, 677409, tzinfo=datetime.timezone.utc),
+2025-10-07 13:12:54,973 - WARNING -   STDERR: 'httpcompression/response_bytes': 148231,
+2025-10-07 13:12:54,973 - WARNING -   STDERR: 'httpcompression/response_count': 4,
+2025-10-07 13:12:54,973 - WARNING -   STDERR: 'item_scraped_count': 2,
+2025-10-07 13:12:54,973 - WARNING -   STDERR: 'items_per_minute': 40.0,
+2025-10-07 13:12:54,974 - WARNING -   STDERR: 'log_count/INFO': 43,
+2025-10-07 13:12:54,974 - WARNING -   STDERR: 'log_count/WARNING': 46,
+2025-10-07 13:12:54,974 - WARNING -   STDERR: 'memusage/max': 92205056,
+2025-10-07 13:12:54,975 - WARNING -   STDERR: 'memusage/startup': 92205056,
+2025-10-07 13:12:54,975 - WARNING -   STDERR: 'request_depth_max': 1,
+2025-10-07 13:12:54,975 - WARNING -   STDERR: 'response_received_count': 5,
+2025-10-07 13:12:54,975 - WARNING -   STDERR: 'responses_per_minute': 100.0,
+2025-10-07 13:12:54,975 - WARNING -   STDERR: 'robotstxt/request_count': 1,
+2025-10-07 13:12:54,976 - WARNING -   STDERR: 'robotstxt/response_count': 1,
+2025-10-07 13:12:54,976 - WARNING -   STDERR: 'robotstxt/response_status_count/200': 1,
+2025-10-07 13:12:54,976 - WARNING -   STDERR: 'scheduler/dequeued': 4,
+2025-10-07 13:12:54,976 - WARNING -   STDERR: 'scheduler/dequeued/memory': 4,
+2025-10-07 13:12:54,977 - WARNING -   STDERR: 'scheduler/enqueued': 4,
+2025-10-07 13:12:54,977 - WARNING -   STDERR: 'scheduler/enqueued/memory': 4,
+2025-10-07 13:12:54,977 - WARNING -   STDERR: 'start_time': datetime.datetime(2025, 10, 7, 13, 12, 51, 619905, tzinfo=datetime.timezone.utc)}
+2025-10-07 13:12:54,977 - WARNING -   STDERR: 2025-10-07 13:12:54 [scrapy.core.engine] INFO: Spider closed (finished)
+2025-10-07 13:12:54,977 - INFO - 
+2025-10-07 13:12:54,978 - INFO - Spider 'fleamarket' finished in 8.42 seconds
+2025-10-07 13:12:54,978 - INFO - ✓ Spider 'fleamarket' completed successfully
+2025-10-07 13:12:54,978 - INFO -   Items scraped: 0
+2025-10-07 13:12:54,978 - INFO - 
+2025-10-07 13:12:54,978 - INFO - --------------------------------------------------------------------------------
+2025-10-07 13:12:54,979 - INFO - [2/2] Starting spider: 'loppemarkeder'
+2025-10-07 13:12:54,979 - INFO - Spider start time: 13:12:54
+2025-10-07 13:12:54,979 - INFO - --------------------------------------------------------------------------------
+2025-10-07 13:13:12,525 - WARNING -   STDERR: 2025-10-07 13:12:55 [scrapy.utils.log] INFO: Scrapy 2.13.3 started (bot: scrapy_project)
+2025-10-07 13:13:12,526 - WARNING -   STDERR: 2025-10-07 13:12:55 [scrapy.utils.log] INFO: Versions:
+2025-10-07 13:13:12,527 - WARNING -   STDERR: {'lxml': '6.0.2',
+2025-10-07 13:13:12,527 - WARNING -   STDERR: 'libxml2': '2.14.6',
+2025-10-07 13:13:12,528 - WARNING -   STDERR: 'cssselect': '1.3.0',
+2025-10-07 13:13:12,528 - WARNING -   STDERR: 'parsel': '1.10.0',
+2025-10-07 13:13:12,528 - WARNING -   STDERR: 'w3lib': '2.3.1',
+2025-10-07 13:13:12,529 - WARNING -   STDERR: 'Twisted': '25.5.0',
+2025-10-07 13:13:12,529 - WARNING -   STDERR: 'Python': '3.11.13 (main, Sep 30 2025, 00:38:45) [GCC 14.2.0]',
+2025-10-07 13:13:12,530 - WARNING -   STDERR: 'pyOpenSSL': '25.3.0 (OpenSSL 3.5.4 30 Sep 2025)',
+2025-10-07 13:13:12,530 - WARNING -   STDERR: 'cryptography': '46.0.2',
+2025-10-07 13:13:12,530 - WARNING -   STDERR: 'Platform': 'Linux-6.10.14-linuxkit-x86_64-with-glibc2.41'}
+2025-10-07 13:13:12,531 - WARNING -   STDERR: 2025-10-07 13:12:55 [scrapy.addons] INFO: Enabled addons:
+2025-10-07 13:13:12,531 - WARNING -   STDERR: []
+2025-10-07 13:13:12,531 - WARNING -   STDERR: 2025-10-07 13:12:55 [py.warnings] WARNING: /usr/local/lib/python3.11/site-packages/scrapy/utils/request.py:120: ScrapyDeprecationWarning: 'REQUEST_FINGERPRINTER_IMPLEMENTATION' is a deprecated setting.
+2025-10-07 13:13:12,531 - WARNING -   STDERR: It will be removed in a future version of Scrapy.
+2025-10-07 13:13:12,532 - WARNING -   STDERR: return cls(crawler)
+2025-10-07 13:13:12,532 - WARNING -   STDERR: 2025-10-07 13:12:55 [scrapy.extensions.telnet] INFO: Telnet Password: a2881a15c44ed2f8
+2025-10-07 13:13:12,533 - WARNING -   STDERR: 2025-10-07 13:12:55 [scrapy.middleware] INFO: Enabled extensions:
+2025-10-07 13:13:12,533 - WARNING -   STDERR: ['scrapy.extensions.corestats.CoreStats',
+2025-10-07 13:13:12,534 - WARNING -   STDERR: 'scrapy.extensions.telnet.TelnetConsole',
+2025-10-07 13:13:12,534 - WARNING -   STDERR: 'scrapy.extensions.memusage.MemoryUsage',
+2025-10-07 13:13:12,534 - WARNING -   STDERR: 'scrapy.extensions.logstats.LogStats',
+2025-10-07 13:13:12,535 - WARNING -   STDERR: 'scrapy.extensions.throttle.AutoThrottle']
+2025-10-07 13:13:12,535 - WARNING -   STDERR: 2025-10-07 13:12:55 [scrapy.crawler] INFO: Overridden settings:
+2025-10-07 13:13:12,536 - WARNING -   STDERR: {'AUTOTHROTTLE_ENABLED': True,
+2025-10-07 13:13:12,536 - WARNING -   STDERR: 'AUTOTHROTTLE_START_DELAY': 1,
+2025-10-07 13:13:12,536 - WARNING -   STDERR: 'BOT_NAME': 'scrapy_project',
+2025-10-07 13:13:12,537 - WARNING -   STDERR: 'COOKIES_ENABLED': False,
+2025-10-07 13:13:12,537 - WARNING -   STDERR: 'LOG_LEVEL': 'INFO',
+2025-10-07 13:13:12,537 - WARNING -   STDERR: 'NEWSPIDER_MODULE': 'scrapy_project.spiders',
+2025-10-07 13:13:12,538 - WARNING -   STDERR: 'REQUEST_FINGERPRINTER_IMPLEMENTATION': '2.7',
+2025-10-07 13:13:12,538 - WARNING -   STDERR: 'ROBOTSTXT_OBEY': True,
+2025-10-07 13:13:12,538 - WARNING -   STDERR: 'SPIDER_MODULES': ['scrapy_project.spiders']}
+2025-10-07 13:13:12,539 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Android
+2025-10-07 13:13:12,539 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,540 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,540 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,541 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV13, Brand: Sony, Model: BDV13
+2025-10-07 13:13:12,541 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Nintendo DSi, Brand: Nintendo, Model: DSi
+2025-10-07 13:13:12,542 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,542 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:13:12,543 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF F90M, Brand: LYF, Model: F90M
+2025-10-07 13:13:12,543 - WARNING -   STDERR: 2025-10-07 13:12:56 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV14, Brand: Sony, Model: BDV14
+2025-10-07 13:13:12,544 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LG Web0S SmartTV, Brand: LG, Model: Web0S SmartTV
+2025-10-07 13:13:12,544 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,545 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,545 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,545 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,546 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,546 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,547 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,547 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Sony BDV11, Brand: Sony, Model: BDV11
+2025-10-07 13:13:12,547 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,548 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,548 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,549 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,549 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Nintendo DSi, Brand: Nintendo, Model: DSi
+2025-10-07 13:13:12,549 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF LF-2403N, Brand: LYF, Model: LF-2403N
+2025-10-07 13:13:12,550 - WARNING -   STDERR: 2025-10-07 13:12:57 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: LYF F90M, Brand: LYF, Model: F90M
+2025-10-07 13:13:12,550 - WARNING -   STDERR: 2025-10-07 13:12:58 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,550 - WARNING -   STDERR: 2025-10-07 13:12:58 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,551 - WARNING -   STDERR: 2025-10-07 13:12:58 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Applebot
+2025-10-07 13:13:12,551 - WARNING -   STDERR: 2025-10-07 13:12:58 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,551 - WARNING -   STDERR: 2025-10-07 13:12:58 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Applebot
+2025-10-07 13:13:12,551 - WARNING -   STDERR: 2025-10-07 13:12:58 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:13:12,552 - WARNING -   STDERR: 2025-10-07 13:12:58 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Other
+2025-10-07 13:13:12,552 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:13:12,553 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: SMTBot
+2025-10-07 13:13:12,553 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:13:12,553 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:13:12,553 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: WebKit Nightly
+2025-10-07 13:13:12,554 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:13:12,554 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,554 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:13:12,555 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: PhantomJS
+2025-10-07 13:13:12,555 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Robot
+2025-10-07 13:13:12,555 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedDeviceType] Family: Other, Brand: None, Model: None
+2025-10-07 13:13:12,556 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy_user_agents.user_agent_picker] WARNING: [UnsupportedBrowserType] Family: Zune
+2025-10-07 13:13:12,556 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy.middleware] INFO: Enabled downloader middlewares:
+2025-10-07 13:13:12,556 - WARNING -   STDERR: ['scrapy.downloadermiddlewares.offsite.OffsiteMiddleware',
+2025-10-07 13:13:12,557 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.robotstxt.RobotsTxtMiddleware',
+2025-10-07 13:13:12,557 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpauth.HttpAuthMiddleware',
+2025-10-07 13:13:12,558 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.downloadtimeout.DownloadTimeoutMiddleware',
+2025-10-07 13:13:12,558 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.defaultheaders.DefaultHeadersMiddleware',
+2025-10-07 13:13:12,558 - WARNING -   STDERR: 'scrapy_user_agents.middlewares.RandomUserAgentMiddleware',
+2025-10-07 13:13:12,559 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.useragent.UserAgentMiddleware',
+2025-10-07 13:13:12,559 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.retry.RetryMiddleware',
+2025-10-07 13:13:12,559 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.redirect.MetaRefreshMiddleware',
+2025-10-07 13:13:12,560 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware',
+2025-10-07 13:13:12,560 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.redirect.RedirectMiddleware',
+2025-10-07 13:13:12,560 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware',
+2025-10-07 13:13:12,561 - WARNING -   STDERR: 'scrapy.downloadermiddlewares.stats.DownloaderStats']
+2025-10-07 13:13:12,561 - WARNING -   STDERR: 2025-10-07 13:12:59 [scrapy.middleware] INFO: Enabled spider middlewares:
+2025-10-07 13:13:12,561 - WARNING -   STDERR: ['scrapy.spidermiddlewares.start.StartSpiderMiddleware',
+2025-10-07 13:13:12,561 - WARNING -   STDERR: 'scrapy.spidermiddlewares.httperror.HttpErrorMiddleware',
+2025-10-07 13:13:12,562 - WARNING -   STDERR: 'scrapy.spidermiddlewares.referer.RefererMiddleware',
+2025-10-07 13:13:12,562 - WARNING -   STDERR: 'scrapy.spidermiddlewares.urllength.UrlLengthMiddleware',
+2025-10-07 13:13:12,562 - WARNING -   STDERR: 'scrapy.spidermiddlewares.depth.DepthMiddleware']
+2025-10-07 13:13:12,562 - WARNING -   STDERR: 2025-10-07 13:13:00 [scrapy.middleware] INFO: Enabled item pipelines:
+2025-10-07 13:13:12,563 - WARNING -   STDERR: ['scrapy_project.pipelines.SupabasePipeline']
+2025-10-07 13:13:12,563 - WARNING -   STDERR: 2025-10-07 13:13:00 [scrapy.core.engine] INFO: Spider opened
+2025-10-07 13:13:12,563 - WARNING -   STDERR: 2025-10-07 13:13:00 [loppemarkeder] INFO: Pipeline opened for spider: loppemarkeder
+2025-10-07 13:13:12,563 - WARNING -   STDERR: 2025-10-07 13:13:00 [loppemarkeder] INFO: Connected to Supabase: https://oprevwbturtujbugynct.supabase.co
+2025-10-07 13:13:12,564 - WARNING -   STDERR: 2025-10-07 13:13:00 [scrapy.extensions.logstats] INFO: Crawled 0 pages (at 0 pages/min), scraped 0 items (at 0 items/min)
+2025-10-07 13:13:12,564 - WARNING -   STDERR: 2025-10-07 13:13:00 [scrapy.extensions.telnet] INFO: Telnet console listening on 127.0.0.1:6023
+2025-10-07 13:13:12,564 - WARNING -   STDERR: 2025-10-07 13:13:02 [loppemarkeder] INFO: Parsing response from: https://loppemarkeder.nu/wp-json/tribe/events/v1/events?per_page=100
+2025-10-07 13:13:12,564 - WARNING -   STDERR: 2025-10-07 13:13:02 [loppemarkeder] INFO: Found 100 events in response
+2025-10-07 13:13:12,565 - WARNING -   STDERR: 2025-10-07 13:13:02 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10000661 "HTTP/2 200 OK"
+2025-10-07 13:13:12,565 - WARNING -   STDERR: 2025-10-07 13:13:02 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 200 OK"
+2025-10-07 13:13:12,565 - WARNING -   STDERR: 2025-10-07 13:13:02 [loppemarkeder] INFO: ✓ [1/1] Successfully upserted: Loppemarked &#8211; Onsdagsmarked &#8211; Vig
+2025-10-07 13:13:12,565 - WARNING -   STDERR: 2025-10-07 13:13:02 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001763 "HTTP/2 200 OK"
+2025-10-07 13:13:12,566 - WARNING -   STDERR: 2025-10-07 13:13:02 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 200 OK"
+2025-10-07 13:13:12,566 - WARNING -   STDERR: 2025-10-07 13:13:02 [loppemarkeder] INFO: ✓ [2/2] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:13:12,566 - WARNING -   STDERR: 2025-10-07 13:13:02 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10003626 "HTTP/2 200 OK"
+2025-10-07 13:13:12,567 - WARNING -   STDERR: 2025-10-07 13:13:02 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 200 OK"
+2025-10-07 13:13:12,567 - WARNING -   STDERR: 2025-10-07 13:13:02 [loppemarkeder] INFO: ✓ [3/3] Successfully upserted: Loppemarked &#8211; Axeltorv ved Tivoli
+2025-10-07 13:13:12,567 - WARNING -   STDERR: 2025-10-07 13:13:02 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002661 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,568 - WARNING -   STDERR: 2025-10-07 13:13:02 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,568 - WARNING -   STDERR: 2025-10-07 13:13:02 [loppemarkeder] INFO: ✓ [4/4] Successfully upserted: Toftegårds Plads &#8211; Loppemarked
+2025-10-07 13:13:12,568 - WARNING -   STDERR: 2025-10-07 13:13:02 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10000688 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,568 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,568 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [5/5] Successfully upserted: Loppemarked &#8211; Lørdagsmarked &#8211; Vig
+2025-10-07 13:13:12,569 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002152 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,569 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,569 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [6/6] Successfully upserted: Havnsø Kræmmer- og Loppemarked
+2025-10-07 13:13:12,569 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002289 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,570 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,570 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [7/7] Successfully upserted: Loppetorv på Frederiksberg Rådhusplads
+2025-10-07 13:13:12,570 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001764 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,570 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,571 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [8/8] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:13:12,571 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001916 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,571 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,571 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [9/9] Successfully upserted: Værebro Park Loppemarked  flea market 蚤市场
+2025-10-07 13:13:12,572 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002239 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,572 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,572 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [10/10] Successfully upserted: Helsingør Antik- og Loppemarked
+2025-10-07 13:13:12,573 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.87554 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,573 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,573 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [11/11] Successfully upserted: Klodsevent 2025
+2025-10-07 13:13:12,573 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002715 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,573 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,574 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [12/12] Successfully upserted: Vanløse Torv Loppemarked
+2025-10-07 13:13:12,574 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.94868 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,574 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,574 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [13/13] Successfully upserted: NABs årlige loppemarked &#8211; Nørre Alslev
+2025-10-07 13:13:12,575 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.95838 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,575 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,575 - WARNING -   STDERR: 2025-10-07 13:13:03 [loppemarkeder] INFO: ✓ [14/14] Successfully upserted: SMUT BG Loppemarked
+2025-10-07 13:13:12,575 - WARNING -   STDERR: 2025-10-07 13:13:03 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001684 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,576 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,576 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [15/15] Successfully upserted: Københavns Loppetorv
+2025-10-07 13:13:12,576 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96231 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,576 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,577 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [16/16] Successfully upserted: Jomsborg Loppemarked
+2025-10-07 13:13:12,577 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10000592 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,577 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,577 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [17/17] Successfully upserted: Holte Loppemarked
+2025-10-07 13:13:12,578 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10000618 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,578 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,578 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [18/18] Successfully upserted: Rørvig Kræmmermarked
+2025-10-07 13:13:12,578 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.85357 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,578 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,579 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [19/19] Successfully upserted: Loppe- &#038; Kræmmermarked i Slagelsehallen
+2025-10-07 13:13:12,579 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.86058 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,579 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,579 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [20/20] Successfully upserted: BYENS LOPPER X TRIANGLEN
+2025-10-07 13:13:12,579 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.86175 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,580 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,580 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [21/21] Successfully upserted: Veras Market Under Buen
+2025-10-07 13:13:12,580 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001639 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,580 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,580 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [22/22] Successfully upserted: Tissø kræmmermarked
+2025-10-07 13:13:12,581 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001828 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,581 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,581 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [23/23] Successfully upserted: OLG &#8211; Odsherred’s Antik og Kræmmermarked
+2025-10-07 13:13:12,581 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001953 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,582 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,582 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [24/24] Successfully upserted: &#8220;Pænere&#8221; genbrug Skt Jakobs Plads
+2025-10-07 13:13:12,582 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002240 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,582 - WARNING -   STDERR: 2025-10-07 13:13:04 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,583 - WARNING -   STDERR: 2025-10-07 13:13:04 [loppemarkeder] INFO: ✓ [25/25] Successfully upserted: Helsingør Antik- og Loppemarked
+2025-10-07 13:13:12,583 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96310 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,583 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,583 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [26/26] Successfully upserted: Fruens &#038; Fultons Loppemarked
+2025-10-07 13:13:12,584 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96710 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,584 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,584 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [27/27] Successfully upserted: Nysted loppe- og plademarked
+2025-10-07 13:13:12,584 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96715 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,585 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,585 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [28/28] Successfully upserted: Loppemarked i Gårdhaven
+2025-10-07 13:13:12,585 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96721 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,585 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,585 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [29/29] Successfully upserted: Børneloppemarked &#8211; Nykøbenhavn F
+2025-10-07 13:13:12,586 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10000662 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,586 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,586 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [30/30] Successfully upserted: Loppemarked &#8211; Onsdagsmarked &#8211; Vig
+2025-10-07 13:13:12,586 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001765 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,587 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,587 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [31/31] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:13:12,587 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10003627 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,587 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,588 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [32/32] Successfully upserted: Loppemarked &#8211; Axeltorv ved Tivoli
+2025-10-07 13:13:12,588 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10000689 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,588 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,588 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [33/33] Successfully upserted: Loppemarked &#8211; Lørdagsmarked &#8211; Vig
+2025-10-07 13:13:12,588 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002153 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,589 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,589 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [34/34] Successfully upserted: Havnsø Kræmmer- og Loppemarked
+2025-10-07 13:13:12,589 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002290 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,589 - WARNING -   STDERR: 2025-10-07 13:13:05 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,590 - WARNING -   STDERR: 2025-10-07 13:13:05 [loppemarkeder] INFO: ✓ [35/35] Successfully upserted: Loppetorv på Frederiksberg Rådhusplads
+2025-10-07 13:13:12,590 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001341 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,590 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,590 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [36/36] Successfully upserted: Klausdal Loppemarked i Herlev
+2025-10-07 13:13:12,590 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.85793 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,591 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,591 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [37/37] Successfully upserted: Hedebo Kræmmermarked i Tune
+2025-10-07 13:13:12,591 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001766 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,591 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,592 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [38/38] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:13:12,592 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001917 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,592 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,592 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [39/39] Successfully upserted: Værebro Park Loppemarked  flea market 蚤市场
+2025-10-07 13:13:12,593 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002241 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,593 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,593 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [40/40] Successfully upserted: Helsingør Antik- og Loppemarked
+2025-10-07 13:13:12,593 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002716 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,593 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,594 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [41/41] Successfully upserted: Vanløse Torv Loppemarked
+2025-10-07 13:13:12,594 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96724 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,594 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,594 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [42/42] Successfully upserted: Loppemarked i Hvalsø hallerne
+2025-10-07 13:13:12,594 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001685 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,595 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,595 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [43/43] Successfully upserted: Københavns Loppetorv
+2025-10-07 13:13:12,595 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96046 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,595 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,596 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [44/44] Successfully upserted: Virum loppetorv
+2025-10-07 13:13:12,596 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.86176 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,596 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,596 - WARNING -   STDERR: 2025-10-07 13:13:06 [loppemarkeder] INFO: ✓ [45/45] Successfully upserted: Veras Market Under Buen
+2025-10-07 13:13:12,596 - WARNING -   STDERR: 2025-10-07 13:13:06 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001640 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,597 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:13:12,597 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [46/46] Successfully upserted: Tissø kræmmermarked
+2025-10-07 13:13:12,597 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001829 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:13:12,597 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"

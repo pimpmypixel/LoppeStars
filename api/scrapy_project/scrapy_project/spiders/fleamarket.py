@@ -43,6 +43,11 @@ class FleamarketSpider(scrapy.Spider):
     # Limit to 10 markets for testing
     max_markets = 10
     markets_scraped = 0
+    items_yielded = 0
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.logger.info(f"Initializing {self.name} spider (max_markets={self.max_markets})")
 
     # Random user agents for requests
     user_agents = [
@@ -100,8 +105,10 @@ class FleamarketSpider(scrapy.Spider):
         return None, None
 
     def parse(self, response):
+        self.logger.info(f"Parsing market listing page: {response.url}")
         # Extract market listings from the page
         markets = response.css('table tr')
+        self.logger.info(f"Found {len(markets)} table rows to process")
 
         for market in markets:
             # Skip header rows
@@ -174,6 +181,17 @@ class FleamarketSpider(scrapy.Spider):
             # Generate external ID from name and dates
             external_id = f"{name}_{start_date}_{end_date}".replace(' ', '_').replace('/', '_') if start_date and end_date else name.replace(' ', '_')
 
+            # Debug logging for market extraction
+            if not name:
+                self.logger.debug("Skipping row: no name found")
+                continue
+            if not start_date:
+                self.logger.debug(f"Skipping '{name}': no start_date")
+                continue
+            if self.markets_scraped >= self.max_markets:
+                self.logger.debug(f"Max markets ({self.max_markets}) reached, stopping")
+                break
+            
             # Only yield markets that have dates and limit to max_markets
             if start_date is not None and self.markets_scraped < self.max_markets:
                 market_item = FleamarketItem(
@@ -188,25 +206,34 @@ class FleamarketSpider(scrapy.Spider):
                     source_url=response.url
                 )
 
-                # Always visit market detail links for complete metadata extraction
-                if market_link and market_link.startswith('/'):
+                # Visit market detail links if available, otherwise yield basic item
+                if market_link and (market_link.startswith('/') or market_link.startswith('http')):
                     full_url = response.urljoin(market_link)
                     self.markets_scraped += 1
-                    self.logger.info(f"Visiting detail page for market: {name} (URL: {full_url})")
+                    self.logger.info(f"[{self.markets_scraped}/{self.max_markets}] Visiting detail page: {name}")
                     yield response.follow(full_url, self.parse_market_detail, meta={'market_item': market_item})
                 else:
-                    # Skip markets without detail links - we only want complete metadata
-                    self.logger.info(f"Skipping market without detail link: {name}")
-                    continue
+                    # Yield market without detail page visit if no link available
+                    self.markets_scraped += 1
+                    self.logger.warning(f"[{self.markets_scraped}/{self.max_markets}] No detail link for '{name}', yielding basic item (link: {market_link})")
+                    self.items_yielded += 1
+                    self.logger.info(f"✓ Yielding completed item #{self.items_yielded}: {name}")
+                    yield market_item
 
         # Handle pagination
         next_page = response.css('a:contains("»")::attr(href)').get()
         if next_page:
+            self.logger.info(f"Following pagination link: {next_page}")
             yield response.follow(next_page, self.parse)
+        else:
+            self.logger.info("No more pagination pages found")
 
     def parse_market_detail(self, response):
         """Parse individual market detail pages for additional metadata"""
         market_item = response.meta['market_item']
+        market_name = market_item.get('name', 'Unknown')
+        
+        self.logger.debug(f"Parsing detail page for: {market_name}")
 
         try:
             # Extract additional details from market detail page
@@ -298,6 +325,8 @@ class FleamarketSpider(scrapy.Spider):
                     market_item['longitude'] = lon
 
         except Exception as e:
-            self.logger.warning(f"Error parsing market detail for {market_item.get('name')}: {str(e)}")
+            self.logger.warning(f"Error parsing market detail for {market_name}: {str(e)}")
 
+        self.items_yielded += 1
+        self.logger.info(f"✓ Yielding completed item #{self.items_yielded}: {market_name}")
         yield market_item

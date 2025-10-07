@@ -5,6 +5,14 @@ BOT_NAME = 'scrapy_project'
 SPIDER_MODULES = ['scrapy_project.spiders']
 NEWSPIDER_MODULE = 'scrapy_project.spiders'
 
+# Logging configuration
+LOG_LEVEL = 'INFO'
+LOG_FORMAT = '%(asctime)s [%(name)s] %(levelname)s: %(message)s'
+LOG_DATEFORMAT = '%Y-%m-%d %H:%M:%S'
+
+# Enable stats collection
+STATS_CLASS = 'scrapy.statscollectors.MemoryStatsCollector'
+
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
