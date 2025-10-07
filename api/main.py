@@ -5,10 +5,6 @@ from datetime import date, datetime
 from typing import List, Optional
 from supabase import create_client, Client
 from face_processor import get_face_processor
-import logging
-
-# Setup logging
-logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
