@@ -1,10 +1,14 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException, Query, BackgroundTasks
 from pydantic import BaseModel
 import os, numpy as np, requests, time
 from datetime import date, datetime
 from typing import List, Optional
 from supabase import create_client, Client
 from face_processor import get_face_processor
+import logging
+
+# Setup logging
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 
@@ -238,25 +242,37 @@ async def get_nearby_markets(
         raise HTTPException(500, f"Error fetching nearby markets: {str(e)}")
 
 @app.post("/scraper/trigger")
-async def trigger_scraper():
-    """Manually trigger the market scraper"""
+async def trigger_scraper(background_tasks: BackgroundTasks):
+    """Manually trigger the market scraper (runs in background)"""
     try:
         import subprocess
         import sys
-
-        # Run the scraper script
-        result = subprocess.run([
-            sys.executable, "/app/scraper_cron.py"
-        ], capture_output=True, text=True, cwd="/app")
-
-        if result.returncode == 0:
-            return {
-                "success": True,
-                "message": "Scraper triggered successfully",
-                "output": result.stdout
-            }
-        else:
-            raise HTTPException(500, f"Scraper failed: {result.stderr}")
+        
+        def run_scraper_background():
+            """Run scraper in background without blocking API"""
+            try:
+                print("Starting background scraper task...")
+                # Use Popen instead of run to avoid blocking
+                process = subprocess.Popen(
+                    [sys.executable, "/app/scraper_cron.py"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    cwd="/app"
+                )
+                print(f"Scraper process started with PID: {process.pid}")
+                # Don't wait for completion - let it run in background
+                # Process will be monitored by the scheduler
+            except Exception as e:
+                print(f"Error starting scraper: {str(e)}")
+        
+        # Add to background tasks
+        background_tasks.add_task(run_scraper_background)
+        
+        return {
+            "success": True,
+            "message": "Scraper triggered successfully in background",
+            "note": "The scraper will run asynchronously. Check logs for progress."
+        }
 
     except Exception as e:
         raise HTTPException(500, f"Error triggering scraper: {str(e)}")

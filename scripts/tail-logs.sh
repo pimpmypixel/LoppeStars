@@ -233,17 +233,32 @@ tail_logs() {
     if [ "$raw_mode" = "true" ]; then
       eval "$aws_cmd --output text --query 'events[].message'" | cat
     else
-      eval "$aws_cmd --output table --query 'events[].[timestamp,message]'" | tail -n +3 | head -n -1 | while IFS= read -r line; do
-        # Parse table format and reformat
-        local timestamp_ms=$(echo "$line" | awk '{print $2}' | sed 's/|//g' | xargs)
-        local message=$(echo "$line" | cut -d'|' -f3- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
-        
-        if [ -n "$timestamp_ms" ] && [ "$timestamp_ms" != "None" ]; then
-          # Convert timestamp from milliseconds to ISO format
-          local timestamp_iso=$(date -d "@$((timestamp_ms / 1000))" -u +"%Y-%m-%dT%H:%M:%S.%3NZ" 2>/dev/null || echo "$timestamp_ms")
-          format_log_line "$timestamp_iso $message" "$raw_mode"
-        fi
-      done
+      # Use a different approach to avoid head -n -1 compatibility issues
+      local temp_output=$(eval "$aws_cmd --output table --query 'events[].[timestamp,message]'")
+      local line_count=$(echo "$temp_output" | wc -l | xargs)
+      
+      if [ "$line_count" -gt 3 ]; then
+        echo "$temp_output" | tail -n +3 | sed '$d' | while IFS= read -r line; do
+          # Parse table format and reformat
+          local timestamp_ms=$(echo "$line" | awk '{print $2}' | sed 's/|//g' | xargs)
+          local message=$(echo "$line" | cut -d'|' -f3- | sed 's/^[[:space:]]*//' | sed 's/[[:space:]]*$//')
+          
+          if [ -n "$timestamp_ms" ] && [ "$timestamp_ms" != "None" ]; then
+            # Convert timestamp from milliseconds to ISO format (macOS compatible)
+            local timestamp_iso
+            if command -v gdate >/dev/null 2>&1; then
+              # Use GNU date if available (brew install coreutils)
+              timestamp_iso=$(gdate -d "@$((timestamp_ms / 1000))" -u +"%Y-%m-%dT%H:%M:%S.%3NZ" 2>/dev/null || echo "$timestamp_ms")
+            else
+              # Use macOS date
+              timestamp_iso=$(date -u -r "$((timestamp_ms / 1000))" +"%Y-%m-%dT%H:%M:%S.000Z" 2>/dev/null || echo "$timestamp_ms")
+            fi
+            format_log_line "$timestamp_iso $message" "$raw_mode"
+          fi
+        done
+      else
+        log_warning "No log events found in the specified time range"
+      fi
     fi
   fi
 }

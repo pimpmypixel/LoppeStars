@@ -235,8 +235,8 @@ check_status() {
       -H "apikey: $SUPABASE_ANON_KEY" \
       -H "Authorization: Bearer $SUPABASE_ANON_KEY")
     
-    if echo "$recent_logs" | jq -e 'length > 0' > /dev/null 2>&1; then
-      echo "$recent_logs" | jq -r '.[] | "📅 \(.scraped_at) | Status: \(.status // "unknown") | Markets: \(.markets_count // 0)"' 2>/dev/null || echo "$recent_logs"
+    if echo "$recent_logs" | jq -e '. | if type == "array" then length > 0 else . != null end' > /dev/null 2>&1; then
+      echo "$recent_logs" | jq -r 'if type == "array" then .[] else . end | "📅 \(.scraped_at) | Status: \(.status // "unknown") | Markets: \(.markets_count // 0)"' 2>/dev/null || echo "$recent_logs"
     else
       log_warning "No recent scraping logs found or could not fetch them"
     fi
@@ -254,19 +254,25 @@ check_status() {
       -H "apikey: $SUPABASE_ANON_KEY" \
       -H "Authorization: Bearer $SUPABASE_ANON_KEY")
     
-    if echo "$recent_markets" | jq -e 'length > 0' > /dev/null 2>&1; then
-      latest_scrape=$(echo "$recent_markets" | jq -r '.[0].scraped_at')
-      market_count=$(echo "$recent_markets" | jq -r 'length')
+    if echo "$recent_markets" | jq -e '. | if type == "array" then length > 0 else . != null end' > /dev/null 2>&1; then
+      latest_scrape=$(echo "$recent_markets" | jq -r 'if type == "array" then .[0].scraped_at else .scraped_at end')
+      market_count=$(echo "$recent_markets" | jq -r 'if type == "array" then length else 1 end')
       log_success "Latest market data: $latest_scrape (showing $market_count recent entries)"
       
       # Show sample of recent markets
       echo "Recent markets:"
-      echo "$recent_markets" | jq -r '.[] | "  📍 \(.name) (scraped: \(.scraped_at))"' 2>/dev/null
+      echo "$recent_markets" | jq -r 'if type == "array" then .[] else . end | "  📍 \(.name) (scraped: \(.scraped_at))"' 2>/dev/null
       
       # Calculate time since last scrape
       if command -v date >/dev/null 2>&1; then
         current_time=$(date -u +%s)
-        scrape_time=$(date -d "$latest_scrape" +%s 2>/dev/null || echo "0")
+        # Try GNU date first, then macOS date
+        if command -v gdate >/dev/null 2>&1; then
+          scrape_time=$(gdate -d "$latest_scrape" +%s 2>/dev/null || echo "0")
+        else
+          # macOS date - try to parse ISO format
+          scrape_time=$(date -j -f "%Y-%m-%dT%H:%M:%S" "${latest_scrape%.*}" +%s 2>/dev/null || echo "0")
+        fi
         if [ "$scrape_time" -gt 0 ]; then
           time_diff=$((current_time - scrape_time))
           hours_ago=$((time_diff / 3600))

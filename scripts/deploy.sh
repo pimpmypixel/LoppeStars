@@ -66,7 +66,7 @@ check_stack_exists() {
     --stack-name "$STACK_NAME" \
     --region "$REGION" \
     --query 'Stacks[0].StackStatus' \
-    --output text 2>&1 || echo "NOT_FOUND")
+    --output text 2>&1 | cat || echo "NOT_FOUND")
   
   if [[ "$status" == "NOT_FOUND" ]] || [[ "$status" == *"does not exist"* ]]; then
     echo "NOT_FOUND"
@@ -82,7 +82,7 @@ get_stack_output() {
     --stack-name "$STACK_NAME" \
     --region "$REGION" \
     --query "Stacks[0].Outputs[?OutputKey=='$key'].OutputValue" \
-    --output text 2>/dev/null || echo ""
+    --output text 2>/dev/null | cat || echo ""
 }
 
 # Deploy CloudFormation stack
@@ -105,7 +105,7 @@ deploy_infrastructure() {
     --region "$REGION" \
     --certificate-statuses ISSUED \
     --query "CertificateSummaryList[?DomainName=='$DOMAIN'].CertificateArn | [0]" \
-    --output text 2>/dev/null || echo "")
+    --output text 2>/dev/null | cat || echo "")
   
   if [ -n "$cert_arn" ] && [ "$cert_arn" != "None" ]; then
     log_success "Found existing certificate: $cert_arn"
@@ -150,7 +150,7 @@ build_and_push_image() {
   local image_exists=$($AWS_CLI ecr describe-images \
     --repository-name loppestars \
     --image-ids imageTag="$image_tag" \
-    --region "$REGION" 2>/dev/null || echo "NOT_FOUND")
+    --region "$REGION" 2>/dev/null | cat || echo "NOT_FOUND")
   
   if [[ "$image_exists" != "NOT_FOUND" ]] && [ "$FORCE_DEPLOY" = false ]; then
     log_success "Image already exists: $ecr_repo:$image_tag" >&2
@@ -167,10 +167,10 @@ build_and_push_image() {
   # Create ECR repository if needed
   $AWS_CLI ecr describe-repositories \
     --repository-names loppestars \
-    --region "$REGION" 2>/dev/null >&2 || \
+    --region "$REGION" 2>/dev/null | cat >&2 || \
     $AWS_CLI ecr create-repository \
       --repository-name loppestars \
-      --region "$REGION" >/dev/null 2>&1
+      --region "$REGION" | cat >/dev/null 2>&1
   
   # Ensure BuildX is available and create builder if needed
   if ! docker buildx ls | grep -q loppestars-builder; then
@@ -276,7 +276,7 @@ EOF
     --cli-input-json file:///tmp/task-def.json \
     --region "$REGION" \
     --query 'taskDefinition.taskDefinitionArn' \
-    --output text)
+    --output text | cat)
   
   log_success "Task definition: $task_def_arn" >&2
   echo "$task_def_arn"
@@ -297,7 +297,7 @@ deploy_service() {
     --services "$SERVICE_NAME" \
     --region "$REGION" \
     --query 'services[0].serviceName' \
-    --output text 2>/dev/null || echo "NOT_FOUND")
+    --output text 2>/dev/null | cat || echo "NOT_FOUND")
   
   if [[ "$service_exists" == "NOT_FOUND" ]] || [[ "$service_exists" == "None" ]] || [[ -z "$service_exists" ]]; then
     log_info "Creating ECS service..." >&2
@@ -311,7 +311,7 @@ deploy_service() {
       --network-configuration "awsvpcConfiguration={subnets=[$subnets],securityGroups=[$security_group],assignPublicIp=ENABLED}" \
       --load-balancers "targetGroupArn=$target_group,containerName=web,containerPort=8080" \
       --health-check-grace-period-seconds 60 \
-      --region "$REGION" >/dev/null
+      --region "$REGION" | cat >/dev/null
     log_success "Service created" >&2
   else
     log_info "Updating ECS service..." >&2
@@ -320,7 +320,7 @@ deploy_service() {
       --service "$SERVICE_NAME" \
       --task-definition "$task_def_arn" \
       --force-new-deployment \
-      --region "$REGION" >/dev/null
+      --region "$REGION" | cat >/dev/null
     log_success "Service updated" >&2
   fi
   
@@ -430,7 +430,7 @@ show_status() {
       --services "$SERVICE_NAME" \
       --region "$REGION" \
       --query 'services[0].{running:runningCount,desired:desiredCount,status:status}' \
-      --output json 2>/dev/null || echo "{}")
+      --output json 2>/dev/null | cat || echo "{}")
     
     echo "Service Status: $service_status"
     
