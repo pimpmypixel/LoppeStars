@@ -812,3 +812,211 @@
 2025-10-07 13:13:12,597 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [46/46] Successfully upserted: Tissø kræmmermarked
 2025-10-07 13:13:12,597 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001829 "HTTP/2 406 Not Acceptable"
 2025-10-07 13:13:12,597 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,376 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [47/47] Successfully upserted: OLG &#8211; Odsherred’s Antik og Kræmmermarked
+2025-10-07 13:56:49,383 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002242 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,385 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,386 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [48/48] Successfully upserted: Helsingør Antik- og Loppemarked
+2025-10-07 13:56:49,386 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96725 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,386 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,387 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [49/49] Successfully upserted: Loppemarked i Huset på Næsset for børn ( og voksne) i efterårsferien
+2025-10-07 13:56:49,387 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001767 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,388 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,388 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [50/50] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:56:49,389 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10003628 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,390 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,390 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [51/51] Successfully upserted: Loppemarked &#8211; Axeltorv ved Tivoli
+2025-10-07 13:56:49,391 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002291 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,391 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,391 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [52/52] Successfully upserted: Loppetorv på Frederiksberg Rådhusplads
+2025-10-07 13:56:49,392 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001768 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,392 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,393 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [53/53] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:56:49,393 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001918 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,393 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,393 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [54/54] Successfully upserted: Værebro Park Loppemarked  flea market 蚤市场
+2025-10-07 13:56:49,394 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002243 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,394 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,394 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [55/55] Successfully upserted: Helsingør Antik- og Loppemarked
+2025-10-07 13:56:49,395 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002717 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,395 - WARNING -   STDERR: 2025-10-07 13:13:07 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,395 - WARNING -   STDERR: 2025-10-07 13:13:07 [loppemarkeder] INFO: ✓ [56/56] Successfully upserted: Vanløse Torv Loppemarked
+2025-10-07 13:56:49,395 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.92433 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,396 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,396 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [57/57] Successfully upserted: Ballerups Store Kræmmer og Loppemarked
+2025-10-07 13:56:49,396 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.92615 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,396 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,397 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [58/58] Successfully upserted: Loppemarked i Remisen 2025
+2025-10-07 13:56:49,398 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10003564 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,398 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,399 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [59/59] Successfully upserted: Loppemarked I Remisen
+2025-10-07 13:56:49,400 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.95840 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,400 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,402 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [60/60] Successfully upserted: LOPPEMARKED &#8211; Kværkeby Friskole
+2025-10-07 13:56:49,402 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96139 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,403 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,403 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [61/61] Successfully upserted: Loppemarked &#8211; Byens Hus &#8211; Vi skaber sammen
+2025-10-07 13:56:49,404 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96549 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,405 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,406 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [62/62] Successfully upserted: Sams Loppemarked i Remisen
+2025-10-07 13:56:49,407 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001686 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,407 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,407 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [63/63] Successfully upserted: Københavns Loppetorv
+2025-10-07 13:56:49,408 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.85354 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,408 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,408 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [64/64] Successfully upserted: Loppe- &#038; Kræmmermarked i Arena Næstved &#8211; Hal 1
+2025-10-07 13:56:49,409 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.86177 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,409 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,410 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [65/65] Successfully upserted: Veras Market Under Buen
+2025-10-07 13:56:49,410 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001641 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,410 - WARNING -   STDERR: 2025-10-07 13:13:08 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,411 - WARNING -   STDERR: 2025-10-07 13:13:08 [loppemarkeder] INFO: ✓ [66/66] Successfully upserted: Tissø kræmmermarked
+2025-10-07 13:56:49,411 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001830 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,412 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,413 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [67/67] Successfully upserted: OLG &#8211; Odsherred’s Antik og Kræmmermarked
+2025-10-07 13:56:49,413 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002244 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,420 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,422 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [68/68] Successfully upserted: Helsingør Antik- og Loppemarked
+2025-10-07 13:56:49,423 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.92616 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,424 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,424 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [69/69] Successfully upserted: Loppemarked &#038; Livemusik
+2025-10-07 13:56:49,425 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.95144 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,426 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,426 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [70/70] Successfully upserted: Loppemarked d. 26/10
+2025-10-07 13:56:49,426 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.95735 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,427 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,428 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [71/71] Successfully upserted: Loppemarked Landsbyhuset i Gyrstinge
+2025-10-07 13:56:49,428 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001769 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,428 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,429 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [72/72] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:56:49,429 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10003629 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,430 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,430 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [73/73] Successfully upserted: Loppemarked &#8211; Axeltorv ved Tivoli
+2025-10-07 13:56:49,430 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002292 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,431 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,433 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [74/74] Successfully upserted: Loppetorv på Frederiksberg Rådhusplads
+2025-10-07 13:56:49,433 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96131 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,433 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,434 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [75/75] Successfully upserted: Loppemarked november 2025 (Hal 1) &#8211; Karlslunde
+2025-10-07 13:56:49,436 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001342 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,436 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,437 - WARNING -   STDERR: 2025-10-07 13:13:09 [loppemarkeder] INFO: ✓ [76/76] Successfully upserted: Klausdal Loppemarked i Herlev
+2025-10-07 13:56:49,437 - WARNING -   STDERR: 2025-10-07 13:13:09 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001598 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,438 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,438 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [77/77] Successfully upserted: Julekræmmermarked i Hårlev Hallen
+2025-10-07 13:56:49,439 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001770 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,440 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,440 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [78/78] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:56:49,440 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.86487 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,441 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,441 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [79/79] Successfully upserted: GLOSTRUP loppemarked
+2025-10-07 13:56:49,442 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001919 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,442 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,443 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [80/80] Successfully upserted: Værebro Park Loppemarked  flea market 蚤市场
+2025-10-07 13:56:49,443 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002245 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,443 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,443 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [81/81] Successfully upserted: Helsingør Antik- og Loppemarked
+2025-10-07 13:56:49,444 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.89136 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,444 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,444 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [82/82] Successfully upserted: Lions Ishøj &#8211; Halmarked
+2025-10-07 13:56:49,445 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002718 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,445 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,445 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [83/83] Successfully upserted: Vanløse Torv Loppemarked
+2025-10-07 13:56:49,445 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.92435 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,446 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,446 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [84/84] Successfully upserted: Vestegnens Store Kræmmer og Loppemarked
+2025-10-07 13:56:49,446 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.93172 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,446 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,447 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [85/85] Successfully upserted: Krea loppemarked
+2025-10-07 13:56:49,447 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96135 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,447 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,448 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [86/86] Successfully upserted: Loppemarked &#8211; Merløse
+2025-10-07 13:56:49,449 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96729 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,449 - WARNING -   STDERR: 2025-10-07 13:13:10 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,450 - WARNING -   STDERR: 2025-10-07 13:13:10 [loppemarkeder] INFO: ✓ [87/87] Successfully upserted: Tøj Loppemarked på Bogø
+2025-10-07 13:56:49,450 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.86178 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,450 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,451 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [88/88] Successfully upserted: Veras Market Under Buen
+2025-10-07 13:56:49,451 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001599 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,452 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,452 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [89/89] Successfully upserted: Julekræmmermarked i Hårlev Hallen
+2025-10-07 13:56:49,453 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001642 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,453 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,453 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [90/90] Successfully upserted: Tissø kræmmermarked
+2025-10-07 13:56:49,453 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001831 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,454 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,454 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [91/91] Successfully upserted: OLG &#8211; Odsherred’s Antik og Kræmmermarked
+2025-10-07 13:56:49,454 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002246 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,455 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,455 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [92/92] Successfully upserted: Helsingør Antik- og Loppemarked
+2025-10-07 13:56:49,455 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.88427 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,456 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,456 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [93/93] Successfully upserted: 2 november loppemarked i TIC
+2025-10-07 13:56:49,457 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.95825 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,457 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,457 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [94/94] Successfully upserted: Julemarked i Slaglille Bjernede forsamlingshus
+2025-10-07 13:56:49,458 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.96731 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,458 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,458 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [95/95] Successfully upserted: Loppemarked i vejbyhallen
+2025-10-07 13:56:49,458 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001771 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,459 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,459 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [96/96] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:56:49,459 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10003187 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,460 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,460 - WARNING -   STDERR: 2025-10-07 13:13:11 [loppemarkeder] INFO: ✓ [97/97] Successfully upserted: Oplev Eventyrlig Julestemning på Gavnø Slot i 2025
+2025-10-07 13:56:49,460 - WARNING -   STDERR: 2025-10-07 13:13:11 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10002293 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,460 - WARNING -   STDERR: 2025-10-07 13:13:12 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,461 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO: ✓ [98/98] Successfully upserted: Loppetorv på Frederiksberg Rådhusplads
+2025-10-07 13:56:49,461 - WARNING -   STDERR: 2025-10-07 13:13:12 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001772 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,461 - WARNING -   STDERR: 2025-10-07 13:13:12 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,461 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO: ✓ [99/99] Successfully upserted: Nakskov Loppemarked
+2025-10-07 13:56:49,462 - WARNING -   STDERR: 2025-10-07 13:13:12 [httpx] INFO: HTTP Request: GET https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=loppemarkeder_nu&external_id=eq.10001920 "HTTP/2 406 Not Acceptable"
+2025-10-07 13:56:49,462 - WARNING -   STDERR: 2025-10-07 13:13:12 [httpx] INFO: HTTP Request: POST https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?on_conflict=external_id "HTTP/2 201 Created"
+2025-10-07 13:56:49,462 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO: ✓ [100/100] Successfully upserted: Værebro Park Loppemarked  flea market 蚤市场
+2025-10-07 13:56:49,463 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO: Finished parsing. Total items yielded: 100
+2025-10-07 13:56:49,463 - WARNING -   STDERR: 2025-10-07 13:13:12 [scrapy.core.engine] INFO: Closing spider (finished)
+2025-10-07 13:56:49,463 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO: ============================================================
+2025-10-07 13:56:49,463 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO: Pipeline Statistics:
+2025-10-07 13:56:49,464 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO:   Total items processed: 100
+2025-10-07 13:56:49,464 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO:   Successfully saved: 100
+2025-10-07 13:56:49,464 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO:   Failed: 0
+2025-10-07 13:56:49,465 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO:   Success rate: 100.0%
+2025-10-07 13:56:49,466 - WARNING -   STDERR: 2025-10-07 13:13:12 [loppemarkeder] INFO: ============================================================
+2025-10-07 13:56:49,466 - WARNING -   STDERR: 2025-10-07 13:13:12 [scrapy.statscollectors] INFO: Dumping Scrapy stats:
+2025-10-07 13:56:49,467 - WARNING -   STDERR: {'downloader/request_bytes': 640,
+2025-10-07 13:56:49,467 - WARNING -   STDERR: 'downloader/request_count': 2,
+2025-10-07 13:56:49,468 - WARNING -   STDERR: 'downloader/request_method_count/GET': 2,
+2025-10-07 13:56:49,469 - WARNING -   STDERR: 'downloader/response_bytes': 99119,
+2025-10-07 13:56:49,469 - WARNING -   STDERR: 'downloader/response_count': 2,
+2025-10-07 13:56:49,469 - WARNING -   STDERR: 'downloader/response_status_count/200': 2,
+2025-10-07 13:56:49,470 - WARNING -   STDERR: 'elapsed_time_seconds': 11.968493,
+2025-10-07 13:56:49,470 - WARNING -   STDERR: 'finish_reason': 'finished',
+2025-10-07 13:56:49,470 - WARNING -   STDERR: 'finish_time': datetime.datetime(2025, 10, 7, 13, 13, 12, 224403, tzinfo=datetime.timezone.utc),
+2025-10-07 13:56:49,470 - WARNING -   STDERR: 'httpcompression/response_bytes': 685550,
+2025-10-07 13:56:49,471 - WARNING -   STDERR: 'httpcompression/response_count': 2,
+2025-10-07 13:56:49,471 - WARNING -   STDERR: 'item_scraped_count': 100,
+2025-10-07 13:56:49,471 - WARNING -   STDERR: 'items_per_minute': 545.4545454545455,
+2025-10-07 13:56:49,472 - WARNING -   STDERR: 'log_count/INFO': 322,
+2025-10-07 13:56:49,472 - WARNING -   STDERR: 'log_count/WARNING': 46,
+2025-10-07 13:56:49,473 - WARNING -   STDERR: 'memusage/max': 92258304,
+2025-10-07 13:56:49,473 - WARNING -   STDERR: 'memusage/startup': 92258304,
+2025-10-07 13:56:49,473 - WARNING -   STDERR: 'response_received_count': 2,
+2025-10-07 13:56:49,474 - WARNING -   STDERR: 'responses_per_minute': 10.90909090909091,
+2025-10-07 13:56:49,474 - WARNING -   STDERR: 'robotstxt/request_count': 1,
+2025-10-07 13:56:49,474 - WARNING -   STDERR: 'robotstxt/response_count': 1,
+2025-10-07 13:56:49,475 - WARNING -   STDERR: 'robotstxt/response_status_count/200': 1,
+2025-10-07 13:56:49,475 - WARNING -   STDERR: 'scheduler/dequeued': 1,
+2025-10-07 13:56:49,475 - WARNING -   STDERR: 'scheduler/dequeued/memory': 1,
+2025-10-07 13:56:49,475 - WARNING -   STDERR: 'scheduler/enqueued': 1,
+2025-10-07 13:56:49,476 - WARNING -   STDERR: 'scheduler/enqueued/memory': 1,
+2025-10-07 13:56:49,476 - WARNING -   STDERR: 'start_time': datetime.datetime(2025, 10, 7, 13, 13, 0, 255910, tzinfo=datetime.timezone.utc)}
+2025-10-07 13:56:49,477 - WARNING -   STDERR: 2025-10-07 13:13:12 [scrapy.core.engine] INFO: Spider closed (finished)
+2025-10-07 13:56:49,478 - INFO - 
+2025-10-07 13:56:49,478 - INFO - Spider 'loppemarkeder' finished in 17.55 seconds
+2025-10-07 13:56:49,479 - INFO - ✓ Spider 'loppemarkeder' completed successfully
+2025-10-07 13:56:49,479 - INFO -   Items scraped: 0
+2025-10-07 13:56:49,479 - INFO - 
+2025-10-07 13:56:49,479 - INFO - ================================================================================
+2025-10-07 13:56:49,480 - INFO - Scraper run completed in 2642.98 seconds (44.0 minutes)
+2025-10-07 13:56:49,481 - INFO - End timestamp: 2025-10-07T13:56:49.480570
+2025-10-07 13:56:49,482 - INFO - ================================================================================
+2025-10-07 13:56:49,484 - INFO - Scraper scheduled to run daily at 02:00. Press Ctrl+C to exit.

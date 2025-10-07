@@ -5,6 +5,7 @@ import re
 import requests
 import time
 import random
+from scrapy_project.utils.address_parser import get_address_parser
 
 class FleamarketItem(scrapy.Item):
     external_id = scrapy.Field()
@@ -48,6 +49,8 @@ class FleamarketSpider(scrapy.Spider):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.logger.info(f"Initializing {self.name} spider (max_markets={self.max_markets})")
+        # Initialize address parser
+        self.address_parser = get_address_parser()
 
     # Random user agents for requests
     user_agents = [
@@ -59,50 +62,6 @@ class FleamarketSpider(scrapy.Spider):
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/91.0.864.59',
     ]
-
-    def geocode_address(self, address, city, postal_code):
-        """Geocode an address using Nominatim (OpenStreetMap)"""
-        if not address and not city:
-            return None, None
-
-        # Build query string
-        query_parts = []
-        if address:
-            query_parts.append(address)
-        if postal_code:
-            query_parts.append(postal_code)
-        if city:
-            query_parts.append(city)
-        query_parts.append("Denmark")  # Add country for better results
-
-        query = ", ".join(query_parts)
-
-        try:
-            # Use Nominatim API with random user agent
-            url = "https://nominatim.openstreetmap.org/search"
-            params = {
-                'q': query,
-                'format': 'json',
-                'limit': 1,
-                'countrycodes': 'dk'  # Limit to Denmark
-            }
-            headers = {
-                'User-Agent': random.choice(self.user_agents)
-            }
-
-            response = requests.get(url, params=params, headers=headers, timeout=10)
-            response.raise_for_status()
-
-            data = response.json()
-            if data:
-                lat = float(data[0]['lat'])
-                lon = float(data[0]['lon'])
-                return lat, lon
-
-        except Exception as e:
-            self.logger.warning(f"Geocoding failed for {query}: {str(e)}")
-
-        return None, None
 
     def parse(self, response):
         self.logger.info(f"Parsing market listing page: {response.url}")
@@ -253,6 +212,43 @@ class FleamarketSpider(scrapy.Spider):
                     market_item['postal_code'] = postal_match.group(1)
                     market_item['city'] = postal_match.group(2).strip()
 
+            # Parse and geocode address if we have location information
+            if market_item.get('address') or market_item.get('city'):
+                try:
+                    # Build address string for parsing
+                    address_parts = []
+                    if market_item.get('address'):
+                        address_parts.append(market_item.get('address'))
+                    if market_item.get('postal_code') and market_item.get('city'):
+                        address_parts.append(f"{market_item.get('postal_code')} {market_item.get('city')}")
+                    elif market_item.get('city'):
+                        address_parts.append(market_item.get('city'))
+                    
+                    full_address_str = ", ".join(address_parts)
+                    
+                    # Parse and geocode
+                    parsed_address = self.address_parser.parse_and_geocode(full_address_str)
+                    self.logger.info(f"Parsed address for '{market_name}': {parsed_address}")
+                    
+                    # Update with parsed data (prefer parsed over scraped)
+                    if parsed_address.get('full_address'):
+                        market_item['address'] = parsed_address.get('full_address')
+                    if parsed_address.get('city'):
+                        market_item['city'] = parsed_address.get('city')
+                    if parsed_address.get('postal_code'):
+                        market_item['postal_code'] = parsed_address.get('postal_code')
+                    
+                    # Add coordinates
+                    if parsed_address.get('latitude') and parsed_address.get('longitude'):
+                        market_item['latitude'] = parsed_address.get('latitude')
+                        market_item['longitude'] = parsed_address.get('longitude')
+                        self.logger.info(f"✓ Geocoded '{market_name}': ({market_item['latitude']}, {market_item['longitude']})")
+                    else:
+                        self.logger.warning(f"✗ Could not geocode '{market_name}'")
+                
+                except Exception as e:
+                    self.logger.warning(f"Address parsing/geocoding failed for '{market_name}': {str(e)}")
+
             # Description
             description = response.css('.description::text, .content::text').get()
             if description:
@@ -312,17 +308,6 @@ class FleamarketSpider(scrapy.Spider):
             special_features = response.css('.features li::text, .amenities li::text').getall()
             if special_features:
                 market_item['special_features'] = str(special_features)
-
-            # Geocode the address if we have location information
-            if market_item.get('address') or market_item.get('city'):
-                lat, lon = self.geocode_address(
-                    market_item.get('address'),
-                    market_item.get('city'),
-                    market_item.get('postal_code')
-                )
-                if lat and lon:
-                    market_item['latitude'] = lat
-                    market_item['longitude'] = lon
 
         except Exception as e:
             self.logger.warning(f"Error parsing market detail for {market_name}: {str(e)}")
