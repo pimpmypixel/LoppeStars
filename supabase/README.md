@@ -126,6 +126,15 @@ The system uses multiple fallback methods to detect admin users:
 3. **app_metadata**: Legacy role storage
 4. **First user**: Oldest registered user (fallback)
 
+### Auto Admin Assignment
+
+When a user with the `ADMIN_EMAIL` signs up, they are **automatically assigned the admin role** via a database trigger:
+
+- **Trigger**: `trigger_auto_admin_assignment` on `auth.users` table
+- **Function**: `handle_new_user_admin_assignment()`
+- **Behavior**: Immediately assigns admin role on signup for ADMIN_EMAIL
+- **Fallback**: Non-blocking - signup continues even if role assignment fails
+
 ### Role Management Functions
 
 ```sql
@@ -293,6 +302,21 @@ SELECT * FROM user_roles WHERE user_id = 'user-uuid' AND role = 'admin' AND revo
 
 -- 3. Manually grant admin role
 SELECT grant_user_role('user-uuid', 'admin', 'Manual admin grant');
+```
+
+**Problem**: Auto admin assignment not working
+**Solution**: Check trigger is active and working:
+```sql
+-- 1. Verify trigger exists
+SELECT * FROM information_schema.triggers 
+WHERE trigger_name = 'trigger_auto_admin_assignment';
+
+-- 2. Check function exists
+SELECT routine_name FROM information_schema.routines 
+WHERE routine_name = 'handle_new_user_admin_assignment';
+
+-- 3. Test function manually (replace with actual user ID)
+SELECT handle_new_user_admin_assignment() FROM auth.users WHERE email = 'pimpmypixelcph@gmail.com';
 ```
 
 #### Edge Function Issues
