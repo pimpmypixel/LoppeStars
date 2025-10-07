@@ -20,6 +20,12 @@ This directory contains all operational scripts for the Loppestars project.
   - Usage: `./scripts/start-local-api.sh [--detached]`
   - Moved from root directory
 
+### 🔄 Data Management
+- **`trigger-scraper.sh`** - Manually trigger market data scraper
+  - Triggers scraper via API endpoint or Supabase Edge Function
+  - Usage: `./scripts/trigger-scraper.sh [--api|--supabase|--status]`
+  - Includes health checks and status monitoring
+
 ## Usage
 
 All scripts should be run from the project root directory:
@@ -29,6 +35,7 @@ All scripts should be run from the project root directory:
 ./scripts/deploy.sh
 ./scripts/start-local-api.sh
 ./scripts/rebuild-stack.sh
+./scripts/trigger-scraper.sh
 ```
 
 ## Dependencies

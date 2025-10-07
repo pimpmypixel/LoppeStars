@@ -16,6 +16,7 @@
 - [🐳 Docker API Development](#-docker-api-development)
 - [☁️ AWS ECS Deployment](#️-aws-ecs-deployment)
 - [🔄 GitHub Actions CI/CD](#-github-actions-cicd)
+- [📊 Data Management & Scraping](#-data-management--scraping)
 - [🌐 Cloudflare DNS](#-cloudflare-dns)
 - [📊 Monitoring & Debugging](#-monitoring--debugging)
 - [🔧 Troubleshooting](#-troubleshooting)
@@ -469,6 +470,76 @@ gh run rerun <RUN_ID>
 
 ---
 
+## 📊 Data Management & Scraping
+
+### Manual Scraper Trigger
+```bash
+# Trigger market data scraper via API (default)
+./scripts/trigger-scraper.sh
+
+# Trigger via API endpoint explicitly
+./scripts/trigger-scraper.sh --api
+
+# Trigger via Supabase Edge Function
+./scripts/trigger-scraper.sh --supabase
+
+# Check scraper status and recent logs
+./scripts/trigger-scraper.sh --status
+
+# Show help
+./scripts/trigger-scraper.sh --help
+```
+
+### Scraper Endpoints
+```bash
+# Direct API call to trigger scraper
+curl -X POST https://loppestars.spoons.dk/scraper/trigger
+
+# Via Supabase Edge Function (with auth)
+curl -X POST https://oprevwbturtujbugynct.supabase.co/functions/v1/trigger-scraper \
+  -H "Authorization: Bearer $SUPABASE_ANON_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{}'
+
+# Check API health before triggering
+curl https://loppestars.spoons.dk/health
+```
+
+### Market Data Queries
+```bash
+# Get today's markets
+curl "https://loppestars.spoons.dk/markets/today"
+
+# Get nearby markets (requires coordinates)
+curl "https://loppestars.spoons.dk/markets/nearby?latitude=55.6761&longitude=12.5683&radius_km=50"
+
+# Check recent scraping logs via Supabase
+curl -X GET "https://oprevwbturtujbugynct.supabase.co/rest/v1/scraping_logs?order=scraped_at.desc&limit=10" \
+  -H "apikey: $SUPABASE_ANON_KEY"
+
+# Check latest market data freshness
+curl -X GET "https://oprevwbturtujbugynct.supabase.co/rest/v1/markets?select=scraped_at&order=scraped_at.desc&limit=1" \
+  -H "apikey: $SUPABASE_ANON_KEY"
+```
+
+### Scraper Monitoring
+```bash
+# View scraper logs (production)
+aws logs filter-log-events \
+  --log-group-name /ecs/loppestars \
+  --filter-pattern "scraper" \
+  --start-time $(date -d '1 hour ago' +%s)000 \
+  --region eu-central-1 | cat
+
+# Check scraper cron status in container
+docker exec -it <container_id> ps aux | grep scraper_cron
+
+# Monitor market data updates
+watch -n 30 "curl -s 'https://loppestars.spoons.dk/markets/today' | jq 'length'"
+```
+
+---
+
 ## 🌐 Cloudflare DNS
 
 ### DNS Management
@@ -772,6 +843,7 @@ alias ls-app='cd /Users/andreas/Herd/loppestars/app && bun run start'
 alias ls-api='cd /Users/andreas/Herd/loppestars && ./scripts/start-local-api.sh'
 alias ls-deploy='cd /Users/andreas/Herd/loppestars && ./scripts/deploy.sh'
 alias ls-status='cd /Users/andreas/Herd/loppestars && ./scripts/deploy.sh --status'
+alias ls-scraper='cd /Users/andreas/Herd/loppestars && ./scripts/trigger-scraper.sh'
 alias ls-health='curl -s https://loppestars.spoons.dk/health | jq'
 alias ls-logs='aws logs tail /ecs/loppestars --follow --region eu-central-1'
 alias ls-gh='gh run list --limit 5 | cat'
