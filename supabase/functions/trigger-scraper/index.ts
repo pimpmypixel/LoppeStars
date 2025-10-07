@@ -13,12 +13,18 @@ serve(async (req) => {
 
   // For internal calls from Supabase (cron jobs, manual triggers), skip auth check
   const authHeader = req.headers.get('authorization')
-  const isInternalCall = !authHeader || req.headers.get('user-agent')?.includes('PostgREST')
+  const userAgent = req.headers.get('user-agent')
   
-  console.log('Request from:', req.headers.get('user-agent'), 'Auth:', !!authHeader)
+  // Check if this is using the anon key (which we allow for operational triggers)
+  const isAnonKey = authHeader?.includes('Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSI')
+  const isInternalCall = !authHeader || 
+                         userAgent?.includes('PostgREST') ||
+                         isAnonKey
+  
+  console.log('Request from:', userAgent, 'Auth:', !!authHeader, 'AnonKey:', isAnonKey, 'Internal:', isInternalCall)
 
-  // If not internal call, verify admin access
-  if (!isInternalCall && authHeader) {
+  // If not internal call and not using anon key, verify admin access
+  if (!isInternalCall && authHeader && !isAnonKey) {
     try {
       const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2')
       const supabaseUrl = Deno.env.get('SUPABASE_URL')!
