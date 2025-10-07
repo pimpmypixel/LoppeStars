@@ -169,7 +169,8 @@ export default function MarketsScreen() {
     if (searchQuery) {
       filtered = filtered.filter(market =>
         market.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        (market.city && market.city.toLowerCase().includes(searchQuery.toLowerCase()))
+        (market.city && market.city.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (market.address && market.address.toLowerCase().includes(searchQuery.toLowerCase()))
       );
     }
 
@@ -184,22 +185,35 @@ export default function MarketsScreen() {
           market.longitude
         ) : undefined,
       }));
-    }
 
-    // Sort: selected market first, then by distance if available, then by start date
-    filtered.sort((a, b) => {
-      // Selected market always comes first
-      if (selectedMarketFromStore?.id === a.id) return -1;
-      if (selectedMarketFromStore?.id === b.id) return 1;
-      
-      // Then sort by distance if available
-      if (userLocation && a.distance !== undefined && b.distance !== undefined) {
-        return a.distance - b.distance;
-      }
-      
-      // Fall back to sorting by start date
-      return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
-    });
+      // Sort by distance (closest first)
+      filtered.sort((a, b) => {
+        // Selected market always comes first
+        if (selectedMarketFromStore?.id === a.id) return -1;
+        if (selectedMarketFromStore?.id === b.id) return 1;
+        
+        // Then sort by distance if both have coordinates
+        if (a.distance !== undefined && b.distance !== undefined) {
+          return a.distance - b.distance;
+        }
+        
+        // Markets with coordinates come before those without
+        if (a.distance !== undefined && b.distance === undefined) return -1;
+        if (a.distance === undefined && b.distance !== undefined) return 1;
+        
+        // Fall back to sorting by start date
+        return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+      });
+    } else {
+      // No location, sort by start date only
+      filtered.sort((a, b) => {
+        // Selected market always comes first
+        if (selectedMarketFromStore?.id === a.id) return -1;
+        if (selectedMarketFromStore?.id === b.id) return 1;
+        
+        return new Date(a.start_date).getTime() - new Date(b.start_date).getTime();
+      });
+    }
 
     setFilteredMarkets(filtered);
   };

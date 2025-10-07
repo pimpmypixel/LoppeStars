@@ -9,8 +9,7 @@ scrapy-user-agents
 supabase
 python-dateutil
 schedule
-pyap
-geopy
+aiohttp
 # pixelateme - commented out due to heavy GUI dependencies (wxPython)
 # We'll use the OpenCV fallback implementation instead
 # If needed later, can install with: pip install pixelateme --no-deps

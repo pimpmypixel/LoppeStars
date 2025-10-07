@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   },
   starButton: {
     height: 36,
-    width: 36,
+    width: 26,
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Alert, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
-import { Modal, Platform, ToastAndroid } from 'react-native';
+import { Modal, Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useMarket } from '../contexts/MarketContext';
 import { useAuth } from '../contexts/AuthContext';
 import { Text, Button, Input, Label, Card, CardContent, CardHeader, CardTitle } from '../components/ui-kitten';
-import { Layout, Icon } from '@ui-kitten/components';
+import { Layout } from '@ui-kitten/components';
 import AuthGuard from '../components/AuthGuard';
 import AppHeader from '../components/AppHeader';
 import RatingSlider from '../components/RatingSlider';
 import CameraModal from '../components/CameraModal';
 import PhotoUploadProgress from '../components/PhotoUploadProgress';
+import { showToast, ToastContainer } from '../components/Toast';
 import { usePhotoUpload } from '../hooks/usePhotoUpload';
 import { useTranslation } from '../utils/localization';
 import { supabase } from '../utils/supabase';
@@ -64,22 +66,27 @@ export default function RatingScreen() {
       Alert.alert(t('common.error'), t('form.loginRequired'));
       return;
     }
-    setPhotoUri(uri);
-    // Immediately upload with progress spinner
+    
+    // Immediately upload and process with face detection
+    console.log('Starting upload and face detection process...');
     try {
       const result = await uploadPhoto(uri, user.id);
       if (result.success && result.processedUrl) {
-        setPhotoUri(result.processedUrl);
-        // Show toast on Android or alert on iOS
-        const msg = t('rating.uploadSuccessToast');
-        if (Platform.OS === 'android') {
-          ToastAndroid.show(msg, ToastAndroid.SHORT);
-        } else {
-          Alert.alert(msg);
-        }
+        console.log('✅ Photo processed successfully:', result.processedUrl);
+        setPhotoUri(result.processedUrl); // Store the processed URL
+        
+        // Show success toast
+        showToast(t('rating.uploadSuccessToast', { defaultValue: 'Photo processed successfully!' }), 'success');
+      } else {
+        throw new Error(result.error || 'Upload failed');
       }
     } catch (err) {
-      console.error('Upload error:', err);
+      console.error('❌ Upload/processing error:', err);
+      showToast(
+        t('rating.errorPhotoUpload', { defaultValue: 'Failed to process photo. Please try again.' }),
+        'error'
+      );
+      setPhotoUri(null); // Clear photo on error
     }
   };
 
@@ -89,75 +96,149 @@ export default function RatingScreen() {
       return;
     }
 
-
     if (ratingType === 'stall' && !stallName.trim()) {
       Alert.alert(t('common.error'), t('rating.errorNoStallName'));
       return;
     }
 
-    // Optionally validate MobilePay code (e.g., length or numeric)
-
     setIsSubmitting(true);
 
     try {
+      // Check for existing rating first
+      const { data: existingRatings, error: checkError } = await supabase
+        .from('ratings')
+        .select('id')
+        .eq('user_id', user.id)
+        .eq('market_id', selectedMarket.id);
+
+      if (checkError) {
+        console.error('Error checking existing ratings:', checkError);
+        // Continue anyway, let the database handle uniqueness
+      }
+
+      // For stall ratings, check if this specific stall was already rated
+      if (ratingType === 'stall' && existingRatings && existingRatings.length > 0) {
+        const { data: stallRatings } = await supabase
+          .from('ratings')
+          .select('id, stall_name')
+          .eq('user_id', user.id)
+          .eq('market_id', selectedMarket.id)
+          .eq('stall_name', stallName.trim());
+
+        if (stallRatings && stallRatings.length > 0) {
+          // Show alert asking if they want to update
+          Alert.alert(
+            t('rating.alreadyRatedStall'),
+            t('rating.updateRatingQuestion'),
+            [
+              { text: t('common.cancel'), style: 'cancel', onPress: () => setIsSubmitting(false) },
+              { text: t('common.yes'), onPress: () => continueSubmit(stallRatings[0].id) }
+            ]
+          );
+          return;
+        }
+      }
+
+      // For market ratings, check if market was already rated
+      if (ratingType === 'market' && existingRatings && existingRatings.length > 0) {
+        const { data: marketRatings } = await supabase
+          .from('ratings')
+          .select('id, rating_type')
+          .eq('user_id', user.id)
+          .eq('market_id', selectedMarket.id)
+          .is('stall_name', null); // Market ratings have no stall name
+
+        if (marketRatings && marketRatings.length > 0) {
+          Alert.alert(
+            t('rating.alreadyRatedMarket'),
+            t('rating.updateRatingQuestion'),
+            [
+              { text: t('common.cancel'), style: 'cancel', onPress: () => setIsSubmitting(false) },
+              { text: t('common.yes'), onPress: () => continueSubmit(marketRatings[0].id) }
+            ]
+          );
+          return;
+        }
+      }
+
+      // No existing rating, proceed with insert
+      await continueSubmit();
+
+    } catch (error) {
+      console.error('Submit error:', error);
+      showToast(error instanceof Error ? error.message : t('rating.errorSubmit'), 'error');
+      setIsSubmitting(false);
+    }
+  };
+
+  const continueSubmit = async (existingRatingId?: string) => {
+    try {
       let photoUrl = null;
 
-      // Upload photo if one was taken
+      // Use the already processed photo URL (uploaded in handleImageTaken)
       if (photoUri) {
-        console.log('Handling photo URI:', photoUri);
-        // If photoUri is a remote URL (e.g., processed image), skip upload and use it directly
-        if (/^https?:\/\//.test(photoUri)) {
-          console.log('Using existing remote photo URL');
-          photoUrl = photoUri;
-        } else {
-          console.log('Uploading local photo...');
-          const uploadResult = await uploadPhoto(photoUri, user.id);
-          if (!uploadResult.success) {
-            throw new Error(uploadResult.error || t('rating.errorPhotoUpload'));
-          }
-          photoUrl = uploadResult.processedUrl || uploadResult.originalUrl;
-        }
+        console.log('Using already processed photo URL:', photoUri);
+        photoUrl = photoUri;
       }
 
       // Submit rating to database
       console.log('Submitting rating...');
 
-      // Prepare the insert data - make rating_type optional for backwards compatibility
-      const insertData: any = {
-        user_id: user.id,
-        market_id: selectedMarket.id,
+      // Prepare the data
+      const ratingData: any = {
+        user_id: user!.id,
+        market_id: selectedMarket!.id,
         stall_name: ratingType === 'stall' ? stallName.trim() : null,
         mobilepay_phone: ratingType === 'stall' ? (mobilePayCode.trim() || null) : null,
         rating: rating,
         photo_url: photoUrl,
-        created_at: new Date().toISOString(),
       };
 
       // Only add rating_type if we're confident the column exists
-      // TODO: Remove this conditional once migration is applied
       if (ratingType) {
-        insertData.rating_type = ratingType;
+        ratingData.rating_type = ratingType;
       }
 
-      const { data: ratingData, error } = await supabase
-        .from('ratings')
-        .insert(insertData)
-        .select('id')
-        .single();
+      let resultData;
+      let resultError;
 
-      if (error) {
-        throw error;
+      if (existingRatingId) {
+        // Update existing rating
+        const { data, error } = await supabase
+          .from('ratings')
+          .update(ratingData)
+          .eq('id', existingRatingId)
+          .select('id')
+          .single();
+        
+        resultData = data;
+        resultError = error;
+      } else {
+        // Insert new rating
+        ratingData.created_at = new Date().toISOString();
+        const { data, error } = await supabase
+          .from('ratings')
+          .insert(ratingData)
+          .select('id')
+          .single();
+        
+        resultData = data;
+        resultError = error;
+      }
+
+      if (resultError) {
+        throw resultError;
       }
 
       // Log appropriate rating event based on type
       await logEvent(
-        user.id,
+        user!.id,
         ratingType === 'stall' ? 'stall_rated' : 'market_rated',
         'rating',
-        ratingData.id,
+        resultData!.id,
         {
-          market_id: selectedMarket.id,
-          market_name: selectedMarket.name,
+          market_id: selectedMarket!.id,
+          market_name: selectedMarket!.name,
           rating_type: ratingType,
           stall_name: ratingType === 'stall' ? stallName.trim() : null,
           rating_value: rating,
@@ -171,13 +252,13 @@ export default function RatingScreen() {
       // Log photo_added event if photo was uploaded
       if (photoUrl) {
         await logEvent(
-          user.id,
+          user!.id,
           'photo_added',
           'photo',
-          ratingData.id,
+          resultData!.id,
           {
-            market_id: selectedMarket.id,
-            market_name: selectedMarket.name,
+            market_id: selectedMarket!.id,
+            market_name: selectedMarket!.name,
             stall_name: stallName.trim(),
             photo_url: photoUrl,
             added_at: new Date().toISOString(),
@@ -185,27 +266,28 @@ export default function RatingScreen() {
         );
       }
 
-      // Success
-      Alert.alert(t('common.success'), t('rating.successMessage'), [
-        {
-          text: t('common.ok'),
-          onPress: () => {
-            // Reset form
-            setRatingType('stall');
-            setStallName('');
-            setMobilePayCode('');
-            setComments('');
-            setRating(5);
-            setPhotoUri(null);
-            resetUpload();
-          }
-        }
-      ]);
+      // Success - Show styled toast
+      const successMsg = ratingType === 'stall' 
+        ? t('rating.successMessageStall', { defaultValue: 'Thanks for rating this stall!' })
+        : t('rating.successMessageMarket', { defaultValue: 'Thanks for rating this market!' });
+      
+      showToast(successMsg, 'success');
+
+      // Reset form after short delay
+      setTimeout(() => {
+        setRatingType('stall');
+        setStallName('');
+        setMobilePayCode('');
+        setComments('');
+        setRating(5);
+        setPhotoUri(null);
+        resetUpload();
+        setIsSubmitting(false);
+      }, 1000);
 
     } catch (error) {
       console.error('Submit error:', error);
-      Alert.alert(t('common.error'), error instanceof Error ? error.message : t('rating.errorSubmit'));
-    } finally {
+      showToast(error instanceof Error ? error.message : t('rating.errorSubmit'), 'error');
       setIsSubmitting(false);
     }
   };
@@ -234,7 +316,7 @@ export default function RatingScreen() {
                       ]}
                       onPress={() => setRatingType('stall')}
                     >
-                      <Icon name="home" style={styles.typeIcon} fill={ratingType === 'stall' ? '#FF9500' : '#8F9BB3'} />
+                      <Ionicons name="home-outline" size={24} color={ratingType === 'stall' ? '#FF9500' : '#8F9BB3'} />
                       <Text style={ratingType === 'stall' ? styles.typeButtonTextActive : styles.typeButtonText}>
                         {t('form.rateStall')}
                       </Text>
@@ -246,7 +328,7 @@ export default function RatingScreen() {
                       ]}
                       onPress={() => setRatingType('market')}
                     >
-                      <Icon name="map-pin" style={styles.typeIcon} fill={ratingType === 'market' ? '#FF9500' : '#8F9BB3'} />
+                      <Ionicons name="location-outline" size={24} color={ratingType === 'market' ? '#FF9500' : '#8F9BB3'} />
                       <Text style={ratingType === 'market' ? styles.typeButtonTextActive : styles.typeButtonText}>
                         {t('form.rateMarket')}
                       </Text>
@@ -295,7 +377,7 @@ export default function RatingScreen() {
                       activeOpacity={0.7}
                     >
                       <View style={styles.photoIconContainer}>
-                        <Icon name="camera" style={styles.buttonIcon} fill="#FF9500" />
+                        <Ionicons name="camera-outline" size={32} color="#FF9500" />
                       </View>
                       <Text style={styles.buttonText}>{t('rating.takePhoto')}</Text>
                     </TouchableOpacity>
@@ -305,7 +387,7 @@ export default function RatingScreen() {
                         onPress={() => setPhotoUri(null)}
                         activeOpacity={0.7}
                       >
-                        <Icon name="trash-2" style={styles.deleteIcon} fill="#EF4444" />
+                        <Ionicons name="trash-outline" size={24} color="#EF4444" />
                       </TouchableOpacity>
                     )}
                   </View>
@@ -409,6 +491,9 @@ export default function RatingScreen() {
         isUploading={uploadProgress.isUploading}
         error={uploadProgress.error}
       />
+
+      {/* Toast Container */}
+      <ToastContainer />
     </AuthGuard>
   );
 }

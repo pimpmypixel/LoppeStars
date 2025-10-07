@@ -41,6 +41,7 @@ jobs:
             --build-arg SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }} \
             --build-arg SOURCE_BUCKET=${SOURCE_BUCKET} \
             --build-arg STORAGE_BUCKET=${STORAGE_BUCKET} \
+            --build-arg GEOAPIFY_API_KEY=${{ secrets.GEOAPIFY_API_KEY }} \
             -f Dockerfile .
 
       - name: Push image to ECR
@@ -79,7 +80,8 @@ jobs:
                   {"name": "SUPABASE_SERVICE_ROLE_KEY", "value": "${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}"},
                   {"name": "SUPABASE_ANON_KEY", "value": "${{ secrets.SUPABASE_ANON_KEY }}"},
                   {"name": "SOURCE_BUCKET", "value": "${SOURCE_BUCKET}"},
-                  {"name": "STORAGE_BUCKET", "value": "${STORAGE_BUCKET}"}
+                  {"name": "STORAGE_BUCKET", "value": "${STORAGE_BUCKET}"},
+                  {"name": "GEOAPIFY_API_KEY", "value": "${{ secrets.GEOAPIFY_API_KEY }}"}
                 ],
                 "logConfiguration": {
                   "logDriver": "awslogs",

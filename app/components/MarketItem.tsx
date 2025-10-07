@@ -32,6 +32,27 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
   const isSelected = selectedMarket?.id === market.id;
   const isMarkedHere = isSelected; // Only selected market is marked as "here"
 
+  // Decode HTML entities for proper Unicode display
+  const decodeHtmlEntities = (text: string): string => {
+    const entities: { [key: string]: string } = {
+      '&#038;': '&',
+      '&amp;': '&',
+      '&#8211;': '–',
+      '&ndash;': '–',
+      '&#8212;': '—',
+      '&mdash;': '—',
+      '&nbsp;': ' ',
+      '&quot;': '"',
+      '&#39;': "'",
+      '&apos;': "'",
+      '&lt;': '<',
+      '&gt;': '>',
+    };
+    return text.replace(/&#?\w+;/g, (match) => entities[match] || match);
+  };
+
+  const displayName = decodeHtmlEntities(market.name);
+
   // Check if market is currently active
   const now = new Date();
   let startDate: Date;
@@ -187,15 +208,15 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
                 <View style={styles.nameSection}>
                   <View style={styles.nameRow}>
                     <Text style={styles.nameTextSelected} numberOfLines={2}>
-                      {market.name}
+                      {displayName}
                     </Text>
                     {/* <View style={styles.selectedBadge}>
                       <Text style={styles.selectedBadgeText}>{t('markets.selected')}</Text>
                     </View>
                   </View> */}
-                    {market.city && (
+                   {/*  {market.city && (
                       <Text style={styles.cityTextSelected}>{market.city}</Text>
-                    )}
+                    )} */}
                   </View>
                 </View>
               </View>
@@ -232,28 +253,30 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
                 )}
               </View>
 
-              {/* Location and date info */}
-              <View style={styles.infoRow}>
-                <View style={styles.locationInfo}>
-                  <Ionicons name="location-outline" size={16} color="rgba(255, 255, 255, 0.9)" />
-                  <Text style={styles.locationTextSelected} numberOfLines={1}>
-                    {market.address}{market.address && market.city ? ', ' : ''}{market.city}
+            {/* Location and date info */}
+            <View style={styles.infoRow}>
+              <View style={styles.locationInfo}>
+                <Ionicons name="location-outline" size={16} color="rgba(255, 255, 255, 0.9)" />
+                <Text style={styles.locationTextSelected} numberOfLines={1}>
+                  {market.address || market.city || t('markets.locationUnknown', { defaultValue: 'Address unknown' })}
+                </Text>
+              </View>
+            </View>
+            
+            <View style={styles.infoRow}>
+              <View style={styles.dateInfo}>
+                <Ionicons name="calendar-outline" size={16} color="rgba(255, 255, 255, 0.9)" />
+                <Text style={styles.dateTextSelected}>{formatDate()}</Text>
+              </View>
+              {market.distance !== undefined && (
+                <View style={styles.distanceBadgeSelected}>
+                  <Ionicons name="navigate-outline" size={14} color="rgba(255, 255, 255, 0.9)" style={{ marginRight: 4 }} />
+                  <Text style={styles.distanceTextSelected}>
+                    {formatDistance(market.distance)}
                   </Text>
                 </View>
-                {market.distance && (
-                  <View style={styles.distanceBadgeSelected}>
-                    <Text style={styles.distanceTextSelected}>
-                      {formatDistance(market.distance)}
-                    </Text>
-                  </View>
-                )}
-                <View style={styles.dateInfo}>
-                  <Ionicons name="calendar-outline" size={16} color="rgba(255, 255, 255, 0.9)" />
-                  <Text style={styles.dateTextSelected}>{formatDate()}</Text>
-                </View>
-              </View>
-
-              {/* Action buttons */}
+              )}
+            </View>              {/* Action buttons */}
               <View style={styles.buttonsRow}>
                 <TouchableOpacity style={styles.rateStallButtonSelected} onPress={handleRateStall}>
                   <Ionicons name="star" size={18} color="rgba(255, 255, 255, 0.9)" />
@@ -282,15 +305,16 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
               <View style={styles.nameSection}>
                 <View style={styles.nameRow}>
                   <Text style={styles.nameText} numberOfLines={2}>
-                    {market.name}
+                    {displayName}
                   </Text>
                 </View>
-                {market.city && (
+                {/* {market.city && (
                   <Text style={styles.cityText}>{market.city}</Text>
-                )}
+                )} */}
               </View>
-              {market.distance && (
+              {market.distance !== undefined && (
                 <View style={styles.distanceBadge}>
+                  <Ionicons name="navigate-outline" size={14} color="#3366FF" style={{ marginRight: 4 }} />
                   <Text style={styles.distanceText}>
                     {formatDistance(market.distance)}
                   </Text>
@@ -337,20 +361,24 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
               <View style={styles.locationInfo}>
                 <Ionicons name="location-outline" size={16} color="#8F9BB3" />
                 <Text style={styles.locationText} numberOfLines={1}>
-                  {market.address}{market.address && market.city ? ', ' : ''}{market.city}
+                  {market.address || market.city || t('markets.locationUnknown', { defaultValue: 'Address unknown' })}
                 </Text>
               </View>
-                {market.distance && (
-                  <View style={styles.distanceBadgeSelected}>
-                    <Text style={styles.distanceTextSelected}>
-                      {formatDistance(market.distance)}
-                    </Text>
-                  </View>
-                )}
+            </View>
+            
+            <View style={styles.infoRow}>
               <View style={styles.dateInfo}>
                 <Ionicons name="calendar-outline" size={16} color="#8F9BB3" />
                 <Text style={styles.dateText}>{formatDate()}</Text>
               </View>
+              {market.distance !== undefined && (
+                <View style={styles.distanceBadge}>
+                  <Ionicons name="navigate-outline" size={14} color="#3366FF" style={{ marginRight: 4 }} />
+                  <Text style={styles.distanceText}>
+                    {formatDistance(market.distance)}
+                  </Text>
+                </View>
+              )}
             </View>
 
             {/* Action buttons */}
@@ -478,12 +506,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   distanceBadgeSelected: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   distanceText: {
     fontSize: 14,
@@ -578,12 +610,14 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#8F9BB3',
     letterSpacing: 0.3,
+    textTransform: 'capitalize',
   },
   cityTagTextSelected: {
     fontSize: 13,
     fontWeight: '700',
     color: 'rgba(255, 255, 255, 0.8)',
     letterSpacing: 0.3,
+    textTransform: 'capitalize',
   },
   ratingsTag: {
     backgroundColor: 'rgba(255, 215, 0, 0.2)',
@@ -655,6 +689,7 @@ const styles = StyleSheet.create({
   },
   buttonsRow: {
     flexDirection: 'row',
+    marginTop: 10,
     gap: 6,
   },
   hereButton: {

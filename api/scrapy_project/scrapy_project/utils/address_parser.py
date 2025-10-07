@@ -2,52 +2,56 @@
 Address parsing and geocoding utilities for market scrapers.
 
 This module provides functionality to:
-1. Parse Danish addresses using PyAP (Python Address Parser)
-2. Geocode addresses to precise coordinates using multiple services
+1. Parse Danish addresses with optimized regex
+2. Batch geocode addresses using Geoapify API
 3. Validate and normalize address components
+
+Optimized for Danish address format: Street Number, PostalCode City
+Examples: "Vestergade 12, 8000 Aarhus C" or "8000 Aarhus C"
 """
 
 import re
 import logging
-import time
-import random
-from typing import Dict, Optional, Tuple
-from geopy.geocoders import Nominatim, GoogleV3
-from geopy.exc import GeocoderTimedOut, GeocoderServiceError
-import pyap
+import os
+import asyncio
+import aiohttp
+from typing import Dict, Optional, Tuple, List
+from urllib.parse import quote
 
 logger = logging.getLogger(__name__)
 
 
 class AddressParser:
-    """Parse and geocode Danish addresses with high accuracy"""
+    """Parse and geocode Danish addresses with high accuracy using Geoapify"""
     
-    def __init__(self, google_api_key: Optional[str] = None):
+    def __init__(self, geoapify_api_key: Optional[str] = None):
         """
-        Initialize address parser with geocoding services.
+        Initialize address parser with Geoapify API.
         
         Args:
-            google_api_key: Optional Google Geocoding API key for enhanced results
+            geoapify_api_key: Geoapify API key for geocoding (reads from env if not provided)
         """
-        self.nominatim = Nominatim(user_agent="loppestars_scraper_v1.0")
-        self.google = GoogleV3(api_key=google_api_key) if google_api_key else None
+        self.geoapify_api_key = geoapify_api_key or os.getenv('GEOAPIFY_API_KEY')
+        if not self.geoapify_api_key:
+            logger.warning("No Geoapify API key found. Geocoding will be disabled.")
         
-        # User agents for Nominatim requests
-        self.user_agents = [
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
-            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36',
-        ]
+        self.geoapify_base_url = "https://api.geoapify.com/v1/geocode/search"
+        self.batch_size = 50  # Geoapify supports batch requests
     
     def parse_address(self, address_string: str) -> Dict[str, Optional[str]]:
         """
-        Parse Danish address string into components using PyAP.
+        Parse Danish address string into components.
         
         Args:
             address_string: Raw address string (e.g., "Vestergade 12, 8000 Aarhus C")
         
         Returns:
-            Dictionary with keys: street, street_number, postal_code, city, full_address
+            Dictionary matching markets table schema:
+            {
+                'full_address': str (original address),
+                'postal_code': str,
+                'city': str,
+            }
         """
         if not address_string or not isinstance(address_string, str):
             return self._empty_address()
@@ -56,25 +60,9 @@ class AddressParser:
             # Clean the address string
             address_clean = self._clean_address(address_string)
             
-            # Try PyAP parsing (supports international addresses)
-            addresses = pyap.parse(address_clean, country='DK')
-            
-            if addresses:
-                # Use the first parsed address
-                parsed = addresses[0]
-                result = {
-                    'street': parsed.street_name if hasattr(parsed, 'street_name') else None,
-                    'street_number': parsed.street_number if hasattr(parsed, 'street_number') else None,
-                    'postal_code': parsed.postal_code if hasattr(parsed, 'postal_code') else None,
-                    'city': parsed.city if hasattr(parsed, 'city') else None,
-                    'full_address': parsed.full_address if hasattr(parsed, 'full_address') else address_clean,
-                }
-                logger.info(f"PyAP parsed address: {result}")
-                return result
-            
-            # Fallback to regex-based Danish address parsing
+            # Use optimized regex for Danish addresses
             result = self._parse_danish_address_regex(address_clean)
-            logger.info(f"Regex parsed address: {result}")
+            
             return result
             
         except Exception as e:
@@ -93,185 +81,239 @@ class AddressParser:
     
     def _parse_danish_address_regex(self, address: str) -> Dict[str, Optional[str]]:
         """
-        Fallback regex-based parser for Danish addresses.
+        Regex-based parser optimized for Danish address format.
         
-        Danish address format: Street StreetNumber, PostalCode City
-        Examples:
-        - Vestergade 12, 8000 Aarhus C
-        - H.C. Andersens Boulevard 27, 1553 København V
-        - Strandvejen 171A, 2900 Hellerup
+        Danish address format patterns:
+        1. Street Number, PostalCode City (full address)
+           Example: "Vestergade 12, 8000 Aarhus C"
+        2. PostalCode City (postal code + city only)
+           Example: "8000 Aarhus C" or "2900 Hellerup"
+        3. City name only
+           Example: "Aarhus" or "København V"
         """
         result = self._empty_address()
-        result['full_address'] = address
         
-        # Pattern: Street Number, PostalCode City
-        # Example: "Vestergade 12, 8000 Aarhus C"
-        pattern = r'^([^,\d]+)\s+(\d+[A-Za-z]?)\s*,?\s*(\d{4})?\s*(.+)?$'
-        match = re.match(pattern, address)
+        # Pattern 1: PostalCode City (4-digit postal code followed by city name)
+        # Example: "8000 Aarhus C" or "2900 Hellerup"
+        pattern_postal = r'(\d{4})\s+(.+?)(?:,|$)'
+        postal_match = re.search(pattern_postal, address)
         
-        if match:
-            result['street'] = match.group(1).strip() if match.group(1) else None
-            result['street_number'] = match.group(2).strip() if match.group(2) else None
-            result['postal_code'] = match.group(3).strip() if match.group(3) else None
-            result['city'] = match.group(4).strip() if match.group(4) else None
+        if postal_match:
+            result['postal_code'] = postal_match.group(1).strip()
+            result['city'] = postal_match.group(2).strip()
+            
+            # Extract street address by removing postal code and city
+            street_address = address
+            # Remove the postal code and city part
+            postal_city_pattern = r',?\s*' + re.escape(postal_match.group(0))
+            street_address = re.sub(postal_city_pattern, '', street_address, flags=re.IGNORECASE).strip()
+            
+            result['full_address'] = street_address if street_address else address
         else:
-            # Try simpler pattern: PostalCode City (for addresses without street)
-            pattern_simple = r'^(\d{4})\s+(.+)$'
-            match_simple = re.match(pattern_simple, address)
-            if match_simple:
-                result['postal_code'] = match_simple.group(1).strip()
-                result['city'] = match_simple.group(2).strip()
+            # Pattern 2: City name only (extract last component after comma or whole string)
+            parts = address.split(',')
+            if len(parts) > 1:
+                city_part = parts[-1].strip()
+                # Remove any leading postal codes
+                city_clean = re.sub(r'^\d{4}\s*', '', city_part)
+                if city_clean:
+                    result['city'] = city_clean
+                    # Store street address without city
+                    result['full_address'] = ', '.join(parts[:-1]).strip()
+            else:
+                # Single component - could be city only
+                result['city'] = address.strip()
+                result['full_address'] = address.strip()
         
         return result
     
     def _empty_address(self) -> Dict[str, Optional[str]]:
-        """Return empty address dictionary"""
+        """Return empty address dictionary matching markets table schema"""
         return {
-            'street': None,
-            'street_number': None,
+            'full_address': None,
             'postal_code': None,
             'city': None,
-            'full_address': None,
         }
+    
+    def ensure_postal_code(self, parsed: Dict[str, Optional[str]]) -> Dict[str, Optional[str]]:
+        """
+        Ensure postal code is populated, attempt to extract from city if missing.
+        
+        Args:
+            parsed: Parsed address dictionary
+        
+        Returns:
+            Updated dictionary with postal code if found
+        """
+        if parsed.get('postal_code'):
+            return parsed
+        
+        # Try to extract postal code from city field
+        city = parsed.get('city', '')
+        if city:
+            postal_pattern = r'(\d{4})'
+            match = re.search(postal_pattern, city)
+            if match:
+                parsed['postal_code'] = match.group(1)
+                # Clean city name
+                parsed['city'] = re.sub(r'\d{4}\s*', '', city).strip()
+        
+        return parsed
     
     def geocode(
         self,
-        street: Optional[str] = None,
-        street_number: Optional[str] = None,
+        full_address: Optional[str] = None,
         postal_code: Optional[str] = None,
         city: Optional[str] = None,
-        full_address: Optional[str] = None,
     ) -> Tuple[Optional[float], Optional[float]]:
         """
-        Geocode address components to precise coordinates.
+        Geocode Danish address to precise coordinates using Geoapify.
         
         Args:
-            street: Street name (e.g., "Vestergade")
-            street_number: Street number (e.g., "12" or "12A")
+            full_address: Complete address string (prioritized)
             postal_code: Danish postal code (e.g., "8000")
             city: City name (e.g., "Aarhus C")
-            full_address: Complete address string (used if components not provided)
         
         Returns:
             Tuple of (latitude, longitude) or (None, None) if geocoding fails
         """
+        if not self.geoapify_api_key:
+            logger.debug("Geocoding disabled: No API key")
+            return None, None
+        
         # Build query string from components
         query_parts = []
         
-        if street and street_number:
-            query_parts.append(f"{street} {street_number}")
-        elif street:
-            query_parts.append(street)
-        
-        if postal_code:
+        if full_address:
+            query_parts.append(full_address)
+        elif postal_code and city:
+            query_parts.append(f"{postal_code} {city}")
+        elif postal_code:
             query_parts.append(postal_code)
-        
-        if city:
+        elif city:
             query_parts.append(city)
         
-        if not query_parts and full_address:
-            query_parts.append(full_address)
-        
         if not query_parts:
-            logger.warning("No address components provided for geocoding")
             return None, None
         
         # Add Denmark to improve accuracy
         query_parts.append("Denmark")
         query = ", ".join(query_parts)
         
-        logger.info(f"Geocoding query: {query}")
-        
-        # Try Google Geocoding API first (if available) - more accurate
-        if self.google:
-            try:
-                lat, lon = self._geocode_google(query)
-                if lat and lon:
-                    logger.info(f"✓ Google geocoded: ({lat}, {lon})")
+        # Geocode with Geoapify (synchronous)
+        try:
+            import requests
+            
+            url = f"{self.geoapify_base_url}?text={quote(query)}&filter=countrycode:dk&apiKey={self.geoapify_api_key}"
+            response = requests.get(url, timeout=10)
+            
+            if response.status_code == 200:
+                data = response.json()
+                if data.get('features') and len(data['features']) > 0:
+                    coords = data['features'][0]['geometry']['coordinates']
+                    lon, lat = coords[0], coords[1]
+                    logger.debug(f"✓ Geocoded: ({lat}, {lon})")
                     return lat, lon
-            except Exception as e:
-                logger.warning(f"Google geocoding failed: {str(e)}")
-        
-        # Fallback to Nominatim (OpenStreetMap) - free but less accurate
-        try:
-            lat, lon = self._geocode_nominatim(query, postal_code)
-            if lat and lon:
-                logger.info(f"✓ Nominatim geocoded: ({lat}, {lon})")
-                return lat, lon
+                else:
+                    logger.debug(f"No results for: {query}")
+            else:
+                logger.warning(f"Geoapify API error {response.status_code}: {response.text}")
         except Exception as e:
-            logger.warning(f"Nominatim geocoding failed: {str(e)}")
-        
-        logger.warning(f"✗ Geocoding failed for: {query}")
-        return None, None
-    
-    def _geocode_google(self, query: str) -> Tuple[Optional[float], Optional[float]]:
-        """Geocode using Google Geocoding API"""
-        if not self.google:
-            return None, None
-        
-        try:
-            location = self.google.geocode(query, timeout=10)
-            if location:
-                return location.latitude, location.longitude
-        except (GeocoderTimedOut, GeocoderServiceError) as e:
-            logger.warning(f"Google geocoder error: {str(e)}")
+            logger.warning(f"Geocoding failed for '{query}': {str(e)}")
         
         return None, None
     
-    def _geocode_nominatim(
+    async def batch_geocode_async(self, addresses: List[str]) -> List[Tuple[Optional[float], Optional[float]]]:
+        """
+        Batch geocode multiple addresses asynchronously using Geoapify.
+        
+        Args:
+            addresses: List of address strings to geocode
+        
+        Returns:
+            List of (latitude, longitude) tuples in same order as input
+        """
+        if not self.geoapify_api_key:
+            logger.warning("Batch geocoding disabled: No API key")
+            return [(None, None) for _ in addresses]
+        
+        results = []
+        
+        # Process in batches to avoid overwhelming the API
+        for i in range(0, len(addresses), self.batch_size):
+            batch = addresses[i:i + self.batch_size]
+            batch_results = await self._geocode_batch(batch)
+            results.extend(batch_results)
+        
+        return results
+    
+    async def _geocode_batch(self, addresses: List[str]) -> List[Tuple[Optional[float], Optional[float]]]:
+        """Geocode a batch of addresses concurrently"""
+        async with aiohttp.ClientSession() as session:
+            tasks = [self._geocode_single_async(session, addr) for addr in addresses]
+            return await asyncio.gather(*tasks)
+    
+    async def _geocode_single_async(
         self,
-        query: str,
-        postal_code: Optional[str] = None
+        session: aiohttp.ClientSession,
+        address: str
     ) -> Tuple[Optional[float], Optional[float]]:
-        """Geocode using Nominatim (OpenStreetMap)"""
+        """Geocode a single address asynchronously"""
         try:
-            # Rate limiting: Nominatim requires 1 request per second
-            time.sleep(1.1)
+            query = f"{address}, Denmark"
+            url = f"{self.geoapify_base_url}?text={quote(query)}&filter=countrycode:dk&apiKey={self.geoapify_api_key}"
             
-            # Build structured query for better accuracy
-            location = self.nominatim.geocode(
-                query,
-                country_codes='dk',
-                timeout=10,
-                addressdetails=True,
-            )
-            
-            if location:
-                return location.latitude, location.longitude
-            
-            # If structured query fails and we have postal code, try simplified query
-            if postal_code:
-                time.sleep(1.1)
-                simplified_query = f"{postal_code}, Denmark"
-                location = self.nominatim.geocode(
-                    simplified_query,
-                    country_codes='dk',
-                    timeout=10,
-                )
-                if location:
-                    logger.info(f"Found location using postal code fallback: {postal_code}")
-                    return location.latitude, location.longitude
-            
-        except (GeocoderTimedOut, GeocoderServiceError) as e:
-            logger.warning(f"Nominatim geocoder error: {str(e)}")
+            async with session.get(url, timeout=aiohttp.ClientTimeout(total=10)) as response:
+                if response.status == 200:
+                    data = await response.json()
+                    if data.get('features') and len(data['features']) > 0:
+                        coords = data['features'][0]['geometry']['coordinates']
+                        lon, lat = coords[0], coords[1]
+                        logger.debug(f"✓ Geocoded '{address}': ({lat}, {lon})")
+                        return lat, lon
+                else:
+                    logger.debug(f"No results for: {address}")
+        except Exception as e:
+            logger.debug(f"Geocoding failed for '{address}': {str(e)}")
         
         return None, None
+    
+    def batch_geocode(self, addresses: List[str]) -> List[Tuple[Optional[float], Optional[float]]]:
+        """
+        Batch geocode addresses (synchronous wrapper for async method).
+        
+        Args:
+            addresses: List of address strings
+        
+        Returns:
+            List of (lat, lon) tuples
+        """
+        try:
+            # Create new event loop if needed
+            try:
+                loop = asyncio.get_event_loop()
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+            
+            return loop.run_until_complete(self.batch_geocode_async(addresses))
+        except Exception as e:
+            logger.error(f"Batch geocoding error: {str(e)}")
+            return [(None, None) for _ in addresses]
     
     def parse_and_geocode(self, address_string: str) -> Dict[str, any]:
         """
-        Parse address string and geocode in one operation.
+        Parse Danish address string and geocode in one operation.
         
         Args:
             address_string: Raw address string
         
         Returns:
-            Dictionary with parsed components and coordinates:
+            Dictionary matching markets table schema:
             {
-                'street': str,
-                'street_number': str,
+                'full_address': str (street address without postal/city),
                 'postal_code': str,
                 'city': str,
-                'full_address': str,
                 'latitude': float,
                 'longitude': float,
             }
@@ -279,13 +321,14 @@ class AddressParser:
         # Parse address
         parsed = self.parse_address(address_string)
         
-        # Geocode
+        # Ensure postal code is populated
+        parsed = self.ensure_postal_code(parsed)
+        
+        # Geocode using parsed components (use original address for better results)
         lat, lon = self.geocode(
-            street=parsed.get('street'),
-            street_number=parsed.get('street_number'),
+            full_address=address_string,  # Use original for geocoding
             postal_code=parsed.get('postal_code'),
             city=parsed.get('city'),
-            full_address=parsed.get('full_address'),
         )
         
         # Combine results
@@ -300,9 +343,9 @@ class AddressParser:
 _parser_instance = None
 
 
-def get_address_parser(google_api_key: Optional[str] = None) -> AddressParser:
+def get_address_parser(geoapify_api_key: Optional[str] = None) -> AddressParser:
     """Get or create singleton AddressParser instance"""
     global _parser_instance
     if _parser_instance is None:
-        _parser_instance = AddressParser(google_api_key=google_api_key)
+        _parser_instance = AddressParser(geoapify_api_key=geoapify_api_key)
     return _parser_instance

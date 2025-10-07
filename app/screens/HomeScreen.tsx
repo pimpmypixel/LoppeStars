@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../utils/localization';
-import { Layout, Text as UIKittenText, Icon } from '@ui-kitten/components';
+import { Layout, Text as UIKittenText } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import Logo from '../components/Logo';
 import { Text } from '../components/ui-kitten';
@@ -19,6 +20,27 @@ export default function HomeScreen() {
   const navigation = useNavigation();
   const { t } = useTranslation();
   const [stats, setStats] = useState({ ratingsCount: 0, marketsCount: 0 });
+
+  // Decode HTML entities for proper Unicode display
+  const decodeHtmlEntities = (text: string): string => {
+    const entities: { [key: string]: string } = {
+      '&#038;': '&',
+      '&amp;': '&',
+      '&#8211;': '–',
+      '&ndash;': '–',
+      '&#8212;': '—',
+      '&mdash;': '—',
+      '&nbsp;': ' ',
+      '&quot;': '"',
+      '&#39;': "'",
+      '&apos;': "'",
+      '&lt;': '<',
+      '&gt;': '>',
+    };
+    return text.replace(/&#?\w+;/g, (match) => entities[match] || match);
+  };
+
+  const displayMarketName = selectedMarket ? decodeHtmlEntities(selectedMarket.name) : '';
 
   useEffect(() => {
     loadStats();
@@ -65,12 +87,12 @@ export default function HomeScreen() {
             <Card style={styles.selectedMarketCard}>
               {/* <View style={[styles.gradientCard, { backgroundColor: '#FF9500' }]}> */}
                 <View style={styles.marketCardContent}>
-                  <Icon name="navigation-2" style={styles.iconLarge} fill="#FFFFFF" />
+                  <Ionicons name="navigate" size={28} color="#FFFFFF" />
                   <UIKittenText category="h6" style={styles.marketLabel}>
                     {t('home.currentMarket')}
                   </UIKittenText>
                   <UIKittenText category="h4" style={styles.marketName}>
-                    {selectedMarket.name}
+                    {displayMarketName}
                   </UIKittenText>
                   {selectedMarket.city && (
                     <UIKittenText category="s1" style={styles.marketCity}>
@@ -92,12 +114,12 @@ export default function HomeScreen() {
           {/* Stats Section */}
           <View style={styles.statsContainer}>
             <View style={styles.statCard}>
-              <Icon name="star-outline" style={styles.iconMedium} fill="#3366FF" />
+              <Ionicons name="star-outline" size={24} color="#3366FF" />
               <UIKittenText category="h5" style={styles.statNumber}>{stats.ratingsCount.toLocaleString()}</UIKittenText>
               <UIKittenText category="c1" appearance="hint">{t('stats.ratings')}</UIKittenText>
             </View>
             <View style={styles.statCard}>
-              <Icon name="trending-up-outline" style={styles.iconMedium} fill="#10B981" />
+              <Ionicons name="trending-up-outline" size={24} color="#10B981" />
               <UIKittenText category="h5" style={styles.statNumber}>{stats.marketsCount.toLocaleString()}</UIKittenText>
               <UIKittenText category="c1" appearance="hint">{t('stats.markets')}</UIKittenText>
             </View>
