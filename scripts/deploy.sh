@@ -220,16 +220,16 @@ register_task_definition() {
   "family": "loppestars",
   "requiresCompatibilities": ["FARGATE"],
   "networkMode": "awsvpc",
-  "cpu": "256",
-  "memory": "512",
+  "cpu": "512",
+  "memory": "1024",
   "executionRoleArn": "$task_exec_role",
   "taskRoleArn": "$task_role",
   "containerDefinitions": [
     {
       "name": "web",
       "image": "$image",
-      "cpu": 256,
-      "memory": 512,
+      "cpu": 512,
+      "memory": 1024,
       "essential": true,
       "portMappings": [
         {
