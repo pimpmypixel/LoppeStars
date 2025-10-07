@@ -27,6 +27,13 @@ This directory contains all operational scripts for the Loppestars project.
   - Handles timeouts gracefully (504/502/503 are normal for long operations)
   - Includes health checks, status monitoring, and data freshness checks
 
+### 📊 Monitoring
+- **`tail-logs.sh`** - Tail CloudWatch logs for ECS Fargate tasks
+  - Real-time and historical log monitoring with filtering
+  - Usage: `./scripts/tail-logs.sh [--follow|--scraper|--api|--errors|--since 1h]`
+  - Color-coded output for easy log analysis
+  - Supports custom filters and time ranges
+
 ## Usage
 
 All scripts should be run from the project root directory:
@@ -37,6 +44,7 @@ All scripts should be run from the project root directory:
 ./scripts/start-local-api.sh
 ./scripts/rebuild-stack.sh
 ./scripts/trigger-scraper.sh
+./scripts/tail-logs.sh
 ```
 
 ## Dependencies

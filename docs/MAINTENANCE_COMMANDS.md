@@ -596,7 +596,16 @@ aws acm describe-certificate \
 
 ### Application Logs
 ```bash
-# ECS task logs (production)
+# 📊 CloudWatch ECS Logs (Recommended - Enhanced Tool)
+./scripts/tail-logs.sh                    # All logs (last 10 minutes)
+./scripts/tail-logs.sh --follow           # Real-time streaming
+./scripts/tail-logs.sh --scraper          # Filter scraper activity
+./scripts/tail-logs.sh --api              # Filter API requests
+./scripts/tail-logs.sh --errors           # Errors only
+./scripts/tail-logs.sh --since 1h         # Last hour logs
+./scripts/tail-logs.sh --follow --api     # Real-time API logs
+
+# Raw AWS CLI (alternative)
 aws logs tail /ecs/loppestars --follow --region eu-central-1
 
 # Specific log stream
