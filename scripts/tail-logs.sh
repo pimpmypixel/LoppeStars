@@ -162,6 +162,24 @@ tail_logs() {
   
   log_success "Log group found: $LOG_GROUP"
   
+  # Check if there are any log streams (indicates ECS service activity)
+  local stream_count=$(aws logs describe-log-streams \
+    --log-group-name "$LOG_GROUP" \
+    --region "$AWS_REGION" \
+    --query 'length(logStreams)' \
+    --output text)
+  
+  if [ "$stream_count" = "0" ]; then
+    log_warning "No log streams found - ECS service may not be running"
+    log_info "Check ECS service status:"
+    log_info "  aws ecs list-services --cluster LoppestarsEcsStack-ClusterEB0386A7-3Mzih57cTorn --region eu-central-1"
+    log_info "Deploy if needed:"
+    log_info "  ./scripts/deploy.sh"
+    echo ""
+  else
+    log_success "$stream_count log streams found"
+  fi
+  
   # Build AWS CLI command
   local aws_cmd=""
   

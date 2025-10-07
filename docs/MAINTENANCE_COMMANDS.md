@@ -605,6 +605,10 @@ aws acm describe-certificate \
 ./scripts/tail-logs.sh --since 1h         # Last hour logs
 ./scripts/tail-logs.sh --follow --api     # Real-time API logs
 
+# Check if ECS service is running first:
+aws ecs list-services --cluster LoppestarsEcsStack-ClusterEB0386A7-3Mzih57cTorn --region eu-central-1 | cat
+# If no services, deploy first: ./scripts/deploy.sh
+
 # Raw AWS CLI (alternative)
 aws logs tail /ecs/loppestars --follow --region eu-central-1
 
