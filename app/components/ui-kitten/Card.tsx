@@ -56,7 +56,12 @@ interface CardContentProps {
 }
 
 export function CardContent({ children, style }: CardContentProps) {
-  return <View style={[styles.content, style]}>{children}</View>;
+  // Ensure children are properly wrapped
+  return (
+    <View style={[styles.content, style]}>
+      {children}
+    </View>
+  );
 }
 
 interface CardFooterProps {
