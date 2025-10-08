@@ -96,6 +96,14 @@ android {
         versionName "1.0.0"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
+        // Inject GOOGLE_MAPS_API_KEY into the Android manifest via manifestPlaceholders.
+        // The value is taken from a project property (set with -P) or from the
+        // environment variable GOOGLE_MAPS_API_KEY. If neither is set, a safe
+        // placeholder is used to avoid a hard failure during builds.
+        def googleMapsKeyFromProp = (project.hasProperty('GOOGLE_MAPS_API_KEY') ? project.property('GOOGLE_MAPS_API_KEY') : null)
+        def googleMapsKeyFromEnv = System.getenv('GOOGLE_MAPS_API_KEY')
+        def resolvedGoogleMapsKey = googleMapsKeyFromProp ?: googleMapsKeyFromEnv ?: 'YOUR_GOOGLE_MAPS_API_KEY'
+        manifestPlaceholders = [ GOOGLE_MAPS_API_KEY: resolvedGoogleMapsKey ]
     }
     signingConfigs {
         debug {

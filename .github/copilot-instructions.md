@@ -1,89 +1,40 @@
 # Copilot Instructions for Loppestars
 
+## Key Agent Guidelines (2025)
+- **Use `bun` for all JS/TS package management and scripts.** Never use `npm` or `yarn` commands.
+- **Do not generate .md summaries or documentation files after each agent task.** Only update or create documentation when explicitly requested.
+- **Commit messages must be short, clear, and include a relevant emoji.** Example: `fix: 🐛 handle missing API key in AndroidManifest`
+- **The ECS deploy GitHub Actions workflow is fully functional.** It includes Cloudflare DNS check/update and CloudWatch log group creation. No manual post-deploy steps are needed.
+- **Each main folder should have a `.vscode/` directory with a `copilot-instructions.md` for folder-specific Copilot guidance.** Always check for and follow these local instructions when working in a subproject.
+
 ## Project Overview
-This is a React Native/Expo mobile application with Google OAuth authentication and Supabase backend integration.
-**The mobile app code is located in the `app/` folder.** The app makes it fun and easy to rate the stalls at your local flea market in a friendly way. Users can browse nearby markets, rate stalls with photos, and view their ratings.
+This is an app that makes it fun and easy to rate the stalls at your local flea market in a friendly way. Users can browse nearby markets, rate the market and the stalls with photos, and view ratings.
+It consists of several central components and services, including a Supabase Cloud instance and a Dockerized API for face pixelation and market data scraping, deployed on AWS ECS. Github Actions is used for CI/CD of the Docker API. Copilot Tnstructions are provided globally as well as on a per-folder basis.
+
+**The mobile app code is located in the `app/` folder.** The app  is a React Native/Expo mobile application. It has Google OAuth authentication and Supabase backend integration.
+**The Dockerized FastApi is located in the `api/` folder.** It provides endpoints for face detection and pixelation in images, as well as a Scrapy web scraper for fetching market data from multiple local websites. The API can run locally and is deployed to AWS ECS behind a public loadbalancer using GitHub Actions for CI/CD. The DNS for the loadbalancer is hosted in **CloudFlare**. Supabase cron edge function is used to trigger the scraper once a day.
+**The Supabase backend is located in the `supabase/` folder.** It contains database migrations and edge functions. The Supabase instance is hosted on Supabase Cloud and must not be run locally. The `api-proxy` edge function is used to interact with the Docker API from the mobile app.
+**The AWS infrastructure code is located in the `aws/` folder.** It contains an AWS CDK project that defines the ECS cluster, service, and task definition for deploying the Docker API. The infrastructure is deployed using `cdk deploy` and is hosted in the eu-central-1 region.
+
+
 
 ## Architecture & Stack
 - **Frontend**: React Native 0.81.4 with Expo SDK 54 (located in `app/` folder)
 - **Backend**: Supabase Cloud
 - **Infrastructure**: AWS ECS with Docker containers for faceblur and scraping services, Cloudflare DNS
-- **Auth**: Google Sign-in via `@react-native-google-signin/google-signin` and Supabase Auth
+- **CI/CD**: GitHub Actions for automated Docker API deployment to AWS ECS
+- **API**: FastAPI with OpenCV for face detection and pixelation, Scrapy for web scraping (located in `api/` folder)
 - **Database**: PostgreSQL via Supabase Cloud
-- **UI**: NativeWind with shadcn/ui-inspired components, Lucide icons
-- **State**: React Context for auth and theme, AsyncStorage for persistence
+- **Storage**: Supabase Storage for photo uploads
+- **Auth**: Google OAuth via Supabase Auth and native Google Sign-In
 - **Localization**: i18n-js with Danish and English support
+- **State Management**: All state is controller hierarchically using Zustand and AsyncStorage
+- **Navigation**: React Navigation with bottom tabs and nested stacks
+- **Styling**: UI Kitten
+- **Auth**: Google Sign-in via `@react-native-google-signin/google-signin` and Supabase Auth
 - **Permissions**: Expo Camera, Location, and Media Library with persistent permission storage
-- **Navigation**: React Navigation bottom tabs (Home | Markets | Add Item | More) with nested stack in More
-- **Image Processing**: Expo Image Manipulator for photo uploads
-- **Build Tooling**: Expo CLI, TypeScript strict mode, Metro bundler
 - **Configuration**: All environment variables centralized in root `.env` file
-
-## Key Files & Structure
-**All mobile app files are located in the `app/` folder:**
-```
-app/
-  App.tsx                    # Main app entry point with ThemeProvider, AuthProvider, and AuthWrapper
-  components/
-    AuthWrapper.tsx          # Session management wrapper with OAuth deep linking
-    SupabaseOfficialAuth.tsx # Google OAuth login screen with Supabase integration
-    AuthGuard.tsx            # HOC for protecting authenticated routes
-    AppHeader.tsx            # Reusable header component for all authenticated screens
-    AppFooter.tsx            # Reusable footer component with logo and localized text
-    Logo.tsx                 # Logo component with multiple sizes (small/medium/large)
-    CameraModal.tsx          # Full-screen camera modal with photo capture and gallery access
-    RatingSlider.tsx         # Custom star rating component
-    PhotoUploadProgress.tsx  # Progress indicator for photo uploads
-    LanguageSelector.tsx     # Language switcher component (English/Danish)
-    ui/                      # shadcn/ui-inspired component library
-  contexts/
-    AuthContext.tsx          # Authentication state management
-    ThemeContext.tsx         # Theme provider with light/dark mode support
-  hooks/
-    usePhotoUpload.ts        # Custom hook for photo upload logic
-  screens/
-    HomeScreen.tsx           # Home tab with welcome message and app overview
-    MarketsScreen.tsx        # Markets tab with location-based market discovery
-    RatingScreen.tsx         # Add Item tab with stall rating form, camera integration
-    MoreScreen.tsx           # More tab with menu items and nested navigation
-    more/                    # Nested screens under More tab
-      MyRatingsScreen.tsx    # User's submitted ratings
-      AboutScreen.tsx        # App information
-      PrivacyScreen.tsx       # Privacy policy
-      OrganiserScreen.tsx    # For market organizers
-      AdvertisingScreen.tsx  # Advertising information
-      ContactScreen.tsx      # Contact details
-  navigation/
-    AppNavigator.tsx         # Bottom tab navigation setup
-    MoreNavigator.tsx        # Stack navigator for More tab screens
-  utils/
-    supabase.ts              # Supabase client configuration with platform-specific URLs
-    localization.ts          # i18n configuration and language management
-    permissions.ts           # Camera, location, and media permissions management
-    imageUpload.ts           # Photo upload utilities with Supabase storage
-  locales/
-    en.json                  # English translations for all app strings
-    da.json                  # Danish translations for all app strings
-  types/
-    env.d.ts                 # Environment variable types
-    lucide-react-native.d.ts # Icon library types
-    react-native-config.d.ts # Config plugin types
-  assets/
-    logo.png                 # App logo (284x279 PNG)
-    adaptive-icon.png        # Android adaptive icon
-    favicon.png              # Web favicon
-    splash-icon.png          # App splash screen icon
-  android/                   # Android-specific configuration
-  ios/                      # iOS-specific configuration
-```
-
-**Other project directories:**
-```
-supabase/                   # Supabase backend (functions, migrations, workers)
-aws/                       # AWS CDK infrastructure deployment (ECS, Docker containers)
-docs/                      # Documentation files
-keys/                      # OAuth credentials (not committed)
-```
+- **TypeScript**: Strict mode enabled with proper type definitions
 
 ## Development Patterns
 
@@ -96,7 +47,7 @@ keys/                      # OAuth credentials (not committed)
 - Clean logout functionality that returns to login screen
 
 ### Authentication Flow
-- Google OAuth via Supabase Auth with native Google Sign-In
+- Google OAuth via Supabase Auth with native Google and Facebook Sign-In
 - Deep linking support for OAuth callbacks
 - Platform-specific Supabase URLs (10.0.2.2 for Android emulator, 127.0.0.1 for iOS)
 - Auto-refresh tokens and session management
@@ -111,10 +62,11 @@ keys/                      # OAuth credentials (not committed)
 - Image preview with save/retake options, front/back camera toggle
 - Gallery access via ImagePicker with consistent UI
 - Photo upload to Supabase Storage with progress tracking
-- Image manipulation for optimization before upload
+- Face detection and pixelation via Docker API endpoint
+- Loading states, error handling, and user feedback
 
 ### Form Handling and Rating System
-- Stall rating form with photo upload, location, and rating slider
+- Stall rating form with photo upload, location, and rating stars 1-10
 - Multi-field form with localized labels and validation messages
 - Supabase integration for storing ratings and market data
 - Location services for market discovery and stall positioning
@@ -123,7 +75,10 @@ keys/                      # OAuth credentials (not committed)
 
 ### Markets and Location Services
 - Location-based market discovery with distance calculation
-- Market listings with active/inactive status
+- Market listings with average ratings and photo thumbnails
+- Market detail screen with stall listings and ratings
+- Map integration with Google Maps SDK for market locations
+- Market search functionality with real-time filtering
 - GPS permission management with graceful degradation
 - Market details with stall information and ratings
 
@@ -134,7 +89,6 @@ keys/                      # OAuth credentials (not committed)
 - Logo integration: auth screen (large), footer (small), home screen (large)
 - Consistent header/footer system across all authenticated screens
 - Theme support with light/dark mode (context-based)
-- shadcn/ui-inspired component library with NativeWind styling
 - All user-facing strings localized (forms, navigation, messages, etc.)
 
 ### Permissions Management
@@ -154,25 +108,35 @@ keys/                      # OAuth credentials (not committed)
 ### Component Patterns
 - Functional components with hooks
 - Direct export from component functions (no named exports)
-- NativeWind for styling with Tailwind CSS classes
+- UI Kitten for consistent styling
+- Zustand for state management with context providers
+- AsyncStorage for persistent storage
+- Modular folder structure (components, screens, hooks, utils)
+- Reusable components (Button, Input, Header, Footer, MarketItem)
+- Centralized API client for Supabase and Docker API interactions
+- Error handling and loading states in all async operations
+- Theming with context and custom hooks
+- Form components with validation and user feedback
+- Image handling with Expo Camera and ImagePicker
+- Location services with Expo Location
 - Platform-specific configurations in utils
 - Localization via `t()` function throughout all components
 - Context providers for global state (Auth, Theme)
 - Custom hooks for reusable logic (usePhotoUpload)
-- TypeScript strict mode with proper type definitions
-- shadcn/ui component library with consistent API
 
+bun run start          # Start Expo development server
+bun run web           # Run in web browser
 ## Development Workflow
 
-### Local Development
+### App Development (always use bun)
 ```bash
 cd app/
-npm run start          # Start Expo development server
-npm run android        # Run on Android emulator
-npm run ios           # Run on iOS simulator (macOS only)
-npm run web           # Run in web browser
-npm run ts:check      # TypeScript type checking
-npm run ts:watch      # TypeScript watch mode
+bun run start          # Start Expo development server
+bun run android        # Run on Android emulator
+bun run ios            # Run on iOS simulator (macOS only)
+bun run web            # Run in web browser
+bun run ts:check       # TypeScript type checking
+bun run ts:watch       # TypeScript watch mode
 ```
 
 ### Supabase Cloud Development
@@ -182,8 +146,9 @@ npm run ts:watch      # TypeScript watch mode
 - Migrations in `supabase/migrations/`
 - Edge Functions in `supabase/functions/`
 
+
 ### Build Process
-- Uses Expo CLI for bundling and native builds
+- Uses Expo CLI for bundling and native builds (always invoked via bun)
 - Android build configuration in `android/app/build.gradle`
 - iOS configuration in `ios/` folder
 - Environment variables managed via `react-native-config`
@@ -210,26 +175,20 @@ The API is located in the `api/` folder and includes:
 - `requirements.txt` - Python dependencies
 - `Dockerfile` (root level) - Container definition for ECS deployment
 
+
 ### Deployment Pipeline
-**IMPORTANT**: When making changes to the Docker API (`api/` folder or root `Dockerfile`), always follow these steps:
-
-1. **Make Changes**: Edit API files, dependencies, or Dockerfile
-2. **Commit & Push**: Commit changes and push to `main` or `kitty` branch
-3. **Monitor GitHub Actions**: 
+**IMPORTANT**: When making changes to the Docker API (`api/` folder or root `Dockerfile`):
+1. **Edit** API files, dependencies, or Dockerfile.
+2. **Commit & Push** with a short, clear, emoji commit message to `main` or `kitty`.
+3. **Monitor GitHub Actions**:
    - Use `gh run list --limit 1 | cat` to check latest workflow status
-   - Use `gh run view <RUN_ID> --log | cat` to view detailed logs if failed
-   - Workflow file: `.github/workflows/deploy-ecs.yml`
+   - Use `gh run view <RUN_ID> --log | cat` for logs if failed
+   - Workflow: `.github/workflows/deploy-ecs.yml`
 4. **Verify Deployment**:
-   - Ensure workflow completes successfully (✅ SUCCESS)
-   - Check ECS service is running new task with latest image digest
-   - Verify API endpoint functionality if needed
-
-**CLI Command Convention**: Always pipe AWS CLI and GitHub CLI (`gh`) commands to `cat` to prevent interactive prompts and ensure clean output:
-- ✅ Good: `gh run list --limit 1 | cat`
-- ✅ Good: `aws ecs list-clusters | cat`
-- ✅ Good: `gh run view <RUN_ID> --log | cat`
-- ❌ Bad: `gh run list` (may cause interactive pager issues)
-- ❌ Bad: `aws ecs describe-services` (may cause formatting issues)
+   - Workflow completes successfully (✅ SUCCESS)
+   - ECS service runs new task with latest image digest
+   - Cloudflare DNS and CloudWatch log group are checked/updated automatically
+   - No manual post-deploy steps required
 
 ### GitHub Actions Workflow
 The automated deployment workflow (`.github/workflows/deploy-ecs.yml`):
@@ -279,4 +238,4 @@ The automated deployment workflow (`.github/workflows/deploy-ecs.yml`):
 
 When implementing features, the foundation is solid with authentication, navigation, theming, and core functionality in place. Focus on extending the rating system, market management, and user experience enhancements.
 
-**When working on the API**: Always commit changes, push to trigger CI/CD, and monitor GitHub Actions to ensure successful deployment to ECS.
+**When working on the API**: Always commit with a short, emoji message, push to trigger CI/CD, and monitor GitHub Actions for ECS and Cloudflare DNS updates.

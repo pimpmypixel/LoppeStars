@@ -65,17 +65,17 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
           <View style={styles.statusContainer}>
             <Text style={styles.title}>{t('connectivity.checkingConnectivity')}</Text>
             <Text style={styles.subtitle}>{t('connectivity.verifyingServices')}</Text>
-            
+
             {/* Progress Bar */}
             <View style={styles.progressBarContainer}>
-              <Animated.View 
+              <Animated.View
                 style={[
                   styles.progressBarFill,
                   { width: progressWidth }
-                ]} 
+                ]}
               />
             </View>
-            
+
             <View style={styles.stepsContainer}>
               <Text style={styles.stepText}>• {t('connectivity.checkingDatabase')}</Text>
               <Text style={styles.stepText}>• {t('connectivity.checkingAPI')}</Text>
@@ -100,7 +100,7 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
             <Text style={styles.errorSubtitle}>
               {t('connectivity.connectionFailedMessage')}
             </Text>
-            
+
             <View style={styles.detailsContainer}>
               {!status.database.connected && (
                 <View style={styles.detailRow}>
@@ -135,7 +135,7 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
             <Text style={styles.warningSubtitle}>
               {t('connectivity.limitedConnectivityMessage')}
             </Text>
-            
+
             <View style={styles.detailsContainer}>
               {status.database.connected && (
                 <View style={styles.detailRow}>
@@ -181,8 +181,9 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
             style={styles.lottieAnimation}
             loop={false}
             autoPlay={false}
+            speed={1.5}
           />
-          <Text style={styles.successTitle}>{t('connectivity.allSystemsOperational')}</Text>
+          {/* <Text style={styles.successTitle}>{t('connectivity.allSystemsOperational')}</Text>
           <View style={styles.detailsContainer}>
             <View style={styles.detailRow}>
               <Icon name="checkmark-circle" style={{ width: 20, height: 20 }} fill="#10B981" />
@@ -192,7 +193,7 @@ export default function ConnectivitySplash({ status, isChecking }: ConnectivityS
               <Icon name="checkmark-circle" style={{ width: 20, height: 20 }} fill="#10B981" />
               <Text style={styles.detailText}>{t('connectivity.api')}: {status.api.latency}ms</Text>
             </View>
-          </View>
+          </View> */}
         </View>
       </View>
     </Layout>
@@ -251,8 +252,8 @@ const styles = StyleSheet.create({
     color: '#A8A29E',
   },
   lottieAnimation: {
-    width: 120,
-    height: 120,
+    width: 80,
+    height: 80,
   },
   errorTitle: {
     fontSize: 24,

@@ -1,0 +1,9 @@
+{
+    // Enable Copilot inline suggestions for API development folders
+    "github.copilot.enable": true,
+    "github.copilot.inlineSuggest.enable": true,
+    // Optional: prefer TypeScript formatting rules inside api
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}

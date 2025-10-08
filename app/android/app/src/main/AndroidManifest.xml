@@ -17,6 +17,18 @@
   </queries>
   <application android:name=".MainApplication" android:label="@string/app_name" android:icon="@mipmap/ic_launcher" android:roundIcon="@mipmap/ic_launcher_round" android:allowBackup="true" android:theme="@style/AppTheme" android:supportsRtl="true" android:enableOnBackInvokedCallback="false">
     <meta-data android:name="expo.modules.updates.ENABLED" android:value="false"/>
+    <!-- Google Maps API key required by react-native-maps / Play Services maps.
+      The value is injected via Gradle manifestPlaceholders from an
+      environment variable or project property named GOOGLE_MAPS_API_KEY.
+      Do NOT commit secrets. For local builds, export the key before building
+      (example below). The project app.json also contains a placeholder
+      used by Expo.
+
+      Example (macOS / Linux):
+     export GOOGLE_MAPS_API_KEY=your_real_key_here
+     cd android && ./gradlew assembleDebug
+    -->
+    <meta-data android:name="com.google.android.geo.API_KEY" android:value="${GOOGLE_MAPS_API_KEY}"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_CHECK_ON_LAUNCH" android:value="ALWAYS"/>
     <meta-data android:name="expo.modules.updates.EXPO_UPDATES_LAUNCH_WAIT_MS" android:value="0"/>
     <activity android:name=".MainActivity" android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|uiMode" android:launchMode="singleTask" android:windowSoftInputMode="adjustResize" android:theme="@style/Theme.App.SplashScreen" android:exported="true" android:screenOrientation="portrait">
