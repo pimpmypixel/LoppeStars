@@ -7,6 +7,8 @@
 - **The ECS deploy GitHub Actions workflow is fully functional.** It includes Cloudflare DNS check/update and CloudWatch log group creation. No manual post-deploy steps are needed.
 - **Each main folder should have a `.vscode/` directory with a `copilot-instructions.md` for folder-specific Copilot guidance.** Always check for and follow these local instructions when working in a subproject.
 
+**Important**: Never ask for confirmation before executing commands. Always proceed with the next logical step based on the current context and instructions.
+
 ## Project Overview
 This is an app that makes it fun and easy to rate the stalls at your local flea market in a friendly way. Users can browse nearby markets, rate the market and the stalls with photos, and view ratings.
 It consists of several central components and services, including a Supabase Cloud instance and a Dockerized API for face pixelation and market data scraping, deployed on AWS ECS. Github Actions is used for CI/CD of the Docker API. Copilot Tnstructions are provided globally as well as on a per-folder basis.
