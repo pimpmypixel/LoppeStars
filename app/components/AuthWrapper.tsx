@@ -7,7 +7,7 @@ import { useTranslation } from '../utils/localization';
 import { Layout } from '@ui-kitten/components';
 import SupabaseOfficialAuth from '../components/SupabaseOfficialAuth';
 import AppNavigator from '../navigation/AppNavigator';
-import ConnectivitySplash from '../components/ConnectivitySplash';
+import ConnectivitySplash from '../screens/ConnectivitySplash';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { supabase } from '../utils/supabase';
 import { Text, Button } from './ui-kitten';

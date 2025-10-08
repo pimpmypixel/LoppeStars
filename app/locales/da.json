@@ -205,6 +205,8 @@
   "connectivity": {
     "starting": "Starter Loppestars",
     "initializing": "Initialiserer...",
+    "checkingConnectivity": "Tjekker forbindelse...",
+    "verifyingServices": "Verificerer database og API forbindelser",
     "checkingDatabase": "Tjekker database forbindelse...",
     "checkingAPI": "Tjekker API forbindelse...",
     "finalizing": "Færdiggør opsætning...",
@@ -215,7 +217,8 @@
     "allSystemsOperational": "Alle Systemer Operationelle",
     "database": "Database",
     "api": "API",
-    "connected": "Forbundet"
+    "connected": "Forbundet",
+    "testingConnection": "Tester forbindelse"
   },
   "stats": {
     "ratings": "Bedømmelser",

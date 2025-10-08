@@ -198,6 +198,8 @@
   "connectivity": {
     "starting": "Starting Loppestars",
     "initializing": "Initializing...",
+    "checkingConnectivity": "Checking connectivity...",
+    "verifyingServices": "Verifying database and API connections",
     "checkingDatabase": "Checking database connection...",
     "checkingAPI": "Checking API connection...",
     "finalizing": "Finalizing setup...",
@@ -208,7 +210,8 @@
     "allSystemsOperational": "All Systems Operational",
     "database": "Database",
     "api": "API",
-    "connected": "Connected"
+    "connected": "Connected",
+    "testingConnection": "Testing connection"
   },
   "stats": {
     "ratings": "Ratings",

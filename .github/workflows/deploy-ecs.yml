@@ -17,6 +17,8 @@ jobs:
       SOURCE_BUCKET: stall-photos
       STORAGE_BUCKET: stall-photos-processed
       IMAGE_TAG: ${{ github.sha }}
+      # CloudWatch Logs group used by the ECS task (CDK-generated name)
+      LOG_GROUP: LoppestarsEcsStack-ServiceTaskDefwebLogGroup2A898F61-l6JeWYmfnmS5
 
     steps:
       - name: Checkout repo
@@ -31,6 +33,14 @@ jobs:
 
       - name: Login to Amazon ECR
         uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Ensure CloudWatch Log Group exists
+        run: |
+          echo "Ensuring CloudWatch Logs group exists: ${LOG_GROUP}"
+          # Try to create the log group; ignore error if it already exists
+          aws logs create-log-group --log-group-name "${LOG_GROUP}" --region ${AWS_REGION} || true
+          # Set a retention policy (14 days) to avoid unlimited retention; ignore error if not permitted
+          aws logs put-retention-policy --log-group-name "${LOG_GROUP}" --retention-in-days 14 --region ${AWS_REGION} || true
 
       - name: Build Docker image
         run: |
@@ -86,7 +96,7 @@ jobs:
                 "logConfiguration": {
                   "logDriver": "awslogs",
                   "options": {
-                    "awslogs-group": "LoppestarsEcsStack-ServiceTaskDefwebLogGroup2A898F61-l6JeWYmfnmS5",
+                    "awslogs-group": "${LOG_GROUP}",
                     "awslogs-region": "${AWS_REGION}",
                     "awslogs-stream-prefix": "Service"
                   }
