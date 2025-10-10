@@ -58,7 +58,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   label: {
-    marginBottom: 6,
+    marginBottom: 2,
+    marginLeft: '3%',
     fontWeight: '600',
   },
 });
