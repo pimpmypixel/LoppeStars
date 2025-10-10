@@ -1,6 +1,6 @@
+
 import React, { useEffect, useState } from 'react';
 import { View, Pressable, Platform, ToastAndroid, StyleSheet, TouchableOpacity } from 'react-native';
-// Remove LinearGradient to prevent crashes
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../utils/localization';
@@ -10,6 +10,7 @@ import { logEvent } from '../utils/eventLogger';
 import { Card, CardContent, Text } from './ui-kitten';
 import { Market } from '../types/common/market';
 import { supabase } from '../utils/supabase';
+import { decodeHtmlEntities, cleanMarketName } from '../utils/stringUtils';
 
 interface MarketItemProps {
   market: Market & { distance?: number };
@@ -33,25 +34,7 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
   const isMarkedHere = isSelected; // Only selected market is marked as "here"
 
   // Decode HTML entities for proper Unicode display
-  const decodeHtmlEntities = (text: string): string => {
-    const entities: { [key: string]: string } = {
-      '&#038;': '&',
-      '&amp;': '&',
-      '&#8211;': '–',
-      '&ndash;': '–',
-      '&#8212;': '—',
-      '&mdash;': '—',
-      '&nbsp;': ' ',
-      '&quot;': '"',
-      '&#39;': "'",
-      '&apos;': "'",
-      '&lt;': '<',
-      '&gt;': '>',
-    };
-    return text.replace(/&#?\w+;/g, (match) => entities[match] || match);
-  };
-
-  const displayName = decodeHtmlEntities(market.name);
+  const displayName = cleanMarketName(decodeHtmlEntities(market.name));
 
   // Check if market is currently active
   const now = new Date();
@@ -210,13 +193,6 @@ export default function MarketItem({ market, formatDistance }: MarketItemProps) 
                     <Text style={styles.nameTextSelected} numberOfLines={2}>
                       {displayName}
                     </Text>
-                    {/* <View style={styles.selectedBadge}>
-                      <Text style={styles.selectedBadgeText}>{t('markets.selected')}</Text>
-                    </View>
-                  </View> */}
-                    {/*  {market.city && (
-                      <Text style={styles.cityTextSelected}>{market.city}</Text>
-                    )} */}
                   </View>
                 </View>
               </View>

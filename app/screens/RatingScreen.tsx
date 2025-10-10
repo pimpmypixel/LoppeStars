@@ -318,7 +318,7 @@ export default function RatingScreen() {
                     >
                       <Ionicons name="home-outline" size={24} color={ratingType === 'stall' ? '#FF9500' : '#8F9BB3'} />
                       <Text style={ratingType === 'stall' ? styles.typeButtonTextActive : styles.typeButtonText}>
-                        {t('form.rateStall')}
+                        {t('form.stall')}
                       </Text>
                     </TouchableOpacity>
                     <TouchableOpacity
@@ -330,7 +330,7 @@ export default function RatingScreen() {
                     >
                       <Ionicons name="location-outline" size={24} color={ratingType === 'market' ? '#FF9500' : '#8F9BB3'} />
                       <Text style={ratingType === 'market' ? styles.typeButtonTextActive : styles.typeButtonText}>
-                        {t('form.rateMarket')}
+                        {t('form.market')}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -351,7 +351,7 @@ export default function RatingScreen() {
 
                 {/* MobilePay Code - Only shown for stall ratings */}
                 {ratingType === 'stall' && (
-                  <View style={{ ...styles.fieldContainer, marginBottom: 10 }}>
+                  <View style={{ ...styles.fieldContainer, marginBottom: 0, width: '50%' }}>
                     <Label>{t('form.mobilePayPhone')}</Label>
                     <Input
                       placeholder={t('form.mobilePayPhonePlaceholder')}
@@ -528,13 +528,13 @@ const styles = StyleSheet.create({
     paddingTop: 12,
   },
   fieldContainer: {
-    marginBottom: 4,
+    marginBottom: 2,
   },
   input: {
-    marginTop: 8,
+    marginTop: 2,
     backgroundColor: '#1C1917',
     borderColor: 'rgba(255, 149, 0, 0.2)',
-    borderRadius: 14,
+    borderRadius: 18,
   },
   photoButtonRow: {
     flexDirection: 'row',
@@ -636,7 +636,7 @@ const styles = StyleSheet.create({
   textArea: {
     height: 100,
     paddingTop: 14,
-    marginTop: 8,
+    // marginTop: 8,
     backgroundColor: '#1C1917',
     borderColor: 'rgba(255, 149, 0, 0.2)',
     borderRadius: 14,

@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { useTranslation } from '../utils/localization';
-import { Layout, Text as UIKittenText } from '@ui-kitten/components';
-import AppHeader from '../components/AppHeader';
-import Logo from '../components/Logo';
-import { Text } from '../components/ui-kitten';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui-kitten/Card';
+import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
+import { decodeHtmlEntities, cleanMarketName } from '../utils/stringUtils';
 import { useSelectedMarket } from '../stores/appStore';
-import { Button } from '../components/ui-kitten';
+import { useTranslation } from '../utils/localization';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { Layout, Text as UIKittenText } from '@ui-kitten/components';
+import Logo from '../components/Logo';
+import { Card } from '../components/ui-kitten/Card';
 import FeatureCard from '../components/FeatureCard';
 import { supabase } from '../utils/supabase';
 // Remove LinearGradient completely to prevent crashes
@@ -21,26 +19,8 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const [stats, setStats] = useState({ ratingsCount: 0, marketsCount: 0 });
 
-  // Decode HTML entities for proper Unicode display
-  const decodeHtmlEntities = (text: string): string => {
-    const entities: { [key: string]: string } = {
-      '&#038;': '&',
-      '&amp;': '&',
-      '&#8211;': '–',
-      '&ndash;': '–',
-      '&#8212;': '—',
-      '&mdash;': '—',
-      '&nbsp;': ' ',
-      '&quot;': '"',
-      '&#39;': "'",
-      '&apos;': "'",
-      '&lt;': '<',
-      '&gt;': '>',
-    };
-    return text.replace(/&#?\w+;/g, (match) => entities[match] || match);
-  };
-
-  const displayMarketName = selectedMarket ? decodeHtmlEntities(selectedMarket.name) : '';
+  // Use helpers for proper Unicode display and concise name
+  const displayMarketName = selectedMarket ? cleanMarketName(decodeHtmlEntities(selectedMarket.name)) : '';
 
   useEffect(() => {
     loadStats();

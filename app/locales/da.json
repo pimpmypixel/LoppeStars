@@ -102,6 +102,8 @@
   "form": {
     "ratingType": "Hvad vil du bedømme?",
     "rateStall": "Bedøm en bod",
+    "stall": "Bod",
+    "market": "Marked",
     "rateMarket": "Bedøm markedet",
     "photo": "Foto",
     "addPhoto": "Tilføj foto",

@@ -4,6 +4,7 @@ import { Icon } from '@ui-kitten/components';
 import Logo from './Logo';
 import { AppHeaderProps } from '../types/components/AppHeader';
 import { useSelectedMarket } from '../stores/appStore';
+import { decodeHtmlEntities, cleanMarketName } from '../utils/stringUtils';
 
 export default function AppHeader({ title }: AppHeaderProps) {
   const { selectedMarket } = useSelectedMarket();
@@ -22,7 +23,7 @@ export default function AppHeader({ title }: AppHeaderProps) {
             <View style={styles.marketRow}>
               <Icon name="shopping-bag" style={styles.marketIcon} fill="#FF9500" />
               <Text style={styles.marketText}>
-                {selectedMarket.name}
+                {cleanMarketName(decodeHtmlEntities(selectedMarket.name))}
               </Text>
             </View>
           )}

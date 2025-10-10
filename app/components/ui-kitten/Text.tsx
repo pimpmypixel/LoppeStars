@@ -54,7 +54,7 @@ export function Text({
       style={style}
       {...props}
     >
-      {children}
+      {typeof children === 'string' || typeof children === 'number' ? children : React.Children.map(children, child => typeof child === 'string' || typeof child === 'number' ? child : String(child))}
     </UIKittenText>
   );
 }

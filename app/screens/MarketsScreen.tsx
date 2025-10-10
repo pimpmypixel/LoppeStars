@@ -274,7 +274,7 @@ export default function MarketsScreen() {
               data={filteredMarkets}
               extraData={selectedMarketFromStore}
               renderItem={renderMarketItem}
-              keyExtractor={(item) => item.id}
+              keyExtractor={(item) => String(item.id)}
               contentContainerStyle={styles.listContent}
               refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
