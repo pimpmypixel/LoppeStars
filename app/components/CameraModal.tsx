@@ -1,5 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { View, Alert, Image, Modal, useWindowDimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { useCameraModalStore } from '../stores/cameraModalStore';
 import { CameraView, CameraType, useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
 import { useTranslation } from '../utils/localization';
@@ -13,10 +14,15 @@ interface CameraModalProps {
 }
 
 export default function CameraModal({ visible, onClose, onImageTaken }: CameraModalProps) {
-  const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
-  const [capturedImage, setCapturedImage] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+  const {
+    facing,
+    setFacing,
+    capturedImage,
+    setCapturedImage,
+    isProcessing,
+    setIsProcessing,
+  } = useCameraModalStore();
   const cameraRef = useRef<CameraView>(null);
   const { width, height } = useWindowDimensions();
   const orientation = width > height ? 'landscape' : 'portrait';
@@ -105,7 +111,7 @@ export default function CameraModal({ visible, onClose, onImageTaken }: CameraMo
   }
 
   const toggleCameraFacing = () => {
-    setFacing(current => (current === 'back' ? 'front' : 'back'));
+    setFacing(facing === 'back' ? 'front' : 'back');
   };
 
   const takePicture = async () => {

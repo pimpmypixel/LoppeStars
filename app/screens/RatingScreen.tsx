@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Alert, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { Modal, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +16,7 @@ import { usePhotoUpload } from '../hooks/usePhotoUpload';
 import { useTranslation } from '../utils/localization';
 import { supabase } from '../utils/supabase';
 import { logEvent } from '../utils/eventLogger';
+import { useRatingFormStore } from '../stores/ratingFormStore';
 
 // Simple gradient background without native dependencies
 const GradientBackground = () => {
@@ -48,15 +49,27 @@ export default function RatingScreen() {
   const { selectedMarket } = useMarket();
   const { user } = useAuth();
   const { t } = useTranslation();
-  const [rating, setRating] = useState(5);
-  const [ratingType, setRatingType] = useState<'stall' | 'market'>('stall');
-  const [stallName, setStallName] = useState('');
-  const [mobilePayCode, setMobilePayCode] = useState('');
-  const [comments, setComments] = useState('');
-  const [photoUri, setPhotoUri] = useState<string | null>(null);
-  const [showFullScreen, setShowFullScreen] = useState(false);
-  const [showCamera, setShowCamera] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const {
+    rating,
+    setRating,
+    ratingType,
+    setRatingType,
+    stallName,
+    setStallName,
+    mobilePayCode,
+    setMobilePayCode,
+    comments,
+    setComments,
+    photoUri,
+    setPhotoUri,
+    showFullScreen,
+    setShowFullScreen,
+    showCamera,
+    setShowCamera,
+    isSubmitting,
+    setIsSubmitting,
+    resetForm,
+  } = useRatingFormStore();
 
   const { uploadProgress, uploadPhoto, resetUpload } = usePhotoUpload();
 
@@ -66,7 +79,6 @@ export default function RatingScreen() {
       Alert.alert(t('common.error'), t('form.loginRequired'));
       return;
     }
-    
     // Immediately upload and process with face detection
     console.log('Starting upload and face detection process...');
     try {
@@ -74,8 +86,6 @@ export default function RatingScreen() {
       if (result.success && result.processedUrl) {
         console.log('✅ Photo processed successfully:', result.processedUrl);
         setPhotoUri(result.processedUrl); // Store the processed URL
-        
-        // Show success toast
         showToast(t('rating.uploadSuccessToast', { defaultValue: 'Photo processed successfully!' }), 'success');
       } else {
         throw new Error(result.error || 'Upload failed');
@@ -275,12 +285,7 @@ export default function RatingScreen() {
 
       // Reset form after short delay
       setTimeout(() => {
-        setRatingType('stall');
-        setStallName('');
-        setMobilePayCode('');
-        setComments('');
-        setRating(5);
-        setPhotoUri(null);
+        resetForm();
         resetUpload();
         setIsSubmitting(false);
       }, 1000);

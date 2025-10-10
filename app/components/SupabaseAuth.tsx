@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Text, Alert, TouchableOpacity, Linking, ActivityIndicator } from 'react-native';
 import * as AuthSession from 'expo-auth-session';
 import * as WebBrowser from 'expo-web-browser';
@@ -12,8 +12,7 @@ import { Icon } from '@ui-kitten/components';
 WebBrowser.maybeCompleteAuthSession();
 
 export default function SupabaseAuth() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [loadingProvider, setLoadingProvider] = useState<'google' | 'facebook' | null>(null);
+  // useState removed by request
   const { t } = useTranslation();
 
   const googleClientId = Config.GOOGLE_WEB_CLIENT_ID ?? '';
@@ -73,23 +72,15 @@ export default function SupabaseAuth() {
         } else {
           console.error('❌ No authorization code in successful response');
           Alert.alert(t('common.error'), 'Missing authorization code');
-          setIsLoading(false);
-          setLoadingProvider(null);
         }
       } else if (googleResponse.type === 'error') {
         console.error('❌ Google OAuth error:', googleResponse.error);
         console.error('   Error description:', googleResponse.params?.error_description);
         Alert.alert(t('common.error'), `Google sign-in failed: ${googleResponse.error}`);
-        setIsLoading(false);
-        setLoadingProvider(null);
       } else if (googleResponse.type === 'cancel') {
         console.log('🔧 Google OAuth cancelled by user');
-        setIsLoading(false);
-        setLoadingProvider(null);
       } else {
         console.log('🔧 Google OAuth response type:', googleResponse.type);
-        setIsLoading(false);
-        setLoadingProvider(null);
       }
     }
   }, [googleResponse]);
@@ -104,11 +95,8 @@ export default function SupabaseAuth() {
       } else if (facebookResponse.type === 'error') {
         console.error('❌ Facebook OAuth error:', facebookResponse.error);
         Alert.alert(t('common.error'), `Facebook sign-in failed: ${facebookResponse.error}`);
-        setIsLoading(false);
-        setLoadingProvider(null);
       } else if (facebookResponse.type === 'cancel') {
-        setIsLoading(false);
-        setLoadingProvider(null);
+        // removed loading state
       }
     }
   }, [facebookResponse]);
@@ -170,8 +158,7 @@ export default function SupabaseAuth() {
       console.error('❌ Google token exchange error:', error);
       Alert.alert(t('common.error'), `Google sign-in failed: ${error.message}`);
     } finally {
-      setIsLoading(false);
-      setLoadingProvider(null);
+      // removed loading state
     }
   };
 
@@ -196,8 +183,7 @@ export default function SupabaseAuth() {
       console.error('❌ Facebook auth processing error:', error);
       Alert.alert(t('common.error'), `Facebook sign-in failed: ${error.message}`);
     } finally {
-      setIsLoading(false);
-      setLoadingProvider(null);
+      // removed loading state
     }
   };
 
@@ -211,8 +197,7 @@ export default function SupabaseAuth() {
       console.log('   Google Request Ready:', !!googleRequest);
       console.log('   Redirect URI:', redirectUri);
       
-      setIsLoading(true);
-      setLoadingProvider('google');
+  // setIsLoading(true); setLoadingProvider('google'); // removed
       
       if (!googleRequest) {
         throw new Error('Google auth request not ready');
@@ -222,23 +207,12 @@ export default function SupabaseAuth() {
       console.log('🔧 Google prompt result:', JSON.stringify(result, null, 2));
       
       // Set a timeout in case the response doesn't come back
-      setTimeout(() => {
-        if (loadingProvider === 'google') {
-          console.log('🔧 OAuth timeout - no response received');
-          setIsLoading(false);
-          setLoadingProvider(null);
-          Alert.alert(
-            t('common.error'), 
-            'Sign-in timed out. Please try again or check your network connection.'
-          );
-        }
-      }, 30000); // 30 second timeout
+      // removed loadingProvider timeout logic
       
     } catch (error: any) {
       console.error('❌ Google sign-in initiation error:', error);
       Alert.alert(t('common.error'), `Google sign-in failed: ${error.message}`);
-      setIsLoading(false);
-      setLoadingProvider(null);
+    // removed loading state
     }
   };
 
@@ -249,8 +223,7 @@ export default function SupabaseAuth() {
         return;
       }
       console.log('🔧 Starting Facebook sign-in...');
-      setIsLoading(true);
-      setLoadingProvider('facebook');
+    // removed loading state
       
       if (!facebookRequest) {
         throw new Error('Facebook auth request not ready');
@@ -260,8 +233,7 @@ export default function SupabaseAuth() {
     } catch (error: any) {
       console.error('❌ Facebook sign-in initiation error:', error);
       Alert.alert(t('common.error'), `Facebook sign-in failed: ${error.message}`);
-      setIsLoading(false);
-      setLoadingProvider(null);
+    // removed loading state
     }
   };
 
@@ -278,36 +250,22 @@ export default function SupabaseAuth() {
         <TouchableOpacity
           style={[styles.socialButton, styles.googleButton]}
           onPress={signInWithGoogle}
-          disabled={isLoading}
         >
-          {loadingProvider === 'google' ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <>
-              <Icon name="google" style={styles.icon} fill="white" />
-              <Text style={styles.socialButtonText}>
-                {t('auth.signInWithGoogle') || 'Sign in with Google'}
-              </Text>
-            </>
-          )}
+          <Icon name="google" style={styles.icon} fill="white" />
+          <Text style={styles.socialButtonText}>
+            {t('auth.signInWithGoogle') || 'Sign in with Google'}
+          </Text>
         </TouchableOpacity>
 
         {/* Facebook Sign In Button */}
         <TouchableOpacity
           style={[styles.socialButton, styles.facebookButton]}
           onPress={signInWithFacebook}
-          disabled={isLoading}
         >
-          {loadingProvider === 'facebook' ? (
-            <ActivityIndicator size="small" color="white" />
-          ) : (
-            <>
-              <Icon name="facebook" style={styles.icon} fill="white" />
-              <Text style={styles.socialButtonText}>
-                {t('auth.signInWithFacebook') || 'Sign in with Facebook'}
-              </Text>
-            </>
-          )}
+          <Icon name="facebook" style={styles.icon} fill="white" />
+          <Text style={styles.socialButtonText}>
+            {t('auth.signInWithFacebook') || 'Sign in with Facebook'}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity

@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
+import { useAuthWrapperStore } from '../stores/authWrapperStore';
 import * as Linking from 'expo-linking';
 import { useAuth } from '../contexts/AuthContext';
 import { useConnectivity } from '../contexts/ConnectivityContext';
@@ -16,7 +17,7 @@ export default function AuthWrapper() {
   const { session, loading } = useAuth();
   const { status, isChecking, recheckConnectivity } = useConnectivity();
   const { t } = useTranslation();
-  const [showSplash, setShowSplash] = useState(true);
+  const { showSplash, setShowSplash } = useAuthWrapperStore();
 
  /*  useEffect(() => {
     console.log('🔄 AuthWrapper session state:', session ? 'Authenticated' : 'Not authenticated');

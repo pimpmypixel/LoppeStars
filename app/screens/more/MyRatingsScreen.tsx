@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, ScrollView, Image, RefreshControl, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Icon } from '@ui-kitten/components';
@@ -7,6 +7,8 @@ import { useTranslation } from '../../utils/localization';
 import AppHeader from '../../components/AppHeader';
 import AppFooter from '../../components/AppFooter';
 import { Card, CardContent, CardHeader, CardTitle, Text } from '../../components/ui-kitten';
+import { useMyRatingsScreenStore } from '../../stores/myRatingsScreenStore';
+import { useUIStore } from '../../stores/uiStore';
 
 interface Rating {
   id: string;
@@ -22,46 +24,38 @@ interface Rating {
 export default function MyRatingsScreen() {
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const [ratings, setRatings] = useState<Rating[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
+  const { ratings, setRatings } = useUIStore();
+  const { loading, setLoading, refreshing, setRefreshing } = useMyRatingsScreenStore();
 
   const loadRatings = async () => {
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
         console.log('No user found');
         return;
       }
-
-            const { data: ratingsData, error: ratingsError } = await supabase
+      const { data: ratingsData, error: ratingsError } = await supabase
         .from('ratings')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false });
-
       if (ratingsError) {
         console.error('Error loading ratings:', ratingsError);
         return;
       }
-
       const normalised = (ratingsData || []).map((item) => {
         if (item.photo_url && !item.photo_url.startsWith('http')) {
           const { data: publicUrl } = supabase.storage
             .from('stall-photos')
             .getPublicUrl(item.photo_url);
-
           return {
             ...item,
             photo_url: publicUrl?.publicUrl ?? item.photo_url,
           };
         }
-
         return item;
       });
-
-      setRatings(normalised as Rating[]);
+  setRatings(normalised as Rating[]);
     } catch (error) {
       console.error('Error in loadRatings:', error);
     } finally {

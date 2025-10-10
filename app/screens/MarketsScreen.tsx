@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   TextInput,
@@ -17,6 +17,8 @@ import { supabase } from '../utils/supabase';
 import { useAuth } from '../contexts/AuthContext';
 import { useMarket } from '../contexts/MarketContext';
 import { useAppStore } from '../stores/appStore';
+import { useMarketsScreenStore } from '../stores/marketsScreenStore';
+import { useUIStore } from '../stores/uiStore';
 import { Layout } from '@ui-kitten/components';
 import AppHeader from '../components/AppHeader';
 import AuthGuard from '../components/AuthGuard';
@@ -73,20 +75,25 @@ export default function MarketsScreen() {
   const selectedMarketFromStore = useAppStore((state) => state.selectedMarket);
   const { t } = useTranslation();
 
-  const [markets, setMarkets] = useState<Market[]>([]);
-  const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [filteredMarkets, setFilteredMarkets] = useState<Market[]>([]);
-  const [refreshing, setRefreshing] = useState(false);
+  const { markets, setMarkets, userLocation, setUserLocation, filteredMarkets, setFilteredMarkets } = useUIStore();
+  const {
+    isLoading,
+    setIsLoading,
+    searchQuery,
+    setSearchQuery,
+    refreshing,
+    setRefreshing,
+  } = useMarketsScreenStore();
 
   useEffect(() => {
     loadMarkets();
     requestLocationPermission();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     filterMarkets();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [markets, searchQuery, userLocation, selectedMarketFromStore]);
 
   const requestLocationPermission = async () => {

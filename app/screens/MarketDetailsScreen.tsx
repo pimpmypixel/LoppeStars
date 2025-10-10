@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, ScrollView, TouchableOpacity, Text as RNText, StyleSheet, Image, Dimensions, Linking, Platform } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -6,6 +6,7 @@ import { Icon } from '@ui-kitten/components';
 import { useTranslation } from '../utils/localization';
 import { useAuth } from '../contexts/AuthContext';
 import { useMarket } from '../contexts/MarketContext';
+import { useMarketDetailsStore } from '../stores/marketDetailsStore';
 import { Card, CardContent, CardHeader, CardTitle, Text } from '../components/ui-kitten';
 import { reset } from '../utils/navigation';
 import { Market } from '../types/common/market';
@@ -46,40 +47,52 @@ export default function MarketDetailsScreen() {
   const { t } = useTranslation();
 
   const market: Market = route.params?.market;
-  const [isCheckedIn, setIsCheckedIn] = useState(false);
-  const [stallRatings, setStallRatings] = useState<StallRating[]>([]);
-  const [loadingRatings, setLoadingRatings] = useState(true);
-  const [averageRating, setAverageRating] = useState<number | null>(null);
+  const {
+    isCheckedIn,
+    setIsCheckedIn,
+    stallRatings,
+    setStallRatings,
+    loadingRatings,
+    setLoadingRatings,
+    averageRating,
+    setAverageRating,
+  } = useMarketDetailsStore();
 
   // Load stall ratings for this market
   useEffect(() => {
     loadStallRatings();
+    // Reset check-in state when market changes
+    setIsCheckedIn(false);
+    setStallRatings([]);
+    setAverageRating(null);
+    setLoadingRatings(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [market?.id]);
 
   const loadStallRatings = async () => {
     if (!market?.id) return;
-
     try {
       setLoadingRatings(true);
-            const { data: ratingsData, error: ratingsError } = await supabase
+      const { data: ratingsData, error: ratingsError } = await supabase
         .from('ratings')
         .select('*')
         .eq('market_id', market.id)
         .order('created_at', { ascending: false })
         .limit(10);
-
       if (ratingsError) throw ratingsError;
-
       const ratings = ratingsData || [];
       setStallRatings(ratings);
-
       // Calculate average rating
       if (ratings.length > 0) {
         const avg = ratings.reduce((sum: number, r: any) => sum + r.rating, 0) / ratings.length;
         setAverageRating(avg);
+      } else {
+        setAverageRating(null);
       }
     } catch (error) {
       console.error('Error loading stall ratings:', error);
+      setStallRatings([]);
+      setAverageRating(null);
     } finally {
       setLoadingRatings(false);
     }
@@ -134,10 +147,8 @@ export default function MarketDetailsScreen() {
 
   const handleCheckIn = async () => {
     if (!user?.id) return;
-
     setIsCheckedIn(true);
     setSelectedMarket(market);
-
     // Log check-in event
     await logEvent(
       user.id,

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { StyleSheet, View, ScrollView, TouchableOpacity } from 'react-native';
 import { decodeHtmlEntities, cleanMarketName } from '../utils/stringUtils';
 import { useSelectedMarket } from '../stores/appStore';
+import { useUIStore } from '../stores/uiStore';
 import { useTranslation } from '../utils/localization';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
@@ -17,21 +18,22 @@ export default function HomeScreen() {
   const { selectedMarket } = useSelectedMarket();
   const navigation = useNavigation();
   const { t } = useTranslation();
-  const [stats, setStats] = useState({ ratingsCount: 0, marketsCount: 0 });
+  const { stats, setStats } = useUIStore();
 
   // Use helpers for proper Unicode display and concise name
   const displayMarketName = selectedMarket ? cleanMarketName(decodeHtmlEntities(selectedMarket.name)) : '';
 
   useEffect(() => {
     loadStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadStats = async () => {
     try {
       // Get ratings count
-            const { data: ratingsData } = await supabase
+      const { data: ratingsData } = await supabase
         .from('ratings')
-        .select('id')
+        .select('id');
 
       // Get markets count
       const { count: marketsCount } = await supabase
@@ -40,7 +42,7 @@ export default function HomeScreen() {
 
       setStats({
         ratingsCount: ratingsData?.length || 0,
-        marketsCount: marketsCount || 0
+        marketsCount: marketsCount || 0,
       });
     } catch (error) {
       console.error('Error loading stats:', error);

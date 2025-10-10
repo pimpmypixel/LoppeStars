@@ -1,54 +1,49 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, Animated, Dimensions, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Text } from './ui-kitten';
+import { useToastStore } from '../stores/toastStore';
 
-interface ToastProps {
-  message: string;
-  type?: 'success' | 'error' | 'info';
-  duration?: number;
-  onHide?: () => void;
-}
-
-const Toast: React.FC<ToastProps> = ({ message, type = 'success', duration = 3000, onHide }) => {
-  const [fadeAnim] = useState(new Animated.Value(0));
-  const [translateY] = useState(new Animated.Value(50));
+const Toast: React.FC = () => {
+  const { visible, message, type, hideToast } = useToastStore();
+  const fadeAnim = React.useRef(new Animated.Value(0)).current;
+  const translateY = React.useRef(new Animated.Value(50)).current;
 
   useEffect(() => {
-    // Fade in and slide up
-    Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start();
-
-    // Auto hide after duration
-    const timer = setTimeout(() => {
+    if (visible) {
       Animated.parallel([
         Animated.timing(fadeAnim, {
-          toValue: 0,
+          toValue: 1,
           duration: 300,
           useNativeDriver: true,
         }),
         Animated.timing(translateY, {
-          toValue: 50,
+          toValue: 0,
           duration: 300,
           useNativeDriver: true,
         }),
-      ]).start(() => {
-        if (onHide) onHide();
-      });
-    }, duration);
+      ]).start();
 
-    return () => clearTimeout(timer);
-  }, []);
+      const timer = setTimeout(() => {
+        Animated.parallel([
+          Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(translateY, {
+            toValue: 50,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          hideToast();
+        });
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [visible]);
 
   const getBackgroundColor = () => {
     switch (type) {
@@ -76,6 +71,7 @@ const Toast: React.FC<ToastProps> = ({ message, type = 'success', duration = 300
     }
   };
 
+  if (!visible) return null;
   return (
     <Animated.View
       style={[
@@ -93,44 +89,13 @@ const Toast: React.FC<ToastProps> = ({ message, type = 'success', duration = 300
   );
 };
 
-// Toast Manager Component
-interface ToastState {
-  visible: boolean;
-  message: string;
-  type: 'success' | 'error' | 'info';
-}
-
-let showToastCallback: ((message: string, type?: 'success' | 'error' | 'info') => void) | null = null;
 
 export const showToast = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
-  if (showToastCallback) {
-    showToastCallback(message, type);
-  }
+  const { showToast } = useToastStore.getState();
+  showToast(message, type);
 };
 
-export const ToastContainer: React.FC = () => {
-  const [toast, setToast] = useState<ToastState>({ visible: false, message: '', type: 'success' });
-
-  useEffect(() => {
-    showToastCallback = (message: string, type: 'success' | 'error' | 'info' = 'success') => {
-      setToast({ visible: true, message, type });
-    };
-
-    return () => {
-      showToastCallback = null;
-    };
-  }, []);
-
-  if (!toast.visible) return null;
-
-  return (
-    <Toast
-      message={toast.message}
-      type={toast.type}
-      onHide={() => setToast({ ...toast, visible: false })}
-    />
-  );
-};
+export const ToastContainer: React.FC = () => <Toast />;
 
 const styles = StyleSheet.create({
   container: {

@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, ScrollView, Alert, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { StackNavigationProp } from '@react-navigation/stack';
 import { useAuth } from '../contexts/AuthContext';
+import { useUIStore } from '../stores/uiStore';
 import { supabase } from '../utils/supabase';
 import { useTranslation } from '../utils/localization';
 import { Layout, Icon } from '@ui-kitten/components';
@@ -16,8 +17,7 @@ import { checkAdminStatus } from '../utils/adminCheck';
 export default function MoreScreen() {
     const navigation = useNavigation<StackNavigationProp<MoreStackParamList>>();
     const { user, session, signOut } = useAuth();
-    const [refreshKey, setRefreshKey] = useState(0);
-    const [isAdmin, setIsAdmin] = useState(false);
+    const { refreshKey, setRefreshKey, isAdmin, setIsAdmin } = useUIStore();
     const { t } = useTranslation();
     const { isScrapingActive, lastScrapingResult, setScrapingActive, setScrapingResult } = useScrapingStore();
 
@@ -45,7 +45,7 @@ export default function MoreScreen() {
 
     const handleLanguageChange = () => {
         // Force re-render to update all localized strings
-        setRefreshKey(prev => prev + 1);
+        setRefreshKey(refreshKey + 1);
     };
 
     const handleTriggerScraper = async () => {
@@ -97,9 +97,8 @@ export default function MoreScreen() {
                 setIsAdmin(false);
             }
         };
-        
         checkAdmin();
-    }, [session]);
+    }, [session, setIsAdmin]);
 
     const menuItems = [
         { title: t('myRatings.title'), onPress: () => handleMenuPress('MyRatings') },
